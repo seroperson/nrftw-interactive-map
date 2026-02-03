@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Rest for The Wicked - Interactive Map</title>
+    <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+    <div id="app">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h1>Map Filters</h1>
+                <button id="toggle-sidebar" aria-label="Toggle sidebar">◀</button>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Resource Filters -->
+                <section class="filter-section">
+                    <h2>Resources</h2>
+                    <div class="filter-controls">
+                        <button id="check-all" class="btn-filter">✓ Check All</button>
+                        <button id="uncheck-all" class="btn-filter">✕ Uncheck All</button>
+                    </div>
+                    <div id="resource-filters" class="filter-group"></div>
+                </section>
+
+                <!-- Custom Markers -->
+                <section class="filter-section">
+                    <h2>Custom Markers</h2>
+                    <div class="custom-markers-controls">
+                        <button id="add-marker-mode" class="btn-primary">Add Marker Mode</button>
+                        <div id="marker-mode-hint" class="hint hidden">Click on map to place marker</div>
+                    </div>
+                    <div id="custom-markers-list" class="marker-list"></div>
+                </section>
+
+                <!-- Share -->
+                <section class="filter-section">
+                    <h2>Share</h2>
+                    <button id="copy-url" class="btn-secondary">Copy Shareable URL</button>
+                    <div id="copy-feedback" class="feedback hidden">URL copied!</div>
+                </section>
+            </div>
+        </aside>
+
+        <main id="map-container">
+            <div id="map" class="map"></div>
+            <div id="coordinates-display" class="coordinates-display"></div>
+            <div class="axes-indicator">
+                <svg class="axes-svg" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Origin point -->
+                    <circle cx="35" cy="35" r="2" fill="#ffffff" opacity="0.6"/>
+                    
+                    <!-- X axis (Red) - pointing right -->
+                    <line class="axis-line axis-x" x1="35" y1="35" x2="60" y2="35" />
+                    <polygon class="axis-arrow arrow-x" points="60,35 56,33 56,37" />
+                    <text class="axis-label label-x" x="63" y="38">X</text>
+                    
+                    <!-- Y axis (Green) - pointing up -->
+                    <line class="axis-line axis-y" x1="35" y1="35" x2="35" y2="10" />
+                    <polygon class="axis-arrow arrow-y" points="35,10 33,14 37,14" />
+                    <text class="axis-label label-y" x="37" y="13">Y</text>
+                    
+                    <!-- Z axis (Blue) - pointing down-right (isometric) -->
+                    <line class="axis-line axis-z" x1="35" y1="35" x2="50" y2="50" />
+                    <polygon class="axis-arrow arrow-z" points="50,50 47,46 46,49" />
+                    <text class="axis-label label-z" x="52" y="54">Z</text>
+                </svg>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
