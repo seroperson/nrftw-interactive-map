@@ -57,7 +57,7 @@ export class StateManager {
       return {
         viewport: data.viewport || this.getDefaultState().viewport,
         visibleResources: new Set(data.visibleResources || []),
-        customMarkers: data.customMarkers || [],
+        customMarkers: [],
         markerMode: false,
         openedPopup: data.openedPopup || null,
         expandedGroups: new Set(data.expandedGroups || [])
@@ -129,7 +129,6 @@ export class StateManager {
     console.log("Update custom marker");
     this.state.customMarkers.push(marker);
     this.saveToLocalStorage();
-    this.updateURL();
     this.notifyListeners();
   }
 
@@ -139,7 +138,6 @@ export class StateManager {
     if (marker) {
       marker.label = label;
       this.saveToLocalStorage();
-      this.updateURL();
       this.notifyListeners();
     }
   }
@@ -148,7 +146,6 @@ export class StateManager {
     console.log("Remove custom marker");
     this.state.customMarkers = this.state.customMarkers.filter(m => m.id !== id);
     this.saveToLocalStorage();
-    this.updateURL();
     this.notifyListeners();
   }
 
@@ -174,7 +171,6 @@ export class StateManager {
       this.state.expandedGroups.add(groupName);
     }
     this.saveToLocalStorage();
-    this.updateURL();
     this.notifyListeners();
   }
 
@@ -221,9 +217,7 @@ export class StateManager {
         const data = {
           viewport: this.state.viewport,
           visibleResources: Array.from(this.state.visibleResources),
-          customMarkers: this.state.customMarkers,
-          openedPopup: this.state.openedPopup,
-          expandedGroups: Array.from(this.state.expandedGroups)
+          openedPopup: this.state.openedPopup
         };
 
         const encoded = btoa(JSON.stringify(data));
@@ -237,7 +231,7 @@ export class StateManager {
       }
       
       this.urlUpdateTimer = null;
-    }, 500); // 500ms throttle
+    }, 100); // 500ms throttle
   }
 
   public subscribe(listener: (state: AppState) => void): () => void {

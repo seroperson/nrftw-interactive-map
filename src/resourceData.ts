@@ -5,7 +5,7 @@ import { ResourceType, ResourceGroup, Resource } from './types';
 // Color mapping for resource subtypes
 const SUBTYPE_COLORS: Record<string, string> = {
   // Ores
-  'iron': '#808080',
+  'iron': '#4D4D4D',
   'copper': '#B87333',
   'silver': '#C0C0C0',
   'gold': '#FFD700',
@@ -25,9 +25,9 @@ const SUBTYPE_COLORS: Record<string, string> = {
   'potato': '#D2B48C',
   'tomato': '#FF6347',
   // Fishing
-  'bass': '#4682B4',
-  'carp': '#8B7355',
-  'trout': '#5F9EA0',
+  'carp': '#a6c3db',
+  'trout': '#657e93',
+  'bass': '#315B7E',
   // Digging tiers
   'tier1': '#CD853F',
   'tier2': '#D2691E',

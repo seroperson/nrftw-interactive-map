@@ -141,6 +141,41 @@ export class UIManager {
       const groupNameSpan = document.createElement('span');
       groupNameSpan.textContent = groupName.charAt(0).toUpperCase() + groupName.slice(1);
       
+      // Create stacked color circles for the group
+      const groupColors = document.createElement('div');
+      groupColors.className = 'group-colors';
+      
+      const maxCirclesToShow = 5;
+      let circleCount = 0;
+      
+      for (const typeName of group.types) {
+        const type = this.resourceTypes.get(typeName);
+        if (type && type.count > 0) {
+          if (circleCount < maxCirclesToShow) {
+            const colorCircle = document.createElement('span');
+            colorCircle.className = 'group-color-circle';
+            colorCircle.style.backgroundColor = type.color;
+            colorCircle.title = type.name; // Tooltip showing resource type name
+            groupColors.appendChild(colorCircle);
+            circleCount++;
+          }
+        }
+      }
+      
+      // Show overflow indicator if there are more types
+      const totalTypes = group.types.filter(t => {
+        const type = this.resourceTypes.get(t);
+        return type && type.count > 0;
+      }).length;
+      
+      if (totalTypes > maxCirclesToShow) {
+        const overflow = document.createElement('span');
+        overflow.className = 'group-color-overflow';
+        overflow.textContent = `+${totalTypes - maxCirclesToShow}`;
+        overflow.title = `${totalTypes - maxCirclesToShow} more types`;
+        groupColors.appendChild(overflow);
+      }
+      
       // Calculate total count for group
       const totalCount = group.types.reduce((sum, type) => {
         const resourceType = this.resourceTypes.get(type);
@@ -153,6 +188,7 @@ export class UIManager {
 
       groupLabel.appendChild(expandIcon);
       groupLabel.appendChild(groupNameSpan);
+      groupLabel.appendChild(groupColors);
       groupLabel.appendChild(groupCountSpan);
 
       groupHeader.appendChild(groupCheckbox);
