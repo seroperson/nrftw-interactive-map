@@ -3,10 +3,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   base: process.env.GITHUB_PAGES ? '/nrftw-interactive-map/' : './',
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-  },
+  assetsInclude: ['**/*.csv'],
   server: {
     port: 3000,
   },
@@ -41,23 +38,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,csv}'],
-        globIgnores: ['**/map.png'],
         maximumFileSizeToCacheInBytes: 5000000,
         runtimeCaching: [
-          {
-            urlPattern: /\/map\.png$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'map-cache',
-              expiration: {
-                maxEntries: 1,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          },
           {
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
             handler: 'CacheFirst',

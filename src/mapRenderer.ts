@@ -252,7 +252,7 @@ export class MapRenderer {
     this.onPopupChange = callback;
   }
 
-  public loadMapImage(tilesPath: string = 'tiles/{z}/{y}/{x}.jpg'): void {
+  public loadMapImage(tilesPath: string = `${import.meta.env.BASE_URL}/tiles/{z}/{y}/{x}.jpg`): void {
     const projection = this.map.getView().getProjection();
 
     // Create tile layer with XYZ source

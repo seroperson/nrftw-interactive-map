@@ -6,6 +6,8 @@ import { MapRenderer } from './mapRenderer';
 import { StateManager } from './stateManager';
 import { UIManager } from './ui';
 import { createResourceTypes, createResourceGroups } from './resourceData';
+import oreCoordinates from './assets/ore_coordinates.csv?raw'
+import regionTransform from './assets/region_transforms.csv?raw'
 
 class InteractiveMapApp {
   private converter: CoordinateConverter;
@@ -18,11 +20,8 @@ class InteractiveMapApp {
     // Initialize core components
     this.converter = new CoordinateConverter();
     this.stateManager = new StateManager();
-    
     this.renderer = new MapRenderer('map', this.converter);
-    
     this.uiManager = new UIManager(this.stateManager);
-    
     this.setupApplication();
   }
 
@@ -107,14 +106,7 @@ class InteractiveMapApp {
 
   private async loadResources(): Promise<void> {
     try {
-      // Try to load ore_coordinates.csv from the parent directory
-      const response = await fetch('../ore_coordinates.csv');
-      if (!response.ok) {
-        throw new Error('Failed to load ore_coordinates.csv');
-      }
-      
-      const csvText = await response.text();
-      this.resources = this.parseResourceCSV(csvText);
+      this.resources = this.parseResourceCSV(oreCoordinates);
       this.renderer.setResources(this.resources);
       
     } catch (error) {
@@ -228,15 +220,7 @@ class InteractiveMapApp {
 
   private async loadRegionTransforms(): Promise<void> {
     try {
-      const response = await fetch('../region_transforms.csv');
-      if (!response.ok) {
-        console.warn('No region_transforms.csv found, using default transforms');
-        return;
-      }
-      
-      const csvText = await response.text();
-      this.converter.loadTransformsFromCSV(csvText);
-      
+      this.converter.loadTransformsFromCSV(regionTransform);
     } catch (error) {
       console.warn('Could not load region transforms:', error);
     }
