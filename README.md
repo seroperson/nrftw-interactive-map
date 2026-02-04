@@ -1,250 +1,256 @@
 # No Rest for The Wicked - Interactive Map
 
-A client-only interactive web map application for exploring resource locations
-in "No Rest for the Wicked".
+An interactive, offline-capable Progressive Web App (PWA) for exploring
+resources in the game "No Rest for The Wicked".
 
-## Features
+## ✨ Features
 
-- **Interactive Canvas-Based Map Rendering**: Custom renderer with pan and zoom,
-  no external mapping libraries
-- **Resource Filtering**: Show/hide different resource types (Iron, Copper,
-  Gold, Silver, Cerim, etc.)
-- **Custom Markers**: Add and label your own markers on the map
-- **URL State Sharing**: Share your current view and selections with others via
-  URL
-- **LocalStorage Persistence**: Your settings are automatically saved
-- **Coordinate Display**: Real-time world coordinates as you hover over the map
-- **Optimized Rendering**: Viewport culling for efficient performance with large
-  datasets
+- 🗺️ **Interactive Map**: Pan, zoom, and explore the game world
+- 📍 **Resource Markers**: View locations of ores and other resources
+- 🎯 **Custom Markers**: Add your own markers for notes and discoveries
+- 🔍 **Advanced Filtering**: Toggle resource types on/off
+- 🔗 **Shareable URLs**: Share your map state with others
+- 📱 **Installable**: Install as a standalone app on desktop and mobile
+- 🌐 **Offline Mode**: Works completely offline after first visit
+- 🌙 **Dark Theme**: Easy on the eyes for long gaming sessions
 
-## Tech Stack
+## 🚀 Quick Start
 
-- **TypeScript**: Type-safe development
-- **Vite**: Fast build tool and dev server
-- **OpenLayers**: Professional mapping library for static image display
-- **No external dependencies beyond OpenLayers**: Lightweight and efficient
+### Online Access
 
-## Project Structure
+Simply visit the deployed application URL in your web browser.
 
-```
-interactive-map/
-├── src/
-│   ├── types.ts              # TypeScript type definitions
-│   ├── coordinateConverter.ts # World-to-image coordinate conversion
-│   ├── resourceData.ts        # Resource type definitions and colors
-│   ├── mapRenderer.ts         # Canvas-based map renderer
-│   ├── stateManager.ts        # State management with URL/localStorage
-│   ├── ui.ts                  # UI component management
-│   ├── main.ts               # Application entry point
-│   └── styles.css            # Application styles
-├── index.html                # HTML entry point
-├── package.json              # Dependencies
-├── tsconfig.json             # TypeScript configuration
-└── vite.config.ts            # Vite configuration
-```
+### Installation
 
-## Setup Instructions
+#### Desktop (Windows, macOS, Linux)
 
-### 1. Install Dependencies
+1. Open the app in Chrome, Edge, or another Chromium browser
+2. Click the install icon (⊕) in the address bar
+3. Click "Install" to add it to your applications
+
+#### Mobile (Android/iOS)
+
+1. Open in your mobile browser
+2. **Android**: Menu → "Add to Home Screen"
+3. **iOS**: Share → "Add to Home Screen"
+
+See [PWA_FEATURES.md](PWA_FEATURES.md) for detailed installation instructions.
+
+## 💻 Development
+
+### Prerequisites
+
+- Node.js 18+ and npm
+
+### Installation
 
 ```bash
 cd interactive-map
 npm install
 ```
 
-### 2. Prepare Data Files
-
-The application expects the following files in the parent directory:
-
-- `ore_coordinates.csv` - Resource locations (required)
-- `region_transforms.csv` - Region transformation parameters (optional)
-
-**ore_coordinates.csv format:**
-
-```csv
-Name,Region,World_X,World_Z,File_Path
-Iron Ore,sacrament,123.45,678.90,worlds/isolaSacra/sacrament/loot/loot.unity
-Copper Ore,coast,-456.78,234.56,worlds/isolaSacra/coast/loot/loot.unity
-```
-
-**region_transforms.csv format:**
-
-```csv
-Region,Offset_X,Offset_Z,Scale_X,Scale_Z,Flip_X,Flip_Z
-sacrament,6144,6144,1.0,1.0,false,true
-coast,6144,6144,1.0,1.0,false,true
-```
-
-If these files are not found, the application will use sample data for
-demonstration.
-
-### 3. (Optional) Add Map Image
-
-To display the actual map background, place your map image in the `public`
-folder and modify [`main.ts`](src/main.ts:151) to load it:
-
-```typescript
-await this.renderer.loadMapImage("/map.png");
-```
-
-The map should be in PNG format. Large maps (12288x12288) are supported with
-optimized rendering.
-
-## Development
-
-Start the development server:
+### Development Server
 
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`
+Opens at http://localhost:3000
 
-## Building for Production
-
-Create an optimized production build:
+### Build for Production
 
 ```bash
 npm run build
 ```
 
-The output will be in the `dist` folder, ready to be deployed to any static
-hosting service.
+Outputs to `dist/` directory with full PWA support.
 
-Preview the production build:
+### Preview Production Build
 
 ```bash
 npm run preview
 ```
 
-## Usage
+## 📁 Project Structure
 
-### Map Navigation
+```
+interactive-map/
+├── src/
+│   ├── main.ts              # Application entry point
+│   ├── mapRenderer.ts       # OpenLayers map configuration
+│   ├── stateManager.ts      # State management & URL handling
+│   ├── ui.ts               # UI controls and interactions
+│   ├── coordinateConverter.ts # World-to-image coordinate conversion
+│   ├── resourceData.ts      # Resource data loading
+│   ├── types.ts            # TypeScript interfaces
+│   └── styles.css          # Application styles
+├── public/
+│   ├── icon-192x192.png    # PWA icon (small)
+│   ├── icon-512x512.png    # PWA icon (large)
+│   ├── map.png             # Game world map (154MB)
+│   ├── ore_coordinates.csv # Resource coordinate data
+│   └── region_transforms.csv # Region transformation data
+├── index.html              # Main HTML file
+├── vite.config.ts          # Vite & PWA configuration
+├── tsconfig.json           # TypeScript configuration
+├── package.json            # Dependencies
+├── README.md               # This file
+└── PWA_FEATURES.md         # PWA documentation
+```
 
-- **Pan**: Click and drag on the map
-- **Zoom**: Use mouse wheel to zoom in/out
+## 🛠️ Technologies
+
+- **TypeScript**: Type-safe JavaScript
+- **OpenLayers**: Interactive mapping library
+- **Vite**: Fast build tool and dev server
+- **Vite PWA Plugin**: Progressive Web App capabilities
+- **Workbox**: Service worker and caching strategies
+
+## 🌐 Offline Capabilities
+
+The application is a full Progressive Web App with:
+
+### Cached on Installation
+
+- Core app files (HTML, CSS, JavaScript)
+- App icons and manifest
+- CSV data files
+
+### Cached on First Access
+
+- Large map image (154MB) - cached when first loaded
+- Other images - cached as needed
+
+After your first online visit, the entire application works offline. See
+[PWA_FEATURES.md](PWA_FEATURES.md) for complete details.
+
+## 📊 Data Sources
+
+The map data is extracted from the game files of "No Rest for The Wicked":
+
+- **Map Image**: Exported from game assets
+- **Resource Coordinates**: Extracted from Unity scene files
+- **Region Transforms**: Calibrated coordinate transformations
+
+## 🎮 Usage
+
+### Navigating the Map
+
+- **Pan**: Click and drag
+- **Zoom**: Mouse wheel or pinch gesture
 - **Coordinates**: Hover over the map to see world coordinates
 
 ### Filtering Resources
 
-- Use the checkboxes in the sidebar to show/hide resource types
-- Resource counts are displayed next to each type
-- Colors match the markers on the map
+- Use the sidebar to toggle resource types on/off
+- **Check All**: Show all resources
+- **Uncheck All**: Hide all resources
 
-### Adding Custom Markers
+### Custom Markers
 
-1. Click "Add Marker Mode" button
+1. Click **"Add Marker Mode"**
 2. Click on the map where you want to place a marker
-3. Edit the marker label in the sidebar
-4. Click the trash icon to remove a marker
+3. Enter a note/description
+4. Your markers are saved in browser storage
 
-### Sharing Your View
+### Sharing Your Map
 
-Click "Copy Shareable URL" to get a URL that includes:
+Click **"Copy Shareable URL"** to create a link that includes:
 
-- Current viewport position and zoom level
-- Selected resource types
+- Current map position and zoom
+- Active filters
 - Custom markers
 
-Anyone opening this URL will see the same view.
+## 🔧 Configuration
 
-## Coordinate System
+### Map Settings
 
-The application uses the game's world coordinate system and converts it to image
-coordinates using transformation parameters:
+Edit [`src/coordinateConverter.ts`](src/coordinateConverter.ts) for:
 
-1. **World Coordinates**: Game engine coordinates (X, Z)
-2. **Image Coordinates**: Pixel coordinates on the map image
+- World bounds
+- Coordinate transformations
+- Map dimensions
 
-Transformation formula:
+### PWA Settings
 
-```
-imageX = (worldX * flipX * scaleX) + offsetX
-imageY = (worldZ * flipZ * scaleZ) + offsetZ
-```
+Edit [`vite.config.ts`](vite.config.ts) for:
 
-See [`coordinateConverter.ts`](src/coordinateConverter.ts) for implementation
-details.
+- Cache strategies
+- Offline behavior
+- Manifest configuration
 
-## Rendering Optimization
+### Styling
 
-The map renderer includes several optimizations:
+Edit [`src/styles.css`](src/styles.css) for:
 
-- **Viewport Culling**: Only renders markers within the visible area
-- **Efficient Transforms**: Uses canvas transformations for pan/zoom
-- **Partial Rendering**: Doesn't need to load the entire map into memory
-- **Throttled Updates**: Viewport state saves are throttled to reduce overhead
+- Color scheme
+- Layout
+- Responsive design
 
-## Architecture
+## 🐛 Troubleshooting
 
-### CoordinateConverter
+### Map Not Loading
 
-Handles conversion between world coordinates and image coordinates, supporting
-per-region transformations.
+- Ensure map.png is in the public/ directory
+- Check browser console for errors
+- Verify file permissions
 
-### MapRenderer
+### Coordinates Not Matching Game
 
-Canvas-based renderer with pan, zoom, and optimized marker rendering. Handles
-viewport culling and event management.
+- Check region_transforms.csv calibration
+- Verify coordinate conversion in coordinateConverter.ts
+- Recalibrate if game was updated
 
-### StateManager
+### PWA Not Installing
 
-Manages application state with persistence to URL and localStorage. Provides
-observable state updates.
+- HTTPS required (doesn't work on http://)
+- Check browser compatibility
+- Clear cache and try again
 
-### UIManager
+### Offline Mode Not Working
 
-Manages sidebar UI, including resource filters, custom markers, and control
-buttons.
+- Visit the app online first to cache resources
+- Check service worker status in DevTools
+- Large map requires one online visit to cache
 
-## Browser Support
+For PWA-specific issues, see [PWA_FEATURES.md](PWA_FEATURES.md#troubleshooting).
 
-Requires a modern browser with support for:
+## 📄 License
 
-- ES2020
-- Canvas API
-- LocalStorage
-- Clipboard API (for URL sharing)
+This is a fan-made tool for "No Rest for The Wicked" and is not affiliated with
+or endorsed by the game developers.
 
-## Troubleshooting
+## 🤝 Contributing
 
-### Resources not loading
+Contributions are welcome! Areas for improvement:
 
-- Check that `ore_coordinates.csv` is in the correct location (parent directory)
-- Check browser console for error messages
-- Verify CSV file format matches expected structure
+- Additional resource types
+- Better coordinate calibration
+- Performance optimizations
+- Mobile UI enhancements
+- Multi-language support
 
-### Map image not displaying
+## 📞 Support
 
-- Ensure the image path in [`main.ts`](src/main.ts:151) is correct
-- Check that the image file exists in the `public` folder
-- Verify image format is supported (PNG, JPEG, WebP)
+For issues or questions:
 
-### Performance issues
+1. Check the troubleshooting sections
+2. Review [PWA_FEATURES.md](PWA_FEATURES.md) for PWA-related questions
+3. Check browser console for error messages
+4. Verify you're using a supported browser
 
-- Reduce the zoom level to decrease the number of visible markers
-- Filter out resource types you don't need
-- Consider using a smaller map image
+## 🎯 Roadmap
 
-## Future Enhancements
+- [ ] Add more resource types (chests, NPCs, etc.)
+- [ ] Implement region/zone boundaries
+- [ ] Add search functionality
+- [ ] Export/import custom markers
+- [ ] Multiple map layers
+- [ ] Quest location markers
+- [ ] Achievement tracking
 
-Possible improvements:
+---
 
-- Search functionality for locations
-- Distance measurement tool
-- Route planning between markers
-- Multiple map layers (regions)
-- Export/import marker collections
-- Heatmap mode for resource density
-- Mobile touch controls optimization
-
-## License
-
-This tool is for personal use with "No Rest for the Wicked" game assets.
-
-## Credits
-
-Built using coordinate conversion logic from the Python analysis scripts:
-
-- `extract_all_resources.py` - Resource extraction patterns
-- `plot_mines_on_map.py` - Coordinate conversion and visualization logic
+**Game**: No Rest for The Wicked  
+**Version**: 1.0.0  
+**Last Updated**: 2026-02-03

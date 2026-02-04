@@ -127,20 +127,6 @@ export class UIManager {
       const groupLabel = document.createElement('div');
       groupLabel.className = 'filter-group-label';
       
-      // Only show expand icon if group has more than one type
-      const showExpandIcon = group.types.length > 1;
-      
-      const expandIcon = document.createElement('span');
-      expandIcon.className = 'expand-icon';
-      if (showExpandIcon) {
-        expandIcon.textContent = state.expandedGroups.has(groupName) ? '▼' : '▶';
-      } else {
-        expandIcon.style.visibility = 'hidden';
-      }
-      
-      const groupNameSpan = document.createElement('span');
-      groupNameSpan.textContent = groupName.charAt(0).toUpperCase() + groupName.slice(1);
-      
       // Create stacked color circles for the group
       const groupColors = document.createElement('div');
       groupColors.className = 'group-colors';
@@ -176,6 +162,9 @@ export class UIManager {
         groupColors.appendChild(overflow);
       }
       
+      const groupNameSpan = document.createElement('span');
+      groupNameSpan.textContent = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+      
       // Calculate total count for group
       const totalCount = group.types.reduce((sum, type) => {
         const resourceType = this.resourceTypes.get(type);
@@ -186,19 +175,29 @@ export class UIManager {
       groupCountSpan.className = 'resource-count';
       groupCountSpan.textContent = `(${totalCount})`;
 
-      groupLabel.appendChild(expandIcon);
-      groupLabel.appendChild(groupNameSpan);
       groupLabel.appendChild(groupColors);
+      groupLabel.appendChild(groupNameSpan);
       groupLabel.appendChild(groupCountSpan);
 
       groupHeader.appendChild(groupCheckbox);
       groupHeader.appendChild(groupLabel);
       
-      // Make label clickable to toggle expansion (not checkbox)
+      // Make label clickable to toggle expansion or checkbox
       groupHeader.addEventListener('click', (e) => {
         e.preventDefault();
-        // For single-type groups, don't expand (nothing to show)
+        // For single-type groups, toggle the checkbox instead of expanding
         if (group.types.length === 1) {
+          // Toggle the single type in the group
+          const shouldEnable = !groupCheckbox.checked;
+          for (const type of group.types) {
+            if (shouldEnable && !state.visibleResources.has(type)) {
+              this.stateManager.toggleResourceType(type);
+            } else if (!shouldEnable && state.visibleResources.has(type)) {
+              this.stateManager.toggleResourceType(type);
+            }
+          }
+          // Re-render to update all checkboxes
+          this.renderResourceFilters();
           return;
         }
         this.stateManager.toggleGroupExpansion(groupName);

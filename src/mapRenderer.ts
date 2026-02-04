@@ -181,7 +181,7 @@ export class MapRenderer {
       popupHtml += `
         <div class="popup-guid">
           <div class="popup-guid-label">GUID:</div>
-          <div class="popup-guid-values">A: ${idA}<br>B: ${idB}<br>C: ${idC}<br>D: ${idD}</div>
+          <div class="popup-guid-values">${idA},${idB},${idC},${idD}</div>
         </div>
       `;
     }
@@ -490,7 +490,7 @@ export class MapRenderer {
           tooltipHtml += `
             <div class="tooltip-guid">
               <div class="tooltip-guid-label">GUID:</div>
-              <div class="tooltip-guid-values">A: ${idA}<br>B: ${idB}<br>C: ${idC}<br>D: ${idD}</div>
+              <div class="tooltip-guid-values">${idA},${idB},${idC},${idD}</div>
             </div>
           `;
         }

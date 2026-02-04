@@ -1,19 +1,58 @@
 Type,Subtype,Name,File,Line,RawX,RawY,RawZ,id_a,id_b,id_c,id_d
-chest,chest,cryptChestChestView,ExportedProject/Assets/worlds/infiniteDungeon/arenas/infiniteDungeonArenaP1/arena/risen/loot/loot.unity,62540,-229436560,2427450,-145614496,1642554323,1074930417,1761036687,1890628103
-chest,chest,royalChestView,ExportedProject/Assets/worlds/infiniteDungeon/entrance/infiniteDungeonMainEntrance/interactives/interactives.unity,468988,-269285472,3810583,-141969984,314322561,1316162443,1220309641,-819864591
-chest,chest,tier3SpecialChestViewPlayerHasTablet,ExportedProject/Assets/worlds/infiniteDungeon/rewards/infiniteDungeonRewardA/infiniteDungeonRewardA/default/interactives/interactives.unity,212829,-236256096,4146069,-123593552,1519773107,1077925324,1136950423,-270718438
-chest,chest,tier3SpecialChestView,ExportedProject/Assets/worlds/infiniteDungeon/rewards/infiniteDungeonRewardA/infiniteDungeonRewardA/default/interactives/interactives.unity,212950,-236247792,4154669,-123577368,-368587559,1312537958,1828611474,567823906
-chest,chest,tier2SmallChestView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveA/loot/loot.unity,35258,110926328,1595762,-81122416,1796970356,1268585563,-2031259753,1354834839
-chest,chest,tier3MediumChestView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/unbreakableEggReward/default/interactives/interactives.unity,102304,17746952,5933236,25219498,-901466369,1177555489,1357941127,-1363961264
-chest,chest,tier3LargeChestView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/unbreakableEggReward/default/interactives/interactives.unity,102653,17476486,5925372,25528894,651218606,1282580068,-1796507481,393888108
-chest,chest,tier3SpecialChestView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/unbreakableEggReward/default/interactives/interactives.unity,106263,17616076,5938938,25418990,1903604738,1118323932,1159582887,-1480734824
-chest,chest,tier1MediumChestView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/MountainPassCaveB/loot/loot.unity,126654,90862552,1877540,-80783056,341602493,1170062259,-1811626608,-1678856232
-chest,chest,tier1LargeChestView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/MountainPassCaveB/loot/loot.unity,127324,88730328,1877749,-81869664,1839771529,1237918721,-80528999,-431052888
-chest,chest,communityChestView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentInteriorRookeryLodgingA/interactives/interactives.unity,1008,125324496,1404895,31019500,524088554,1296453696,-2081216849,1851394293
-chest,chest,tier1SmallChestView (1),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentWarRoom/interactives/interactives.unity,125478,117873576,3622568,69950280,-740198192,1314863388,1711278523,1789381848
-chest,chest,tier1SmallChestView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentWarRoom/interactives/interactives.unity,125599,117714384,4363521,68742872,-1173755305,1284065633,-943956083,233537396
-chest,chest,tier1SpecialChestView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentWarRoom/interactives/interactives.unity,145815,118466344,4920049,68697000,2103766223,1237167588,-1670277199,-719072448
-chest,chest,tier1SmallChestView,ExportedProject/Assets/worlds/isolaSacra/shipPrologue/shipPrologueInteriorA/interactives/interactives.unity,663387,202123776,1883949,66761956,-762335462,1085741685,2005304473,-331975866
+bonfire,bonfire,fireplaceBView,ExportedProject/Assets/worlds/infiniteDungeon/entrance/infiniteDungeonMainEntrance/interactives/interactives.unity,489858,-268733632,3150053,-143966864,600114127,1120530204,1290979468,-974324220
+bonfire,bonfire,bonfireView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,134414,-2476223,1260138,1978400,-256336151,1305853428,-427978316,68336992
+bonfire,bonfire,bonfireView,ExportedProject/Assets/worlds/isolaSacra/coast/coastTowerCellar/interactive/interactive.unity,60282,123259456,2589327,-74169520,556094367,1130630802,-735863644,136357689
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,335863,862866,1728903,4639130,1879007576,1166042562,-2080841340,-2076756725
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,336208,-7091129,2420405,3425626,-1017019841,1226414249,1653736850,-2016906963
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,750252,10622795,4324456,-2002434,-1095348668,1302894229,1582603154,-352114845
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,750597,4363452,3732862,-3003169,-1091814895,1152608837,-204277080,-2075372349
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,750942,15336800,1639314,-243448,2061974662,1081708595,1893349311,-590980925
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,751287,15871574,3338340,-8217213,-1881195449,1252491558,479519651,1078256116
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,751632,8386706,3406493,1928414,1226828239,1176481219,224797312,-2106529333
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,368802,18080728,2858895,23088988,-1875947729,1120998647,378083737,1386807336
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,369147,16222782,3895328,25574112,303109565,1164658979,1538200478,-1296650504
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,369492,10791158,3806388,30187848,-387651545,1186827067,1485619860,392316778
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,369837,9456714,4267442,24727256,1137345890,1207175989,-299997270,429616443
+bonfire,bonfire,bonfireView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsTempleA/interactives/interactives.unity,8983,111502296,4050911,-60635872,-1582386564,1172350535,91548819,-1110217036
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2962493,29366538,7709356,31042776,-1370334236,1331476575,-2077864291,253965735
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2962822,30406596,7216438,23631964,-1735392720,1097074016,-788414301,772185459
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2963151,32535860,8350146,24301742,-2081327851,1245988291,263915410,836891519
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2963496,36132476,6775308,22937938,-1737018646,1234533286,1469851036,-408322636
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2963841,26606032,5642853,17248168,-448789761,1315305368,-36288356,-1928630498
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2964170,31368664,8133746,14516562,1171215803,1306002721,-591947106,1674563389
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2964515,34110036,6143024,18371062,-764124048,1276884232,-1028454753,1509866856
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2964844,24657376,5258659,13238053,916530797,1100188036,-403289466,-2086269945
+bonfire,bonfire,fireplaceBView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3390063,24555410,6147939,15461132,-1585531951,1205134732,-2135430210,-365763999
+bonfire,bonfire,banditFireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/mountainPathMiddle/risen/interactives/interactives.unity,36135,30822502,7112294,14373668,1603721388,1120598539,785733015,1768668727
+bonfire,bonfire,fireplaceBView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/mountainPathMiddle/risen/interactives/interactives.unity,36870,28935374,7206535,15162829,-2094161657,1315317888,-903112778,1649926460
+bonfire,bonfire,banditFireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/mountainPathTop/risen/interactives/interactives.unity,12574,30448768,8620081,17652786,-1461315140,1261980747,2060689046,-2082558413
+bonfire,bonfire,fireplaceBView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/mountainPathTop/risen/interactives/interactives.unity,12982,29860286,7894725,16814468,-1630109014,1211124039,-1062545506,616767352
+bonfire,bonfire,banditFireplaceView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/prisonCells/risen/interactives/interactives.unity,24466,35308072,6390099,22309182,860726397,1335098532,671910028,-1619934555
+bonfire,bonfire,bonfireView (4),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/wolfDen/harverster/interactives/interactives.unity,7628,90851248,1100218,-71489944,-1584325867,1255687762,-1286124389,-1330663655
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,129967,7304762,4701553,10733092,-1817191714,1254262692,-1067123569,685503775
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,130312,5140972,2247295,10340447,138870881,1217723168,1065730232,-443164298
+bonfire,bonfire,fireplaceBView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,243871,5415622,2536243,7061569,1351312443,1128548473,1220589440,1406706448
+bonfire,bonfire,fireplaceBView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,244218,6756554,2168914,10032578,-1674487313,1314827144,107194274,-1826463792
+bonfire,bonfire,fireplaceBView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/interactives/interactives.unity,94837,86887432,2055929,-96589448,-1463892236,1108034075,1918842761,-1804510166
+bonfire,bonfire,fireplaceView (2),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artSettlementVista/artSettlementVista.unity,102992,23065396,3245342,15540224,999551446,1150888608,155214512,-1121264548
+bonfire,bonfire,fireplaceView (2),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/castle/castle.unity,263007,16954596,5849874,17400474,1354405686,1160064658,-949910081,-2061294268
+bonfire,bonfire,fireplaceView (3),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/castle/castle.unity,263336,17441290,5795479,20393370,-239642200,1188320112,1615679384,1444276913
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,158863,12061245,2902393,10698097,2117439726,1289339630,-1262547833,-664681534
+bonfire,bonfire,fireplaceView (1),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,159208,20900086,2680750,7605453,-314532810,1265962025,-1935808383,-1585281521
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,159537,17461412,4851499,14706278,-994297083,1295302955,39136671,-1900135677
+bonfire,bonfire,fireplaceView (1),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/nearMountainPass/afterBreach/interactives/interactives.unity,8185,20540498,5268439,14752534,1901474962,1138907399,-1430711400,1462549895
+bonfire,bonfire,fireChimney,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentBeggarsAlleyInteriorA/art/art.unity,22444,117295688,1371310,19578090,-1632935158,1305606211,-1880610425,281042310
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentBeggarsAlleyInteriorA/mainBucket/playerHousingG/interactives/interactives.unity,6952,117274048,1367212,19588514,-1568485772,1214645370,-1317219910,712800529
+bonfire,bonfire,fireChimney,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentPlayerHousingInteriorA/art/art.unity,24359,116794592,1968504,14620033,-226139870,1265003668,302963886,354212560
+bonfire,bonfire,fireChimney,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentPlayerHousingInteriorD/art/art.unity,29578,131922640,1837695,14482390,-1014687786,1290438206,-435599205,1030722710
+bonfire,bonfire,fireChimney,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentPlayerHousingInteriorF/art/art.unity,18285,142085392,2644967,16673800,-1144313412,1271723305,-1833227114,686139974
+bonfire,bonfire,fireChimney,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentPlayerHousingInteriorG/art/art.unity,24199,112554816,1371310,18994164,-17769229,1322633068,-1303689033,-603005022
+bonfire,bonfire,fireChimney,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentTavern/art/art.unity,13044,123672520,922004,21378302,-489267301,1122469458,1226310077,308250516
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1299525,-338821,2584412,-78308968,-1796310626,1285952401,-1761086532,-437838557
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1299858,-5839913,2606039,-82893208,835588702,1147027692,867383990,1966908809
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1300203,2076835,2399273,-76283904,1320861325,1197493782,1351471257,-1614659342
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1300536,-4784128,2332557,-73014312,646303241,1187730400,-364220531,-179665419
+bonfire,bonfire,fireplaceView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,473606,-262321680,0,-655757568,1843258215,1200233257,910233771,556538107
 digging,tier1,tier1DigSpotCoastSandAView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,302399,2050195,804034,2997035,191073348,1177949490,799683506,-790500595
 digging,tier1,tier1DigSpotCoastSandAView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,302724,-4664852,839314,366477,767909376,1158123247,588509842,776127826
 digging,tier1,tier1DigSpotCoastSandAView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,303049,-826408,841482,-346030,-2070847170,1103671498,-1338675558,-1348463306
@@ -196,40 +235,163 @@ fishing,trout,troutFishingSpotPickupView (2),ExportedProject/Assets/worlds/isola
 fishing,trout,troutFishingSpotPickupView (10),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,993715,27997634,5055709,27212514,-1940061666,1255538543,151846290,-509636250
 food,blueberry,blueberryPickupView (2),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,147876,17212756,2845020,-2989976,-1366775697,1232803197,-14941549,-1319686797
 food,blueberry,blueberryPickupView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,148948,17468628,2849422,-3386752,-454693078,1304887477,-814066796,-2032091546
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1841534,17485876,2328810,-1150653,-250508751,1164348890,-313061460,-1898627491
 food,blueberry,blueberryPickupView (6),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1844214,15679862,3544585,-11602480,-1497538668,1306120047,-1887446623,-210414751
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1844750,6473581,3969974,-3278829,1529591111,1277693114,-2060948836,-812920666
 food,blueberry,blueberryPickupView (7),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1845286,14000829,3516666,-12467555,-890669754,1302632659,1946128057,-590997149
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1845554,4046718,3749118,-3485398,-1887759215,1224347983,2081600145,763856598
 food,blueberry,blueberryPickupView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1846090,15298442,3495039,-12924997,-1742013018,1201065798,-521355593,-856768773
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1846626,12827380,2200368,-537158,-924639516,1244588833,1412372096,-684741843
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1847162,5131601,3705208,-3179607,-161526541,1161569985,1806424730,1023843904
 food,blueberry,blueberryPickupView (2),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1847430,15233415,3559421,-12452883,-1339711870,1151364283,-1385738835,-814252894
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1847698,13646253,1854566,-1778409,-569900465,1184097637,-1825443944,1802618483
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1848502,5211948,3705012,-3255629,1348158376,1204424897,1164871083,-613147968
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1849306,15055146,2214654,-1841914,-628630386,1085374869,1551079310,-1325296255
 food,blueberry,blueberryPickupView (3),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1850646,15126742,3531232,-11343260,-1241546872,1185237550,-1209344088,-218969564
 food,blueberry,blueberryPickupView (5),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1852522,15205390,3560814,-11873565,-2111587407,1246335091,-1339842404,-1827624354
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1852790,15567579,2268522,1722060,1325646124,1281476396,100734347,-1896675138
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1853326,15775648,1973810,-2252824,1663098540,1236025232,-1684985720,-1735981028
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1853862,19556816,2446062,-1672831,1848170687,1337463447,-1384284794,-1187883071
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1854398,5220599,3709337,-3129997,-621736080,1137136238,-782352464,-1733939481
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1855202,18664740,2731005,-1008506,498987216,1207922521,-100716870,30905409
 food,blueberry,blueberryPickupView (4),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1855738,14510044,3540456,-11261037,-1689860126,1079566067,-530665819,1620095515
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1856810,6720587,4012093,-4941216,2138229390,1218398957,-139458910,2037077774
+food,blueberry,blueberryView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,72929,16752382,4131448,36760676,-1648170216,1295859264,-1598128711,-878039341
+food,blueberry,blueberryView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,73197,16680475,4118385,36557692,-927125503,1272081374,-1413849161,-1376241027
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1179315,27738630,5953077,28822016,1297453521,1164529267,-1867920466,-1510257316
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1179851,29464986,5084023,11764367,1431861916,1256456988,2092536484,872403506
 food,firebrandberry,firebrandberryPickupView (5),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1180119,25656770,5103062,12836664,664163493,1329119395,-2023657028,96018114
 food,firebrandberry,firebrandberryPickupView (6),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1180655,26396610,6311227,15237996,-1196827944,1332375466,1584802945,-744772712
 food,firebrandberry,firebrandberryPickupView (1),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1180923,29321676,7202389,15325271,-1323161095,1195957191,-318636655,576330752
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1181191,27861976,7792951,28999614,1754771928,1074511256,1140653696,381707738
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1182531,29780214,5082856,11847598,-728186164,1306589065,2024395413,-965051199
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1182799,29617030,5082856,11640504,2089143618,1165583577,-227237730,-2126943244
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1183335,26778232,7668486,23816876,-1022431598,1236419171,1797280419,1916544632
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1183871,29056398,7199132,20096924,1327618156,1110963631,-1823267687,1960604881
 food,firebrandberry,firebrandberryPickupView (3),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1184139,30659978,8989460,16733956,1289803907,1249812659,289375626,-797513118
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1184943,29828706,5063246,11566455,-2133332249,1154509817,974981780,-1703851998
 food,firebrandberry,firebrandberryPickupView (4),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1185211,27088060,5676617,17601322,-251357718,1160553987,681660599,2824216
 food,firebrandberry,firebrandberryPickupView (2),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1185479,30663640,8466296,14263963,-1315875485,1232924905,-1986054761,704050280
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1185747,29417800,5084025,11467489,-1295267855,1085548242,756958136,72532207
 food,firebrandberry,firebrandberryPickupView (8),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1186015,29045590,6516770,13506952,-1297645661,1256218406,-338900555,-950118064
 food,firebrandberry,firebrandberryPickupView (7),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1186552,28299148,7725778,15980086,-896522324,1285091399,687037825,1247733704
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1186820,26232434,5925743,19104364,1795254366,1104489834,-293791589,246537032
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1187088,29709594,7199133,20356364,491858791,1245317617,1268471198,-103284277
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1187356,29362668,7778795,15962331,-130789742,1103608885,1250276511,1864350134
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1187892,29163520,8203796,17679646,2117776525,1096055628,647186877,1732042282
+food,firebrandberry,firebrandberryView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,73465,16860920,4151728,36752192,2030009006,1151292769,-1325753952,-473736711
+food,firebrandberry,firebrandberryView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,73733,16755209,4134841,36629760,-363381834,1172305884,1843743914,502160959
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,232494,1467828,811196,1890088,946856146,1335200256,-393670981,994427782
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,232762,-3803679,781134,-81530,-2047796784,1195093028,-1818303574,130280026
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,233030,539512,851836,-298254,5774244,1114989240,-1210896247,-399640573
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,233298,-102876,897587,-183719,-140146251,1130210277,-272908651,253263756
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,233566,-6092292,755040,2452029,1409540322,1139953870,1123413929,1382333891
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,233834,-5056621,756722,629488,2145895502,1078179909,426294941,-2013589267
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/loot/loot.unity,285146,-6088294,1928735,2957639,868204233,1113206580,-6218355,-164557150
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/loot/loot.unity,285414,-7685202,773823,2995905,-1886362136,1181036392,809745579,1872282702
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,97499,17655268,2522087,-5337153,1911623672,1081184071,-1794683499,-1546946313
 food,horseshoe_crab,horseshoeCrabPickupView (3),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,97767,18618696,2478861,-5113140,1383265483,1299941737,1239404418,642605344
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,98035,17934738,2510946,-5256226,1385279008,1115719384,-1144689279,1440193244
 food,horseshoe_crab,horseshoeCrabPickupView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,98303,18021756,2474723,-4947303,-1057384291,1139383643,496210851,-1681249397
 food,horseshoe_crab,horseshoeCrabPickupView (2),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,98571,18312860,2478362,-5278452,912338154,1095851129,-1038865530,-1736666487
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1455348,15934142,772815,1367545,1016620805,1096872543,-282108227,-2041242024
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1455616,14705779,3397650,-9389637,-413948154,1264090586,-1852220007,573438485
 food,horseshoe_crab,horseshoeCrabPickupView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1455884,19627032,775502,1743984,902367662,1083328525,1621655688,-1304395231
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1456152,14591205,3436331,-9870775,-844101662,1155052033,1035641017,1407253215
 food,horseshoe_crab,horseshoeCrabPickupView (2),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1456420,15276600,3563209,-12321403,-16825908,1104385246,-215295347,-1261145890
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1456688,14609918,3401138,-9488820,-1702545644,1278870407,1348231060,2059796300
+food,horseshoe_crab,horseshoeCrabView (2),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1456956,11216417,3606837,-4631890,2089736966,1096879801,1352987781,-1672727739
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1457224,15911991,778713,1231164,-1266580905,1081057278,442844313,-1720628586
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1457492,7932342,3644914,-2540505,-338226788,1124039635,-1221870951,988366829
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1457760,9449960,3566271,-2280917,-1757170666,1140130525,-356727401,-217180601
 food,horseshoe_crab,horseshoeCrabPickupView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1458028,14342859,3431790,-12899313,1445023073,1144216657,-2073976700,-1375021810
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1458296,13385378,4095033,-8500275,-1311483868,1214487098,-292371834,1963081111
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1458564,15337043,783169,376510,-1598962438,1280627878,-1019983463,236831663
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1458832,7910912,3541629,-1998588,-1979596368,1143302690,-1309697859,199936234
 food,horseshoe_crab,horseshoeCrabPickupView (2),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1459100,19961000,767834,2390103,-1936775541,1230326166,-688789859,-1718982189
+food,horseshoe_crab,horseshoeCrabView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1459368,11230704,3599694,-4821945,1003260441,1203796366,32061339,-2061592026
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1459636,12764559,756824,992024,1982489020,1339817526,-149669757,-1562633434
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1459904,15241269,735961,-1331803,875924868,1246490514,-1064439165,-800628786
+food,horseshoe_crab,horseshoeCrabView (3),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1460172,11491928,3538407,-5645366,457168733,1133205381,1900171700,1963658963
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1460440,13126118,4030848,-8543398,-1220163157,1139275120,2034632383,639141547
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1460708,15147972,792213,-792783,-954906830,1155964115,393388166,-1926275160
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1460976,12680673,768424,1124144,-221966955,1121511298,-1493676386,529333447
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveB/loot/loot.unity,163118,99642248,642252,-59260272,-1611778963,1103595041,1476574096,605200253
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveB/loot/loot.unity,163386,100251072,389939,-58549208,1377475650,1114381161,-1273325388,-1090207671
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveB/loot/loot.unity,163654,100284496,402391,-58741884,-2083157690,1271166753,-2033487695,1392480928
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveB/loot/loot.unity,163922,100426056,389939,-58529548,1317919472,1202689154,1620592264,269777414
 food,horseshoe_crab,horseshoeCrabPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,783814,19381536,4068663,26333680,293959227,1287484741,107131807,54877416
 food,horseshoe_crab,horseshoeCrabPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,784082,9383500,2225237,29280552,2060233008,1114942768,-176090222,-1786986898
 food,horseshoe_crab,horseshoeCrabPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,784350,8906362,2228460,28993652,-330027451,1133775958,912619961,641171796
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,784618,18536436,2059433,20159614,2062310055,1198075647,593233325,-1912253035
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,784886,13567532,3622383,27181092,151775155,1111214617,-151243846,-1198680772
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,785154,18052678,2838691,22888054,-2017658010,1298375634,-1576572262,1986242662
 food,horseshoe_crab,horseshoeCrabPickupView (1),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,785422,10012135,3022134,28036936,1828295434,1133803324,-922819193,-1154494975
 food,horseshoe_crab,horseshoeCrabPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,785690,10810163,2694185,21303132,-2061171832,1322931440,641583747,52050497
 food,horseshoe_crab,horseshoeCrabPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,785958,12242774,2717328,20262420,61937600,1117864888,2017302462,2034612032
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,786226,15236515,2437448,21601940,-1712852955,1199133746,785530549,812563337
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,786494,14978253,2420244,21503016,460803346,1180453302,1786129589,1378865849
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,786762,14629095,2399969,20010508,1156899526,1147095822,-1335119979,1435376001
 food,horseshoe_crab,horseshoeCrabPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,787030,9521597,3232911,30772266,-1352099115,1155250352,-1487596672,-1264256411
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,968912,34071884,8012976,13204496,-385688174,1320328062,255160967,1910726220
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,969180,36173260,7874677,15341769,-367351554,1207477594,1557182624,-1935208862
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,969448,33739344,8030610,14860973,237568495,1075725302,1572897954,-1087244674
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,969716,26115112,5027397,15313273,846326233,1147639384,-121714510,-837263940
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,969984,35978472,7880212,14603888,304984228,1258703255,-306834814,483836524
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,970252,26433422,5017305,15795618,-166790861,1185639827,-1190364507,-489363235
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,970520,27516104,5020886,13113670,1699657601,1186109698,1949782201,-1461156120
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,970788,25968350,5073431,12800899,1513682705,1289540497,-1326100327,1616535474
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,971056,26207650,5035917,15766389,-1220454604,1336819294,-1394873453,858244400
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,971324,26279740,5137105,12731417,582771192,1198731210,-260442477,-1353354686
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/loot/loot.unity,511051,8333927,2352795,3083021,-2043733271,1214612681,-1708216900,1241496142
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/loot/loot.unity,511319,7401636,2337669,4189716,160117107,1319736069,-1893238650,-183499204
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/loot/loot.unity,511587,4633575,1019478,3311275,-374129747,1074704612,1960007338,-239861836
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/loot/loot.unity,511855,6992756,2278097,4861919,-89223070,1108673701,-1434684007,1208622335
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,217930,-2338237,1175121,-83195328,1986649417,1191564744,-1713063758,-219744527
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,218198,-1323816,1178773,-82420784,-1556211887,1302708857,1577922948,832837689
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,218466,-195297,1174908,-83043288,-691560359,1314350964,-1789270100,-2035514816
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,218734,1091419,1512243,-77344480,1176928812,1097836902,-1487282044,-1905279561
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,219002,-5185470,2310602,-77772944,-1759750362,1129314630,-43347814,1259152798
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,219270,361133,1173343,-82057600,-1189244040,1197605933,-1580176741,-879124698
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,219538,514654,1495466,-77175392,1871795846,1130340700,1221960845,-763536149
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,219806,264110,1174908,-82709712,-1335217418,1251568308,1069548718,-896009859
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,220074,-1046609,1221132,-83424704,476593765,1270137156,381567891,-1419615776
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,220342,-5037866,2073346,-81781984,-1114211229,1101915143,875094682,2005832969
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,220610,-5063793,2073346,-83328368,-111157683,1323378716,-1293979980,-1083569229
+food,horseshoe_crab,horseshoeCrabView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,220878,-4982046,2073346,-82287656,843339767,1100262557,1332190379,-856480532
 food,horseshoe_crab,horseshoeCrabPickupView (4),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,546635,16428499,3322908,31488186,-2099653236,1255441518,-741844600,555928872
 food,horseshoe_crab,horseshoeCrabPickupView (5),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,546903,13914528,3208467,33079656,-1490438784,1314692560,-695392375,1344586291
 food,horseshoe_crab,horseshoeCrabPickupView (3),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,547171,16352008,3300589,31592594,-437198424,1152325152,-1809375062,898142082
 food,horseshoe_crab,horseshoeCrabPickupView (6),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,547439,14009605,3206499,32960650,36669549,1219372640,-2088968528,103662097
 food,horseshoe_crab,horseshoeCrabPickupView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,547707,17860616,3210551,31657052,754580215,1078191428,-405072218,604045313
+food,potato,potatoesAView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,147608,20226180,2772174,-4502067,710475298,1295571078,557577359,-1499485839
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,148144,18990036,2458205,-2930467,-832014739,1131279762,-1233198172,448878422
+food,potato,potatoesAView (2),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,149216,20167228,2775214,-4699391,1514397694,1276180321,2042853513,-1875788389
+food,potato,potatoesAView (4),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,149484,18882264,2452583,-2923351,1409989503,1206717172,1617541272,1645522049
+food,potato,potatoesAView (3),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,149752,20318196,2780409,-4600009,890928477,1217703969,-1090641507,-1123303924
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1842070,10261077,3930189,-1475378,-1016620514,1097793243,-689121861,-1985485052
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1842874,13611406,3485198,-9739208,2049650499,1230639832,-1642827598,199064205
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1843410,15333411,1879559,-2383776,-1029679936,1188363698,-1045472594,1440413543
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1843946,4725708,3706979,-3654821,1803391393,1089364529,-593768018,-1512769700
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1844482,6725540,4026256,-3417342,1357527836,1098641851,-1418852452,-1756444354
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1845018,4993292,3707809,-3077275,-1734033245,1250951711,1659152014,805590068
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1845822,7578163,3527339,-550797,-1989768762,1286254891,-242442076,577480014
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1846358,8267602,4134553,-3726016,354936091,1095050622,1983709860,-1010629121
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1846894,13843856,3470426,-9585131,1687709154,1075057537,-1592208996,895760779
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1848234,5472031,3707540,-3446833,-885559190,1121299992,1277859511,-1016954767
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1848770,3389099,3761318,-3551683,-1919419254,1143280606,-1708432762,1671319404
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1849038,9380600,3379531,2303692,-1871531345,1296910798,-1424511104,2043057602
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1849574,11732688,3470720,2123204,1862581597,1250591933,-1910615385,-1117143423
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1849842,7388335,3294577,1271941,-430128102,1228903101,-37598060,1882062108
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1850378,5003319,3845244,-1882553,1581721809,1314632841,1901520261,-976841332
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1850914,7187634,3488928,-739475,-24860696,1110117343,-2036585343,2004296210
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1851986,5158573,3805672,-982023,-506926561,1305246969,-12678520,-1031452572
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1853058,12011346,3948350,-5883985,1127337285,1302307591,-446968925,-1619518357
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1853594,6369125,3289831,-575312,-983180247,1300044769,-813850716,-372711763
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1854934,7869799,3970095,681280,-1650550371,1244262821,1777415332,110957584
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1856274,9926187,3398716,2188281,-859670896,1081071785,840485791,-752696755
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1856542,5794162,3773014,-2219013,-1990229447,1147688297,-1915931264,961165648
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1857614,17628704,2350079,-1108508,-2105210666,1256465288,266197172,-830894622
 food,potato,potatoesAPickupView  (5),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,924781,11543118,5776408,27932296,266903893,1283051371,-465597563,-1413071994
 food,potato,potatoesAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,925317,11632674,4080279,22428870,-503993156,1330748306,-859438444,346474321
 food,potato,potatoesAPickupView  (2),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,926925,11364205,5858853,28962718,365337617,1338756064,-410935128,-1497375845
@@ -245,6 +407,19 @@ food,potato,potatoesAPickupView  (1),ExportedProject/Assets/worlds/isolaSacra/ma
 food,potato,potatoesAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,932821,13528003,3967731,28807162,-80259588,1320092134,-1660193601,-808098420
 food,potato,potatoesAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,933893,14391276,2920254,21854894,-268583339,1123336447,-782915911,-191018690
 food,potato,potatoesAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,934161,16718378,4581556,26300954,-1987681724,1090250438,-1574628187,-1838345943
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1179047,27555856,6287917,14769652,1496142777,1121501403,-1974371933,-387430226
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1179583,29707312,5074058,11563923,-1201208744,1328453140,1915679405,1319119726
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1180387,30689014,7759790,30198450,227612282,1102310177,590260655,-479545140
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1181459,29491720,6704816,14155726,-1642936201,1335696945,2108234881,1905956982
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1181727,29081824,7490934,17240118,1273366581,1331208139,135768748,1138139061
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1181995,25122342,6172652,14865243,773924906,1292585345,487130769,-541223263
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1182263,29519978,6739780,13876417,195920006,1082929286,2142624926,2030117762
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1183067,25673130,5095272,13090933,934934663,1300722915,338412445,719400388
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1183603,29508346,5091091,11563857,-1398631104,1309061575,1546905736,104093994
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1184407,29730734,5071689,11730858,-220087984,1225289506,-507565644,-1200205774
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1184675,29171392,6752183,13837932,-639058488,1122337932,-1343132787,1228058192
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1186283,29992544,7900233,29636024,1656225156,1148831968,453579676,-967833654
+food,potato,potatoesAView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,1187624,29007206,5125658,11224100,-2114341947,1323297505,-495736692,1178769000
 food,potato,potatoesAPickupView (2),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,677754,18245486,3497909,34134552,1478707883,1079772440,-223340123,453993413
 food,potato,potatoesAPickupView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,678022,18171822,3495832,34342176,-1437590247,1327723833,219970456,1977797157
 food,potato,potatoesAPickupView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,679094,18114148,3493492,34038088,12403776,1206719077,-1901848899,1071029852
@@ -253,18 +428,51 @@ food,potato,potatoesAPickupView (3),ExportedProject/Assets/worlds/isolaSacra/wil
 food,tomato,tomatoAPickupView (4),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,147340,18363348,2519718,-4217818,-835674807,1217326986,241167258,-2066823800
 food,tomato,tomatoAPickupView (5),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,148412,17425994,2853579,-3018527,1716061484,1314429648,-2032946789,621685352
 food,tomato,tomatoAPickupView (6),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaEast/default/interactives/interactives.unity,148680,20198444,2768284,-4814742,218962618,1127974614,77732777,-516497245
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1269300,4834132,3700818,-3427729,-904818909,1252896613,-1341345650,-940299260
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1288184,4623496,3685702,-3443188,1220448820,1317507382,-359725643,-416348682
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1297040,4717852,3704684,-3516813,-1806274465,1109931572,1054354306,786761544
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1618753,4704829,3703439,-3400532,1049904318,1247395856,868733614,-1360619207
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1828096,4783469,3700186,-3345212,405672298,1255578390,-1217376895,1461623250
 food,tomato,tomatoAPickupView (3),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1841802,14338340,3531302,-10913697,-426654850,1260862688,-212765550,-101484582
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1842338,12330179,4227781,385057,183894941,1164688574,922001572,394007594
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1842606,11598797,3985267,-5283151,380470024,1279486460,-1294131545,1204269293
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1843142,13561581,1817105,-2501940,445047331,1307777919,229244557,265615153
 food,tomato,tomatoAPickupView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1843678,16906696,3844346,-11987831,660536940,1321435206,-786924644,-2116438674
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1847966,11591559,4118008,947676,435747800,1097116453,-573349994,1170043812
 food,tomato,tomatoAPickupView (4),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1850110,15664789,3521909,-10935323,407480944,1242759677,1129369253,625379025
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1851182,13269446,3954461,-6278614,-373931301,1152738601,-1774363742,-1838898967
 food,tomato,tomatoAPickupView (2),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1851450,15585490,3544193,-12637949,-812879840,1205381240,-188754515,1407482526
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1851718,11914351,3952163,-4385175,-1843952775,1194768066,1221111741,1064879255
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1852254,10701609,3997356,-4555374,251747978,1112379262,-696691056,-628401612
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1854130,8665101,4556612,-10660373,2091063498,1340108747,2028730767,-2032893112
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1854666,10262321,4325495,-6727565,-1138690304,1318935784,-645680218,943489362
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1855470,11531786,4441559,-402920,1252529664,1221283954,-393826664,342356967
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1856006,18919280,2727990,-1095079,2089757762,1168172184,682082952,-1681970296
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1857078,5043231,4026716,-5788434,118818292,1209062425,1024647601,-929509682
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1857346,7034870,3947418,-7523827,119522242,1341865187,-959725673,613754377
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1857882,13728544,3500425,1160810,-893635628,1277941133,1854140297,401049096
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,923441,16005426,4581666,26179246,2026449093,1173780766,-1032608871,-1874986047
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,923709,17843436,3805047,24893112,1721778521,1141777672,1819306379,461828969
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,923977,14608564,4857135,27473870,644421326,1127925783,1036750502,-1655549787
 food,tomato,tomatoAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,924513,11637949,3594512,20218378,1551965245,1268766167,-991349853,566937716
 food,tomato,tomatoAPickupView (4),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,925585,13775072,6137512,28235986,1425082484,1339170323,409960890,650948202
 food,tomato,tomatoAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,925853,11462468,3605864,20716626,-325075429,1103668888,1201925287,-1152944611
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,926121,12531794,4008713,23471064,607111868,1214449427,1068188551,-108206524
 food,tomato,tomatoAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,926657,12731899,4788577,26158814,-1253457794,1284785368,1512006303,-1585703362
 food,tomato,tomatoAPickupView (2),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,927193,8976663,5705566,27604878,2086202405,1302073227,806538662,199072088
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,927729,19078186,3521592,24247050,-1058888712,1128643765,-1427179614,-783930844
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,927997,15728247,3878167,25849298,199637282,1190265436,678153099,-1429475137
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,928265,15100674,2461137,22332506,2134818392,1108809214,445391242,1976244181
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,928533,15858401,3872522,25698632,-911177872,1101374584,-1279087449,1601994350
 food,tomato,tomatoAPickupView (1),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,929337,12127254,5429319,29951064,-958211887,1104031072,2253491,-1423318965
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,929605,16383345,2885419,22231122,-631173513,1144921635,-1956431951,1910828717
 food,tomato,tomatoAPickupView (3),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,930409,12170006,5773675,26199098,-181533666,1078873262,262270098,211322315
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,930677,17176702,4183491,24662494,-1313907284,1091916096,890588070,1015788440
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,930945,16836870,4592622,25882104,770475438,1183345437,249433999,1246298748
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,931481,14103696,4091545,26025930,67618357,1323399430,270803885,893876431
 food,tomato,tomatoAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,931749,12849097,4821567,25913082,-622835765,1274139257,-2092950608,-1922684331
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,933089,17847092,3244228,23319478,-1439706075,1333708372,-406231653,1533598500
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,933357,16506946,5376180,27939962,1337648730,1320854545,-2057824840,1694843057
 food,tomato,tomatoAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,934429,14188028,3354139,22463556,-596565369,1154319938,1534458775,1621061144
 food,tomato,tomatoAPickupView (8),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,677486,17485398,3479765,34509028,-150016406,1197091612,-21065027,-1789556862
 food,tomato,tomatoAPickupView (7),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,678290,17411474,3473297,34602548,1279664774,1320907502,139282075,1932431368
@@ -273,6 +481,7 @@ food,tomato,tomatoAPickupView (2),ExportedProject/Assets/worlds/isolaSacra/wills
 food,tomato,tomatoAPickupView (3),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,679630,18816040,3506429,34429336,1378099245,1265101125,1563702939,89655335
 food,tomato,tomatoAPickupView (10),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,679898,18921986,3511524,34520760,-1034036054,1073770430,-1842076255,835122452
 food,tomato,tomatoAPickupView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,680166,18632252,3505016,34684992,-691925469,1130473081,2013930394,-1723698765
+food,tomato,tomatoAView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,680434,18766666,3512341,34754068,-1281709093,1235390162,-1043479383,-966782908
 food,tomato,tomatoAPickupView (11),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,680970,13776257,4396810,30502158,-1615894046,1266519595,275858619,-1491539179
 food,tomato,tomatoAPickupView (4),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,681774,18834168,3505544,34636104,-1423439547,1308726903,1972429187,2119547024
 food,tomato,tomatoAPickupView (6),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,682310,17601658,3474063,34920200,1779767695,1161081686,-220292175,1138161901
@@ -471,6 +680,9 @@ herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/mountain
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,98731,90725672,2092456,-72829200,-1192006497,1109504470,-2144346464,1015379035
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,98999,90350696,1853685,-73833312,333292304,1217366657,173927079,2080392520
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,99267,89696632,1891982,-72335824,476025987,1128956957,658722973,-858451389
+herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artChurch/artChurch.unity,151199,11861645,3484537,16261153,-769119325,1250148135,-191471185,-542920485
+herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artFarmArea/artFarmArea.unity,965015,23181746,3140234,11963362,-687198992,1238603280,-1389125740,-427893109
+herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artFarmArea/artFarmArea.unity,965283,21949698,2967051,12101538,6774337,1157837255,1507577759,1170902839
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,246097,-6052076,2539718,-79001784,679920575,1293579194,952116881,1806206797
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,246365,960676,2585067,-80490816,-339035237,1178541467,-787520124,-1710214662
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,246633,-4224804,2030730,-77605168,1596515606,1085744983,1664765083,-2008377526
@@ -496,6 +708,9 @@ herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sewerDun
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,251993,-4021034,2212903,-82773248,629735586,1154526805,-973993836,-1963295031
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,252261,867827,2574254,-80210688,1326520589,1319807416,635451541,1039534646
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,252529,1135083,1176371,-74988256,-1848985834,1149828246,-1751967861,-1479533650
+herb,dracaena,dracaenaHerbPickupView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,65571,17876960,4177857,36106620,469806753,1156613666,1632021143,819329931
+herb,dracaena,dracaenaHerbPickupView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,65839,17941806,4177857,36124264,2140716588,1090637580,-796963455,1583978899
+herb,dracaena,dracaenaHerbPickupView (2),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,66911,17875906,4192340,36163848,1639762666,1185863860,-1912481894,-1331415126
 herb,dracaena,dracaenaHerbPickupView (10),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,615312,17293388,4144496,36490584,1456674745,1149471239,-822985290,-1976338059
 herb,dracaena,dracaenaHerbPickupView (13),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,615580,11899141,4140810,33003802,-755054079,1130516684,-1107384702,-1580300322
 herb,dracaena,dracaenaHerbView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,616116,15397683,3304980,34309408,-2120489857,1300597504,-561938034,-1836645824
@@ -538,6 +753,8 @@ herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/hills/hill
 herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1657297,13034367,4101194,-8926521,-1395001088,1249095125,1400717218,-716059671
 herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1658637,12609601,3936354,-6533545,-1397529159,1165688066,543511991,-389691192
 herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1659173,14265895,3462141,-8697724,2070098429,1329002652,391546533,-854527895
+herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/artIrmgardMeadow/artIrmgardMeadow.unity,108003,12207878,4239623,28833804,-1009702829,1256569726,-1906008404,-677356816
+herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/artIrmgardMeadow/artIrmgardMeadow.unity,108271,12298514,4283361,28595908,-621578493,1165779548,2019006644,-663959426
 herb,lithops,lithopsHerbPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,852123,10959316,4143309,22127392,1235441110,1303069834,315469717,-1342692486
 herb,lithops,lithopsHerbPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,852391,11802243,4183223,26759248,437682129,1165224523,415219128,-1253973722
 herb,lithops,lithopsHerbPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,852659,18883796,3364022,20694912,2097554670,1085132546,-1435354717,386572679
@@ -561,6 +778,10 @@ herb,lithops,lithopsHerbPickupView,ExportedProject/Assets/worlds/isolaSacra/mari
 herb,lithops,lithopsHerbPickupView  (3),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/loot/loot.unity,863647,12018628,6058737,28383486,-434557019,1224896500,1462425780,-1762239090
 herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsTempleA/loot/loot.unity,43451,112967808,4029202,-60510304,-1332564502,1251614532,364468380,1231837974
 herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsTempleA/loot/loot.unity,43719,111390224,4055690,-60449748,-308353609,1163890979,296182940,-1122294023
+herb,lithops,lithopsHerbView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,65303,16831470,4159345,36834188,-1797071554,1287268002,1726226078,-1675482198
+herb,lithops,lithopsHerbPickupView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,66107,17574162,4187392,36285192,1672709868,1094945024,1891143809,655333312
+herb,lithops,lithopsHerbPickupView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,66375,17638932,4193094,36288336,-2124785272,1262782107,-122650694,1680904633
+herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/artIrmgard/artIrmgard.unity,66643,16806826,4146821,36691072,2021011752,1132895520,1711033736,1102166185
 herb,lithops,lithopsHerbPickupView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,615044,17120526,3693178,28422988,-1097189988,1186599472,-2108337233,-415705056
 herb,lithops,lithopsHerbPickupView (6),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,616384,17328270,4144496,36590836,309136650,1232863875,1374155436,76701550
 herb,lithops,lithopsHerbView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,617188,17874944,4038447,30748180,589691642,1284396532,297807283,-721191745
@@ -576,21 +797,27 @@ herb,mushroom,mushroomOrangeBPickupView (1),ExportedProject/Assets/worlds/isolaS
 herb,mushroom,mushroomOrangeAPickupView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/loot/loot.unity,1272704,12600928,1776175,2361733,-1319411612,1265270514,-2113000572,1501165380
 herb,mushroom,mushroomOrangeAPickupView (1),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,836784,26689670,8164795,21819710,-1783422784,1295927243,-144721228,-2090201504
 herb,mushroom,mushroomOrangeAPickupView (2),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/loot/loot.unity,838928,27119654,7909818,23320678,2065935375,1183122122,-269502554,1102375875
-herb,mushroom,mushroomPickupViewA,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,80423,91434584,1076539,-70686208,1211071799,1274602356,369559692,1937311089
-herb,mushroom,mushroomPickupViewA,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,80691,91655720,2090880,-70867888,-1706884046,1181522146,158370691,-33753511
-herb,mushroom,mushroomPickupViewA,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,80959,89189128,1670699,-73265232,-441803939,1335306514,1087939204,-22697961
-herb,mushroom,mushroomPickupViewA (1),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,81227,91252640,1586860,-72339168,-1571551008,1100131270,-795896950,-2114821558
-herb,mushroom,mushroomPickupViewA,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,81495,90350552,1820393,-71318768,-1319710968,1223004337,433399722,-1612790097
-herb,mushroom,mushroomPickupViewA,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,81763,91328144,1389410,-72899376,559322638,1278662946,1221485194,-1622069989
-herb,mushroom,mushroomPickupViewA,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassWolfDen/loot/loot.unity,82031,89886088,1117454,-72061600,1871520949,1309081080,894186130,-896078687
+herb,mushroom,ingredient1_mushroomA_pickupView (1),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/eastLoop/prisoner/interactives/interactives.unity,12542,5591652,2863968,5223993,269362736,1327284964,1960049074,912380143
+herb,mushroom,ingredient1_mushroomA_pickupView (2),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/eastLoop/prisoner/interactives/interactives.unity,12810,5719326,2907832,5638717,295716584,1093337936,-698928718,679668798
 herb,mushroom,mushroomOrangeCPickupView (1),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/eastLoop/prisoner/interactives/interactives.unity,15118,5630050,2889570,5554014,927682532,1293882596,-570329469,-669549550
+herb,mushroom,ingredient1_mushroomA_pickupView (3),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/lowerCentral/prisoner/interactives/interactives.unity,14361,6737298,2319743,4490117,-307353021,1308062697,-1769430343,-1235502079
+herb,mushroom,ingredient1_mushroomA_pickupView (4),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/lowerCentral/prisoner/interactives/interactives.unity,14629,8452734,2599052,5251728,-153614689,1198090754,1588310969,-242112602
 herb,mushroom,mushroomOrangeCPickupView (2),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/lowerCentral/prisoner/interactives/interactives.unity,16237,7725665,2413916,4767457,-231890163,1334117102,1989675174,-246776047
 herb,mushroom,mushroomOrangeCPickupView (3),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/lowerCentral/prisoner/interactives/interactives.unity,16505,8318609,2590822,5448814,-1878332992,1136324849,-388903533,-1207776853
 herb,mushroom,mushroomOrangeBPickupView (1),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/lowerCentral/prisoner/interactives/interactives.unity,17651,7085650,2351431,4443923,-1244583447,1172917878,-1340428149,1723619083
 herb,mushroom,mushroomOrangeBPickupView (2),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/lowerCentral/prisoner/interactives/interactives.unity,17919,8547140,2585854,4650500,-1065631957,1087953290,1555763075,-1322879765
+herb,mushroom,ingredient1_mushroomA_pickupView (5),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/upperCentral/prisoner/interactives/interactives.unity,11209,8168069,3766202,8866814,-424137145,1293495720,402446495,401307345
 herb,mushroom,mushroomOrangeCPickupView (4),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/upperCentral/prisoner/interactives/interactives.unity,13352,7788491,3730123,8777803,-889893983,1186895673,48369317,-867412369
 herb,mushroom,mushroomOrangeBPickupView (4),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/upperCentral/prisoner/interactives/interactives.unity,15550,5588375,3760304,9812190,-1828103183,1328559326,1121460670,1529760078
 herb,mushroom,mushroomOrangeBPickupView (3),ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/upperCentral/prisoner/interactives/interactives.unity,15818,7916382,3747586,9026598,-1123540774,1097471326,39569794,-294729121
+herb,mushroom,ingredient1MushroomAPickupView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,21359,85828304,2429681,-95904464,-2013688841,1218039644,742869141,-1628253346
+herb,mushroom,ingredient1MushroomAPickupView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,21627,87191064,2109669,-97848920,-1201342313,1204143218,802386870,-2145986290
+herb,mushroom,ingredient1MushroomAPickupView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,21895,89597808,1675755,-96490096,2130509767,1164116933,2086714005,-461984380
+herb,mushroom,ingredient1MushroomAPickupView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,22163,89369280,2086688,-96141048,1379042408,1240435007,-1754416745,-1239820814
+herb,mushroom,ingredient1MushroomAPickupView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,22431,89352504,2084822,-96061624,1517817630,1278922761,-771195771,1087787519
+herb,mushroom,ingredient1MushroomAPickupView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,22699,89645120,1676804,-96499664,-2061752558,1142159337,-806968649,1660170341
+herb,mushroom,ingredient1MushroomAPickupView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,22967,87942560,2064908,-95099160,764557810,1270793984,-205873789,-1884595422
+herb,mushroom,ingredient1MushroomAPickupView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,23235,87961240,2069037,-95146472,1735616369,1270103124,1342993042,1023598715
 herb,mushroom,mushroomOrangeAPickupView,ExportedProject/Assets/worlds/isolaSacra/shipPrologue/shipPrologueInteriorA/interactives/interactives.unity,641130,200753408,1637550,66348708,-920624076,1331276016,-862670152,-29483647
 herb,mushroom,mushroomOrangeBPickupView (3),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,632788,11699618,4412967,32368754,-835783908,1302663314,-2122212694,1775420636
 herb,mushroom,mushroomOrangeBPickupView (5),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,633056,16681927,3644804,30998462,2134234881,1122099042,-1946082891,211334159
@@ -598,6 +825,238 @@ herb,mushroom,mushroomOrangeBPickupView (8),ExportedProject/Assets/worlds/isolaS
 herb,mushroom,mushroomOrangeBPickupView (7),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,633592,14127399,4658712,30029972,1405575347,1105462139,-1262219856,1792004475
 herb,mushroom,mushroomOrangeBPickupView (2),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,633860,13496484,3882811,32823706,2091527536,1277971821,-1585856335,-1881830734
 herb,mushroom,mushroomOrangeBPickupView (4),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,634128,12144287,4376757,30859476,225371810,1247477509,-546491263,-471131873
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,272016,-4329767,1601356,1642726,-1014139950,1207957528,-1107823722,958182474
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,272016,-4329767,1601356,1642726,-1014139950,1207957528,-1107823722,958182474
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,272271,-4383803,823809,1534648,-17645355,1267653165,-1865335667,692344972
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,272271,-4383803,823809,1534648,-17645355,1267653165,-1865335667,692344972
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,272526,-4383803,823809,1534648,358243867,1294213162,-1014603626,-597054366
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,272526,-4383803,823809,1534648,358243867,1294213162,-1014603626,-597054366
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,272781,-4541383,1195070,1731790,1307141690,1212678287,461626793,1268233026
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,272781,-4541383,1195070,1731790,1307141690,1212678287,461626793,1268233026
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/coast/coastTowerCellar/interactive/interactive.unity,67731,125294344,1609171,-74368944,2125879758,1193539024,-1506979700,708639357
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastTowerCellar/interactive/interactive.unity,117366,126398624,1594097,-75759352,-171151379,1101190833,1320320190,1387251148
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastTowerCellar/interactive/interactive.unity,117366,126398624,1594097,-75759352,-171151379,1101190833,1320320190,1387251148
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastTowerCellar/interactive/interactive.unity,117621,122699776,2589327,-73892496,-417196581,1161722137,352883346,-1172343305
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/coast/coastTowerCellar/interactive/interactive.unity,117621,122699776,2589327,-73892496,-417196581,1161722137,352883346,-1172343305
+ladder,ladder,ladderWoodD_LadderView,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/artRightBuildings/artRightBuildings.unity,25205,1103058,1745064,4359128,1540921864,1089651002,-1432235633,1889048256
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,402148,4686192,914971,5774369,1334032015,1112443827,-162375234,-1910337462
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,402637,-6500148,1937315,3122127,-1478249541,1173552891,1372056744,460677991
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,402904,3984989,2718740,7601207,284216104,1120208841,80678303,1379498243
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,403819,-4309647,969932,4090757,1504196312,1251170250,-1333084763,636488410
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,495029,-4420691,1499272,4299153,-337380829,1254265183,867900585,177231147
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,495284,-7206626,2639861,6994649,-190564302,1285937617,-1653982555,-1737518068
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,495539,1105304,1710658,4370588,1699441276,1293410431,624222346,-593992859
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,495794,-2037212,2285311,6502933,1537383030,1137349162,-1964854351,1393447450
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,496049,4253405,1166471,5893178,931954406,1100131612,-1980294765,-993639054
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,496304,-4080559,2304316,4932231,1741616842,1186469516,-540061546,1516226234
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,841041,9614579,4701564,-5822127,720005266,1150827744,-1009084021,-154540433
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,841665,3127745,901447,-1381048,-1785983391,1194887969,-1432439901,-61530671
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,841926,11897314,4525332,-7931436,-1364496845,1199324184,1189677243,160125470
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1020108,14347654,5476507,-4096867,2029411052,1336740484,-1115088972,889031918
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1020363,8743984,3962094,-690560,1859410783,1184157195,-1506706245,-672419487
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1020618,14257724,3267302,-114696,-871538644,1313445314,20810156,-800631000
+ladder,ladder,ladder (2),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1020873,12900146,5189277,-7666212,-282132885,1195365306,600150160,394620137
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1021128,10499235,4547614,-11303002,-149355827,1155847816,-1178045543,1643452294
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1021383,8218793,5216895,-8855920,737507831,1206901431,-591074427,-21621470
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1021638,8918572,4726530,-7363043,837507789,1272452704,1177622921,-1406066365
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1021893,8714886,4041020,-7134384,595376367,1270647179,-54772289,1419879924
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1022148,12762193,3657635,3751273,698730318,1218678748,500015766,-461891243
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1022403,9451021,4050525,-10526595,-457793729,1327887307,1129109890,232782419
+ladder,ladder,ladder (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1022658,11477030,3911259,-7519608,-93400746,1144183217,116261530,1687821719
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1022913,14738904,5147648,-6375620,-564791111,1316212184,880019607,1733101333
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1023168,6675996,4043516,-4473382,2085846905,1250155231,-1281166926,-444588590
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1023423,8569855,4518909,-10550648,76854794,1283910995,1961727421,-1930319515
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1023678,10537246,3953006,-3422035,2015337655,1186363520,-962859135,1610416158
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1023933,8501254,4720460,-9130320,-893107564,1290599586,-1015456089,1896875693
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1024188,15627113,5212278,-4795285,-702313837,1120318541,472970146,-583605656
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1024443,11662499,4532541,-6659121,-1483118145,1242468238,1101790592,1181019395
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,1024698,6355878,4286890,-6272793,-730052112,1217994750,1627098552,-946115496
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveA/interactive/interactive.unity,87340,111660896,1347878,-80827512,943513624,1339631732,-172558658,-1234447878
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveA/interactive/interactive.unity,101433,111679608,1130485,-81354784,-1786944965,1263058704,602678714,1296161007
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveA/interactive/interactive.unity,101433,111679608,1130485,-81354784,-1786944965,1263058704,602678714,1296161007
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveA/interactive/interactive.unity,101688,112354264,1385300,-80256696,2018542717,1272006318,212455864,1328628196
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveA/interactive/interactive.unity,101688,112354264,1385300,-80256696,2018542717,1272006318,212455864,1328628196
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveB/mainBucket/beast/interactives/interactives.unity,1536,99632328,684948,-60184788,957112653,1107946489,-45832006,-872418777
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveB/mainBucket/boarskin/interactives/interactives.unity,1042,99632328,684948,-60184788,-233273784,1119270513,-79891322,-354935247
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveB/mainBucket/nith/interactives/interactives.unity,1186,99632328,684948,-60184788,-2014884760,1175713604,-1776829020,205099161
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveB/mainBucket/prisoner/interactives/interactives.unity,806,99632328,684948,-60184788,2097137928,1208225974,-254966390,-1987238233
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveC/interactive/interactive.unity,6506,132881448,1852496,-87071784,1289380923,1326374099,-691938918,-966615761
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/hills/hillsCaveC/interactive/interactive.unity,6506,132881448,1852496,-87071784,1289380923,1326374099,-691938918,-966615761
+ladder,ladder,kickdownLadderBossLoot,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,429992,17249074,5749615,25241846,-692378058,1083672769,-1708088926,-1537702905
+ladder,ladder,kickdownLadderBossLoot,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,429992,17249074,5749615,25241846,-692378058,1083672769,-1708088926,-1537702905
+ladder,ladder,kickdownLadderBossLoot,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,429992,17249074,5749615,25241846,-692378058,1083672769,-1708088926,-1537702905
+ladder,ladder,kickdownLadder (1),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,430955,12053381,5400166,30396908,348803342,1232538454,487569321,1995800906
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,431516,16174940,4582998,26559776,757621040,1302916017,73785477,-127764044
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,431972,12158239,3685744,28026472,-1383476525,1073751926,-851242619,819777516
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,433229,14513603,2418571,21881160,688190226,1193395970,-1633455713,492951528
+ladder,ladder,kickdownLadder (4),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,433490,12133335,3282108,26144278,237030818,1316015835,1062377872,-1018647186
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,433979,12801803,4129423,25725502,-473233400,1164433131,-663252309,-1441239590
+ladder,ladder,kickdownLadder (2),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,434240,11454382,5705902,26342196,659448963,1228116026,-1089099384,-798127090
+ladder,ladder,kickdownLadder (3),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,434501,19849542,3357109,22738568,464251708,1076096130,-338147692,1140948640
+ladder,ladder,kickdownLadder (14),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,434762,16176599,4578069,26556314,-1357392155,1279280988,-1364293200,807013531
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,435053,18336316,2596778,20960380,-27643188,1298045139,-867039043,-860875168
+ladder,ladder,kickdownLadder (8),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,435314,11936727,4051533,26102334,77457986,1333566300,399271574,-632186059
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,542588,17918852,2947678,21710766,-1034701711,1167216802,-1867526977,-2092903111
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,542843,13816300,3978690,23058842,-1826736723,1213433303,-1108345708,871981968
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,543098,14622393,5867897,26785874,-724028782,1107552803,-990062192,1945631690
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,543353,14896792,4733731,28505670,86525717,1334155390,-964597091,928572426
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,543608,17479106,3395420,21338522,-56995073,1317571929,60193173,412003792
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,543863,18168544,2001469,21932278,1031165076,1114446566,-2095777646,-393636115
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,544118,11212882,4588850,28336456,-625936940,1121228995,-255291460,1861406359
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,544118,11212882,4588850,28336456,-625936940,1121228995,-255291460,1861406359
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,544373,13274972,4773642,29666182,-2132709123,1271235617,475607212,6447911
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/marinPathStateChanges/default/interactives/interactives.unity,57554,16555705,3839099,25033442,1036372488,1326990481,-1313801571,1029082572
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/marinPathStateChanges/default/interactives/interactives.unity,61476,14710211,2911764,22481470,-1612809928,1254019882,-192856702,2032146173
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/MountainPassCaveB/interactive/interactive.unity,1012,90692824,1593323,-81348192,1137680419,1081705092,255657130,-1692064308
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/MountainPassCaveB/interactive/interactive.unity,1012,90692824,1593323,-81348192,1137680419,1081705092,255657130,-1692064308
+ladder,ladder,ladderExpand (5),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/cerimGate/batteringRamInProgress/art/art.unity,273250,33210726,7315128,28046904,-683086501,1152956455,-150118740,-1014668514
+ladder,ladder,ladderExpand (5),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/cerimGate/batteringRamInProgress/art/art.unity,273250,33210726,7315128,28046904,-683086501,1152956455,-150118740,-1014668514
+ladder,ladder,ladderExpand (6),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/cerimGate/batteringRamInProgress/interactives/interactives.unity,29976,33543750,7340360,27941076,-2091405746,1299034352,-1109620330,-790132801
+ladder,ladder,ladderExpand (6),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/cerimGate/batteringRamInProgress/interactives/interactives.unity,29976,33543750,7340360,27941076,-2091405746,1299034352,-1109620330,-790132801
+ladder,ladder,ladderExpand (5),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/cerimGate/batteringRamInProgress/interactives/interactives.unity,30231,31201690,7309480,28519956,198847584,1301082883,803648954,-1008342606
+ladder,ladder,ladderExpand (5),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/cerimGate/batteringRamInProgress/interactives/interactives.unity,30231,31201690,7309480,28519956,198847584,1301082883,803648954,-1008342606
+ladder,ladder,ladderExpand (5),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/cerimGate/gateAfterBreach/art/art.unity,166406,33210726,7315128,28046904,-789069362,1227088929,-350759280,-212453663
+ladder,ladder,ladderExpand (5),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/cerimGate/gateAfterBreach/art/art.unity,166406,33210726,7315128,28046904,-789069362,1227088929,-350759280,-212453663
+ladder,ladder,ladder3,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2917088,0,0,0,-1327264504,1142205320,1461615008,1876220707
+ladder,ladder,ladder5,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2918255,0,0,0,197283769,1144276223,756304284,805143912
+ladder,ladder,ladder1,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,2918536,0,0,0,-451004649,1132696744,1829062561,1569369308
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3041254,29888152,5694095,19110100,1953762820,1183860365,2093188775,1466247844
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3041515,29235056,5766709,16214958,-2036998909,1221151546,1579287734,-1779733433
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3042160,34066680,8833926,15566845,-1507170577,1207873130,-645541697,-716921219
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3042556,29495538,5464719,13388693,642686962,1191270056,1289337777,818522294
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3043573,35831088,6407389,22661890,673125176,1340107137,979841170,-101695341
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3043957,30407852,7240745,21091910,673511545,1321335824,1376013495,2084843432
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3044218,29495538,5464719,13388693,-849308827,1204941532,2749313,-1699696722
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3044542,26924614,6618153,19977798,53881836,1154760562,961245336,-1906468215
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3045124,24831394,5289279,14253884,1758918682,1334107512,-516958568,-1380943852
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3045655,24831394,5289279,14253884,1634031592,1159590798,-662689621,-452595879
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3046051,24831394,5289279,14253884,1426844029,1109008548,-1624332135,615555882
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3046903,33349106,7309731,25534596,1003484978,1328538891,-1405310026,-1489080689
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3047359,29235056,5766709,16214958,1968804628,1161890251,-1747515223,79106174
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3047683,29235056,5766709,16214958,-1384805350,1274391693,-2069111145,274983627
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3048733,31128684,8562606,15524168,1640834256,1211218101,-1214970467,-1889992596
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3049129,24831394,5289279,14253884,1993127128,1342107441,-2040956499,1049063175
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3049390,33065338,5760942,18794218,1343405173,1220893645,219183489,-1191155692
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3049840,29235056,5766709,16214958,-1415321429,1097447723,385468297,-1396576525
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3050254,28296938,7599174,21211840,-1994849110,1205478141,1168212136,-755095742
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3397786,31371422,6339494,21191722,1737408405,1246873701,729630357,105487351
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3398041,31503680,5899223,14428996,421161767,1294192298,2089153421,422194724
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3398041,31503680,5899223,14428996,421161767,1294192298,2089153421,422194724
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3398296,33915996,6051266,22143108,505058569,1207360525,-1978723950,1030145860
+ladder,ladder,ladder (2),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3398551,27210352,7487160,21185626,-487833995,1129151334,1091140228,1499244367
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3398806,35612440,5527919,25839922,-1665957301,1192267524,1681122439,670528527
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3398806,35612440,5527919,25839922,-1665957301,1192267524,1681122439,670528527
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3399061,31338792,6205931,16066478,693870479,1251633439,-31064423,1205677754
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3399316,33343866,6903234,24603328,426707135,1132284237,-1215821389,1919648080
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3399571,30791238,5500109,13368492,1620445805,1118752466,159169954,-744058482
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3399826,28285796,5397217,19030148,1305097816,1198404990,-292321406,-1346934308
+ladder,ladder,ladder (1),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3400081,28542042,6470637,22325952,-289846093,1144691174,510670745,1472098919
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3400336,29495538,5464719,13388693,-1262902791,1195486201,91114654,608550884
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3400591,35612440,5527919,25839922,-1816638494,1222913239,605734075,802910300
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3400591,35612440,5527919,25839922,-1816638494,1222913239,605734075,802910300
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3400846,34132920,5883972,19379454,732246719,1114767373,1941471408,1950049127
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3400846,34132920,5883972,19379454,732246719,1114767373,1941471408,1950049127
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/interactives/interactives.unity,3401101,33631568,6812795,22985244,-1614940401,1108558572,-1028917096,113636822
+ladder,ladder,ladderExpand (7),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/mountainPathMiddle/risen/interactives/interactives.unity,37200,29392758,7468959,16917696,1912698563,1134505692,519443642,-1764793488
+ladder,ladder,ladderExpand (7),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/mountainPathMiddle/risen/interactives/interactives.unity,37200,29392758,7468959,16917696,1912698563,1134505692,519443642,-1764793488
+ladder,ladder,ladderExpand (10),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/quarryBottom/risen/interactives/interactives.unity,15184,32500614,5827461,17490904,421185707,1282528637,1095470981,-286418020
+ladder,ladder,ladderExpand (10),ExportedProject/Assets/worlds/isolaSacra/mountainPass/mountainPassA/quarryBottom/risen/interactives/interactives.unity,15184,32500614,5827461,17490904,421185707,1282528637,1095470981,-286418020
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,159563,7024087,4318281,10573453,788850882,1096236194,-949535573,-475603114
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,159824,3342274,1122615,8055560,432446604,1189031045,-436510810,1200710710
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,160085,6842553,3633299,10252982,649697911,1200096836,-551521658,-1274122083
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,160802,8299418,2629287,5859448,-1398395991,1135589610,2014781884,-1485106829
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,246710,2975928,555728,7828805,-1189992038,1145581994,-140623205,1465855880
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,246965,2755134,645250,9511894,-513844629,1248140863,308598193,1600358403
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,247220,4828126,3895459,11758789,498067472,1103476778,-1615491199,470187180
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,247475,5073342,2240659,10724579,-2082668767,1140210429,-1332334208,-689005240
+ladder,ladder,ladder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,247730,4828126,3895459,11758789,552197883,1199378724,-268741716,-219519525
+ladder,ladder,potionSellerCaveLadder,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,247985,5356462,1408613,6010356,777316217,1318011286,1613206945,1545567125
+ladder,ladder,kickdownLadderB,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/vignettes/vignettes.unity,7628,-514457,1276641,9770762,-1942175636,1201208000,2064680365,803728334
+ladder,ladder,kickdownLadderB,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/vignettes/vignettes.unity,7628,-514457,1276641,9770762,-1942175636,1201208000,2064680365,803728334
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/interactives/interactives.unity,50849,86078192,2067923,-97018184,2137358415,1232727239,656065187,-55930214
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/interactives/interactives.unity,96224,89105368,1663959,-96096096,-1857028974,1195218850,1987960992,2017286539
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/interactives/interactives.unity,96224,89105368,1663959,-96096096,-1857028974,1195218850,1987960992,2017286539
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artFarmArea/artFarmArea.unity,987222,22735540,3562369,5988584,-2036414741,1179063393,1198426757,711353951
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artFarmArea/artFarmArea.unity,987222,22735540,3562369,5988584,-2036414741,1179063393,1198426757,711353951
+ladder,ladder,ladderExpand (3),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artFarmArea/artFarmArea.unity,987477,23048888,2560111,4892284,-392850509,1293654205,-852594782,1731778899
+ladder,ladder,ladderExpand (3),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artFarmArea/artFarmArea.unity,987477,23048888,2560111,4892284,-392850509,1293654205,-852594782,1731778899
+ladder,ladder,ladderExpand (2),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artFarmArea/artFarmArea.unity,987732,22370312,3902747,5787321,74745826,1144086391,81973393,-420643085
+ladder,ladder,ladderExpand (2),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artFarmArea/artFarmArea.unity,987732,22370312,3902747,5787321,74745826,1144086391,81973393,-420643085
+ladder,ladder,ladder (8),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/artFarmArea/artFarmArea.unity,987987,25267196,1969046,8589093,881322187,1100068549,-721221245,989953522
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,407456,13526520,4227207,15189154,-236531474,1138921040,561400211,-1451894121
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,407456,13526520,4227207,15189154,-236531474,1138921040,561400211,-1451894121
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,407711,17705474,3031239,11390548,-250614853,1074896967,-61704569,-1736740645
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,407711,17705474,3031239,11390548,-250614853,1074896967,-61704569,-1736740645
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,407966,19857402,2944864,11829907,231253794,1195707071,-1279666807,552833174
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,407966,19857402,2944864,11829907,231253794,1195707071,-1279666807,552833174
+ladder,ladder,ladderExpand_AsayasDojo,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,408221,9558419,3409842,13366726,155169734,1159574445,129596856,813605824
+ladder,ladder,ladderExpand_AsayasDojo,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,408221,9558419,3409842,13366726,155169734,1159574445,129596856,813605824
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,408476,14787419,2735082,14737996,-1855093990,1247605180,-291487840,-1222311120
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,408476,14787419,2735082,14737996,-1855093990,1247605180,-291487840,-1222311120
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,408731,16893208,3567260,14056165,-987320324,1190049342,906559360,90301922
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,408731,16893208,3567260,14056165,-987320324,1190049342,906559360,90301922
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,408986,17472726,2268856,12346928,2011186952,1080399577,2092904594,233533890
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,408986,17472726,2268856,12346928,2011186952,1080399577,2092904594,233533890
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,409241,18704624,3576254,13151768,-1250468102,1213806673,1537678749,81302324
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,409241,18704624,3576254,13151768,-1250468102,1213806673,1537678749,81302324
+ladder,ladder,ladderExpandChurch,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,409496,10902504,3414561,15913747,-1356137821,1207778284,2123930033,-334691309
+ladder,ladder,ladderExpandChurch,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,409496,10902504,3414561,15913747,-1356137821,1207778284,2123930033,-334691309
+ladder,ladder,ladderExpand (2),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,409751,16346650,906497,5588394,-95974281,1227676103,-178847809,1722068335
+ladder,ladder,ladderExpand (2),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,409751,16346650,906497,5588394,-95974281,1227676103,-178847809,1722068335
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,410006,13353478,4556853,13469028,-1222674555,1171547339,1826507422,70115583
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,410006,13353478,4556853,13469028,-1222674555,1171547339,1826507422,70115583
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,410261,14885185,2580419,16708406,-478326421,1291327375,1549096376,-277152534
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,410261,14885185,2580419,16708406,-478326421,1291327375,1549096376,-277152534
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,410516,17310018,2848985,13683920,2131545785,1166270157,-992272254,-1143576084
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,410516,17310018,2848985,13683920,2131545785,1166270157,-992272254,-1143576084
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentPlayerHousingInteriorB/interactives/interactives.unity,766,126566400,1819558,14708244,-1862638708,1111634242,-663503982,742354201
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentPlayerHousingInteriorB/interactives/interactives.unity,766,126566400,1819558,14708244,-1862638708,1111634242,-663503982,742354201
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentPlayerHousingInteriorE/interactives/interactives.unity,836,137640016,1939210,15180104,-1353827305,1291734087,-2015936853,543306723
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentPlayerHousingInteriorE/interactives/interactives.unity,836,137640016,1939210,15180104,-1353827305,1291734087,-2015936853,543306723
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentWarRoom/interactives/interactives.unity,123703,118072936,4360765,68825904,625042652,1092720068,1830547126,333966827
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1390807,-3419013,2389770,-80155112,64276027,1101848823,-988494172,69526864
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1391068,1549926,2550005,-81413408,124818449,1236683299,-108062825,-850801238
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1391329,-446955,2458255,-76983176,-9484012,1316579406,-272004441,1079180984
+ladder,ladder,kickdownLadder (2),ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1391590,-3231580,2839675,-72231816,1764756090,1167407343,-1252084084,1376086031
+ladder,ladder,kickdownLadder (1),ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1391851,-6253576,2304508,-70141744,-1383109094,1109086711,-287603539,-1692078801
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1519459,-2596536,2281898,-75479776,1653414254,1237787021,1274573964,-855335140
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1519459,-2596536,2281898,-75479776,1653414254,1237787021,1274573964,-855335140
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1519714,-6219366,2295398,-70113688,1824064873,1101474528,-1755320405,-2100687609
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1519714,-6219366,2295398,-70113688,1824064873,1101474528,-1755320405,-2100687609
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1519969,-3638558,2566389,-83285112,-41417940,1296758387,-88084330,1283684381
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1519969,-3638558,2566389,-83285112,-41417940,1296758387,-88084330,1283684381
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1520224,-546570,2186936,-81701768,-820880087,1256340849,-2007174760,-1688329253
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1520224,-546570,2186936,-81701768,-820880087,1256340849,-2007174760,-1688329253
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1520479,-7131627,2361327,-73937056,-800224629,1233828141,1953618093,332924554
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1520479,-7131627,2361327,-73937056,-800224629,1233828141,1953618093,332924554
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1520734,1509556,2237202,-74564896,-1667538836,1201655359,1327876776,1828930024
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1520734,1509556,2237202,-74564896,-1667538836,1201655359,1327876776,1828930024
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1520989,-8701870,2301272,-69769624,-195919821,1089609732,-862924923,-933944503
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1520989,-8701870,2301272,-69769624,-195919821,1089609732,-862924923,-933944503
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonDarakBossArena/interactives/interactives.unity,10593,3743416,2936822,-69034312,1714401094,1295168201,-800898666,-2087277615
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonDarakBossArena/interactives/interactives.unity,10593,3743416,2936822,-69034312,1714401094,1295168201,-800898666,-2087277615
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/shipPrologue/shipPrologueA/interactives/interactives.unity,27012,102437488,1492516,4726652,-1453321104,1196115923,-1476555634,209977755
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/shipPrologue/shipPrologueA/interactives/interactives.unity,27012,102437488,1492516,4726652,-1453321104,1196115923,-1476555634,209977755
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/shipPrologue/shipPrologueInteriorA/interactives/interactives.unity,759877,200555888,1267335,65817152,-1261768768,1238703187,-411339604,305306140
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/shipPrologue/shipPrologueInteriorA/interactives/interactives.unity,759877,200555888,1267335,65817152,-1261768768,1238703187,-411339604,305306140
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/shipPrologue/shipPrologueInteriorA/interactives/interactives.unity,760387,202608480,1535049,66806092,40799905,1165982345,715731863,685353960
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/shipPrologue/shipPrologueInteriorA/interactives/interactives.unity,760387,202608480,1535049,66806092,40799905,1165982345,715731863,685353960
+ladder,ladder,kickdownLadder (3),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,514623,15282018,3468016,35793864,-338172041,1139755178,595265162,-2046566168
+ladder,ladder,kickdownLadder,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,514884,-4309647,969932,4090757,1446815656,1190387660,7679886,-2022867630
+ladder,ladder,kickdownLadder (2),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,515145,17445684,3661496,30862868,-301280089,1165719669,-390247527,-1607118984
+ladder,ladder,kickdownLadder (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,515406,13668522,3679717,33797636,1483006862,1324777094,594438286,729298271
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,642551,17244822,3345744,32200524,1143645324,1079066416,745756564,-1758191037
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,642551,17244822,3345744,32200524,1143645324,1079066416,745756564,-1758191037
+ladder,ladder,ladderExpand (2),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,643061,17464498,3939959,29858136,1214636853,1310198761,1109617326,-489888057
+ladder,ladder,ladderExpand (2),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,643061,17464498,3939959,29858136,1214636853,1310198761,1109617326,-489888057
+ladder,ladder,ladderExpand (4),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,643316,18218686,3485047,35017916,-993769273,1148619912,1844779399,619158849
+ladder,ladder,ladderExpand (4),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,643316,18218686,3485047,35017916,-993769273,1148619912,1844779399,619158849
+ladder,ladder,ladderExpand (3),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,643571,15926771,3332964,33931456,-1058882839,1170534091,-1737757010,1995322693
+ladder,ladder,ladderExpand (3),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,643571,15926771,3332964,33931456,-1058882839,1170534091,-1737757010,1995322693
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,643826,18690740,4067754,35155156,-2122797189,1296383075,62281646,903123098
+ladder,ladder,ladderExpand (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,643826,18690740,4067754,35155156,-2122797189,1296383075,62281646,903123098
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmIrmgardHouseInterior/interactives/interactives.unity,3346,103166768,3731619,86627448,515477648,1337681883,-1550441055,-18148774
+ladder,ladder,ladderExpand,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmIrmgardHouseInterior/interactives/interactives.unity,3346,103166768,3731619,86627448,515477648,1337681883,-1550441055,-18148774
 ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,293549,-513146,916193,393871,-1472639707,1136348915,-556895553,2108127964
 ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,293872,-216924,902430,1422786,1053090117,1234799579,-1965920598,1015678537
 ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity,294195,-5883166,798883,2325872,-766786149,1338673347,1223594149,1162919784
@@ -626,9 +1085,14 @@ ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/outski
 ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/loot/loot.unity,609645,6200222,4352820,11439635,1653991428,1251304547,-878721644,645141920
 ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/loot/loot.unity,609968,9023818,2366883,3598042,-1764675287,1297697706,-1766046319,-469387473
 ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/loot/loot.unity,610291,5771090,865387,3775037,-610456002,1205722970,955602074,293153398
+ore,copper,ore1CopperResourceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,35256,88019232,1202654,-98421144,1836000842,1318827528,1102742457,1349519767
 ore,copper,copperOreResourceView (1),ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,35579,86848952,3840606,-94351496,-370254433,1215266572,1910502568,584541220
 ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,35902,89088040,3666739,-95304528,967734849,1161688114,1391470997,-1767363046
 ore,copper,copperOreResourceView (2),ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,36225,86352504,3823908,-95542632,-1109096455,1115175310,492132244,-2137360113
+ore,copper,ore1CopperResourceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,36548,85764080,2493779,-95677808,4019599,1154930745,-1218833741,-1062161222
+ore,copper,ore1CopperResourceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,36871,87970736,2473397,-94766856,1927934452,1262838573,-1962915691,-1873443088
+ore,copper,ore1CopperResourceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,37194,89327856,1673203,-96179024,-668600580,1337071464,-720528979,-313184245
+ore,copper,ore1CopperResourceView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/loot/loot.unity,37517,87797072,1816727,-95356552,-459984218,1316175010,281574801,-203921412
 ore,copper,copperOreResourceView (1),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/loot/loot.unity,407968,14161659,985657,4104524,-1805313128,1086350637,1109642664,-173536042
 ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,284437,1342012,1182924,-82929680,182371355,1282686585,-1130582090,-1828707641
 ore,copper,copperOreResourceView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/loot/loot.unity,284760,-1592524,2158755,-81842664,-52077624,1253999460,624442280,441499127
@@ -761,18 +1225,13 @@ ore,silver,silverOreResourceView (2),ExportedProject/Assets/worlds/isolaSacra/wi
 ore,silver,silverOreResourceView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,647844,12734300,3503554,34075444,-251653736,1092171207,-1682240362,-1746336347
 ore,silver,silverOreResourceView (1),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,648167,14438892,3778805,35849504,-82562114,1338234175,-950967895,-663625163
 ore,silver,silverOreResourceView (4),ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,648490,19278686,3568860,35782072,-1127360086,1172604303,1570210193,-1701688139
-quest,quest,creepPlantAPickupView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,567864,12632556,3321303,25966402,-12419890,1177184099,-1958008668,1902159993
-quest,quest,direNettleAPickupView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,678558,17067990,3966880,28846526,1386113717,1220292325,-1469254005,-597151106
-quest,quest,direNettleAPickupView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,680702,15109158,3501412,36516812,37283926,1175578658,1972260010,-1210710692
-quest,quest,direNettleAPickupView,ExportedProject/Assets/worlds/isolaSacra/willsFarm/willsFarmA/villageArtState/default/interactives/interactives.unity,681506,19812188,4440911,35295068,-863917573,1336807549,73968291,2007365967
+quest,quest,direNettleAView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,566518,18319582,3320956,19229142,2056253845,1275543961,-1287061578,-1345109615
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/infiniteDungeon/entrance/infiniteDungeonMainEntrance/interactives/interactives.unity,474884,-267997024,2240675,-140562272,29544638,1208672184,1723916448,-968281805
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/coast/coastA/interactives/interactives.unity,244810,-4621598,1187446,1468006,640026706,1312349659,-747889751,474111841
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/fortress/fortressA/interactives/interactives.unity,464555,-1387029,2181258,6545072,-391974513,1213808608,-1618293326,-902069982
 whisper,whisper,cerimWhisperSpotView (3),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/arenaApproachWhisper/afterPlagueBear/interactives/interactives.unity,124087,17549886,2759340,-6999902,-2019732767,1140619057,1165370516,2045741629
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,957789,16068182,2294740,-1842527,1962912142,1248396474,-509022559,429417394
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,957909,9742068,3439326,2804275,-1612154006,1260539843,38161310,1628349400
-whisper,whisper,cerimWhisperSpotView (3),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,958029,17419534,2845504,-6942538,568552722,1268120656,619249311,-758722654
-whisper,whisper,cerimWhisperSpotView (1),ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,958149,3166633,3810850,-3133062,743802951,1310228703,1370414481,-41386829
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/hills/hillsA/interactives/interactives.unity,958269,10749738,3989632,-4168465,-1403789760,1152706433,-51002461,-924227486
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,506926,16388588,2416639,20791296,-604018931,1340854754,-1046439289,1182858075
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/marinWoods/marinWoodsA/interactives/interactives.unity,507046,13206821,4770366,29436186,-1953719551,1179392310,-228418423,1179458472
@@ -789,8 +1248,6 @@ whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/mo
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,219162,6908270,2233467,6313999,-1012926280,1328191664,-837822586,-712192143
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/outskirts/outskirtsA/interactives/interactives.unity,219284,3970290,1732640,8957722,-2054582514,1137063860,-204720483,-538669819
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/outskirts/potionSellerCave/interactives/interactives.unity,81002,88333352,2660761,-94663480,981654391,1145487032,816972172,1671028529
-whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,319283,14784266,3080192,9877586,224829847,1258763069,1673136566,-425271619
-whisper,whisper,cerimWhisperSpotView (1),ExportedProject/Assets/worlds/isolaSacra/sacrament/sacramentA/interactives/interactives.unity,319403,25121260,2960982,9829745,1754962673,1233627010,1023940487,-618277869
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1465244,728760,2239544,-78500328,498974984,1170158500,-325472128,-193881366
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1465364,-5681053,2506371,-72341848,1807093013,1161673227,-1374081614,1878173435
 whisper,whisper,cerimWhisperSpotView,ExportedProject/Assets/worlds/isolaSacra/sewerDungeon/sewerDungeonA/interactives/interactives.unity,1465484,-10029629,2878095,-68745952,-696185087,1285708980,-2060612439,-1732405357

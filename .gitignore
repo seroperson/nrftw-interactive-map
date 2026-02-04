@@ -24,11 +24,8 @@ dist-ssr
 *.sln
 *.sw?
 
-# Temporarily ignore assets
-public/map.png
-public/tiles
-
 # Build output
+dev-dist/
 dist/
 .cache/
 

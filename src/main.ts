@@ -126,6 +126,18 @@ class InteractiveMapApp {
     const lines = csvText.trim().split('\n');
     const resources: Resource[] = [];
     
+    // Map dimensions from coordinateConverter
+    const MAP_WIDTH = 16384;
+    const MAP_HEIGHT = 16384;
+    
+    let totalObjects = 0;
+    let filteredObjects = 0;
+    let duplicateObjects = 0;
+    
+    // Track seen objects to filter duplicates
+    // Key format: "type:subtype:worldX:worldZ" (rounded to avoid floating point issues)
+    const seenObjects = new Set<string>();
+    
     // Skip header: Type,Subtype,Name,File,Line,RawX,RawY,RawZ,id_a,id_b,id_c,id_d
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
@@ -154,8 +166,29 @@ class InteractiveMapApp {
       const worldY = rawY / 1_000_000;
       const worldZ = rawZ / 1_000_000;
 
+      totalObjects++;
+
       // Extract region from file path
       const region = this.extractRegionFromPath(filePath);
+
+      // Project world coordinates to image coordinates
+      const imageCoords = this.converter.worldToImage(worldX, worldZ, region);
+      
+      // Filter out-of-bounds objects based on actual projection
+      if (imageCoords.x < 0 || imageCoords.x >= MAP_WIDTH ||
+          imageCoords.y < 0 || imageCoords.y >= MAP_HEIGHT) {
+        filteredObjects++;
+        continue;
+      }
+
+      // Check for duplicates (same type and coordinates)
+      // Round coordinates to 3 decimal places to handle floating point precision
+      const coordKey = `${type}:${subtype}:${worldX.toFixed(3)}:${worldZ.toFixed(3)}`;
+      if (seenObjects.has(coordKey)) {
+        duplicateObjects++;
+        continue;
+      }
+      seenObjects.add(coordKey);
 
       resources.push({
         type,
@@ -173,6 +206,10 @@ class InteractiveMapApp {
         idD
       });
     }
+    
+    console.log(`Filtered ${filteredObjects} out-of-bounds objects out of ${totalObjects} total objects`);
+    console.log(`Filtered ${duplicateObjects} duplicate objects`);
+    console.log(`Loaded ${resources.length} unique in-bounds resources`);
     
     return resources;
   }

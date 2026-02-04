@@ -1,6 +1,6 @@
 // Coordinate conversion logic extracted from plot_mines_on_map.py
 
-import { Coordinates, ImageCoordinates, RegionTransform } from './types';
+import { Coordinates, ImageCoordinates } from './types';
 
 interface Transform {
   scaling: number;

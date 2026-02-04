@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build:github": "tsc && cross-env GITHUB_PAGES=true vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build:github"
   },
   "dependencies": {
     "ol": "^8.2.0"
@@ -13,6 +15,7 @@
   "devDependencies": {
     "@types/node": "^20.11.5",
     "typescript": "^5.3.3",
-    "vite": "^5.0.11"
+    "vite": "^5.0.11",
+    "vite-plugin-pwa": "^1.2.0"
   }
 }

@@ -32,10 +32,15 @@ const SUBTYPE_COLORS: Record<string, string> = {
   'tier1': '#CD853F',
   'tier2': '#D2691E',
   'tier3': '#A0522D',
+  // Bonfire
+  'bonfire': '#FF4500',
+  // Ladder
+  'ladder': '#A0826D',
   // Special
   'whisper': '#00BFFF',
   'chest': '#DAA520',
-  'quest': '#FF00FF'
+  'quest': '#FF00FF',
+  'shiny': '#FFD700'
 };
 
 // Color mapping for main types (used when subtype color not found)
@@ -46,9 +51,12 @@ const TYPE_COLORS: Record<string, string> = {
   'food': '#FF6347',
   'fishing': '#4682B4',
   'digging': '#A0522D',
+  'bonfire': '#FF4500',
+  'ladder': '#8B7355',
   'whisper': '#00BFFF',
   'chest': '#DAA520',
-  'quest': '#FF00FF'
+  'quest': '#FF00FF',
+  'shiny': '#FFD700'
 };
 
 export function getResourceColor(resourceType: string): string {
