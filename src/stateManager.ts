@@ -34,11 +34,11 @@ export class StateManager {
         y: 6144,
         scale: 0.1
       },
-      visibleResources: new Set(),
+      visibleResources: new Set(['iron', 'copper', 'silver']),
       customMarkers: [],
       markerMode: false,
       openedPopup: null,
-      expandedGroups: new Set()
+      expandedGroups: new Set(['ore'])
     };
   }
 

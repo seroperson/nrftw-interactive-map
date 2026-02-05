@@ -42,12 +42,6 @@ class InteractiveMapApp {
       // Apply initial state
       const state = this.stateManager.getState();
       
-      // Set default visible resources if none are set
-      if (state.visibleResources.size === 0) {
-        const allTypes = new Set(Array.from(resourceTypes.keys()));
-        this.stateManager.setVisibleResources(allTypes);
-      }
-      
       this.applyState();
       
       // Track previous visible resources to detect changes

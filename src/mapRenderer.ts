@@ -342,13 +342,13 @@ export class MapRenderer {
     const radius = Math.max(3, Math.min(20, baseRadius * scaleFactor));
     
     // Scale stroke width proportionally
-    const strokeWidth = Math.max(1, Math.min(3, radius / 4));
+    const strokeWidth = Math.max(1, Math.min(4, radius / 3));
     
     return new Style({
       image: new Circle({
         radius: radius,
         fill: new Fill({ color: color }),
-        stroke: new Stroke({ color: 'rgba(255, 255, 255, 0.5)', width: strokeWidth }),
+        stroke: new Stroke({ color: 'rgba(0, 0, 0, 0.5)', width: strokeWidth }),
       }),
     });
   }
@@ -386,7 +386,7 @@ export class MapRenderer {
       image: new Circle({
         radius: 8,
         fill: new Fill({ color: '#ff4444' }),
-        stroke: new Stroke({ color: '#ffffff', width: 2 }),
+        stroke: new Stroke({ color: '#000000', width: 4 }),
       }),
     });
 

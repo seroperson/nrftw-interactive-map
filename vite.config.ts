@@ -2,11 +2,7 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  base: process.env.GITHUB_PAGES ? '/nrftw-interactive-map' : 'localhost:3000',
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-  },
+  base: '/nrftw-interactive-map/',
   assetsInclude: ['**/*.csv'],
   server: {
     port: 3000,
