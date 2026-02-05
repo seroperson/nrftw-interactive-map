@@ -153,6 +153,9 @@ class InteractiveMapApp {
       const idC = parts.length > 10 ? parseInt(parts[10]) : undefined;
       const idD = parts.length > 11 ? parseInt(parts[11]) : undefined;
 
+      // From Moon.Forsaken.EntityView$$UpdateTransformSync
+      // const mul = 0.000015258789;
+
       // Convert from Unity units (appears to be in centimeters * 65536) to game world units
       const worldX = rawX / 1_000_000;
       const worldY = rawY / 1_000_000;

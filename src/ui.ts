@@ -21,8 +21,50 @@ export class UIManager {
     const toggleBtn = document.getElementById('toggle-sidebar');
     const sidebar = document.getElementById('sidebar');
     
-    toggleBtn?.addEventListener('click', () => {
-      sidebar?.classList.toggle('collapsed');
+    toggleBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isCollapsed = sidebar?.classList.toggle('collapsed');
+      
+      // Update button icon and class based on state
+      if (toggleBtn) {
+        toggleBtn.textContent = isCollapsed ? '▶' : '◀';
+        toggleBtn.setAttribute('aria-label', isCollapsed ? 'Show sidebar' : 'Hide sidebar');
+        toggleBtn.classList.toggle('sidebar-collapsed', isCollapsed);
+      }
+      
+      // Trigger map resize after sidebar animation completes
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 400);
+    });
+
+    // Close sidebar when clicking on map (on smaller screens)
+    const mapContainer = document.getElementById('map-container');
+    mapContainer?.addEventListener('click', () => {
+      if (!sidebar) return;
+      
+      // Check if sidebar is wide enough and screen is not so wide
+      const sidebarWidth = 340; // var(--sidebar-width)
+      const isSidebarWide = sidebarWidth >= 300;
+      const isScreenNarrow = window.innerWidth <= 1024;
+      
+      // Close sidebar if it's open, wide enough, and screen is narrow
+      if (!sidebar.classList.contains('collapsed') && isSidebarWide && isScreenNarrow) {
+        sidebar.classList.add('collapsed');
+        
+        // Update toggle button
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        if (toggleBtn) {
+          toggleBtn.textContent = '▶';
+          toggleBtn.setAttribute('aria-label', 'Show sidebar');
+          toggleBtn.classList.add('sidebar-collapsed');
+        }
+        
+        // Trigger map resize after sidebar animation completes
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 400);
+      }
     });
 
     // Check/Uncheck all filters

@@ -74,7 +74,9 @@ export class MapRenderer {
         minZoom: 1,
         extent: extent, // Restrict panning to map bounds
         constrainOnlyCenter: false, // Prevents panning beyond the extent
+        enableRotation: false, // Disable rotation
       }),
+      controls: [], // Remove all default controls (zoom, rotate, attribution)
     });
 
     // Setup popup overlay
@@ -88,6 +90,10 @@ export class MapRenderer {
       this.resourceLayer.changed();
     });
     
+    // Handle window resize to update map size
+    window.addEventListener('resize', () => {
+      this.map.updateSize();
+    });
   }
 
   private setupPopup(): void {
