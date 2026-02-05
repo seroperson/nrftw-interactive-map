@@ -300,13 +300,6 @@ export class UIManager {
     }
   }
 
-  public updateCoordinatesDisplay(worldX: number, worldZ: number): void {
-    const display = document.getElementById('coordinates-display');
-    if (display) {
-      display.textContent = `World: ${worldX.toFixed(1)}, ${worldZ.toFixed(1)}`;
-    }
-  }
-
   public setOnMarkerClick(callback: (worldX: number, worldZ: number) => void): void {
     this.onMarkerClick = callback;
   }

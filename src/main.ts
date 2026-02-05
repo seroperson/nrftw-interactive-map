@@ -278,11 +278,6 @@ class InteractiveMapApp {
   }
 
   private setupCoordinateDisplay(): void {
-    // Listen for coordinate updates from the map
-    window.addEventListener('mapcoordinates', ((e: CustomEvent) => {
-      this.uiManager.updateCoordinatesDisplay(e.detail.worldX, e.detail.worldZ);
-    }) as EventListener);
-    
     // Update viewport state periodically
     setInterval(() => {
       const viewport = this.renderer.getViewportState();
