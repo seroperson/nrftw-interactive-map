@@ -505,8 +505,8 @@ export class MapRenderer {
         this.tooltipElement.innerHTML = tooltipHtml;
         
         // Position tooltip near cursor
-        this.tooltipElement.style.left = `${evt.originalEvent.pageX + 15}px`;
-        this.tooltipElement.style.top = `${evt.originalEvent.pageY + 15}px`;
+        this.tooltipElement.style.left = `${(evt.originalEvent as PointerEvent).pageX + 15}px`;
+        this.tooltipElement.style.top = `${(evt.originalEvent as PointerEvent).pageY + 15}px`;
         this.tooltipElement.classList.add('visible');
         
         // Change cursor to pointer
