@@ -106,6 +106,38 @@ class InteractiveMapApp {
     }
   }
 
+  private parseCSVLine(line: string): string[] {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      const nextChar = line[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          // Escaped quote
+          current += '"';
+          i++; // Skip next quote
+        } else {
+          // Toggle quote state
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ',' && !inQuotes) {
+        // Field separator
+        result.push(current);
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+
+    // Add last field
+    result.push(current);
+    return result;
+  }
+
   private parseResourceCSV(csvText: string): Resource[] {
     const lines = csvText.trim().split("\n");
     const resources: Resource[] = [];
@@ -122,28 +154,47 @@ class InteractiveMapApp {
     // Track invalid types for reporting
     const invalidTypes = new Set<string>();
 
-    // Skip header: Type,Subtype,Name,File,Line,RawX,RawY,RawZ,id_a,id_b,id_c,id_d
+    // Skip header: Type,Subtype,Name,File,RawX,RawY,RawZ,id_a,id_b,id_c,id_d,Drop,LootSpawnInfo
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
 
-      const parts = line.split(",");
+      const parts = this.parseCSVLine(line);
       if (parts.length < 8) continue;
 
       const type = parts[0].trim().toLowerCase();
       const subtype = parts[1].trim().toLowerCase();
       const name = parts[2].trim();
       const filePath = parts[3].trim();
-      const lineNum = parseInt(parts[4]);
       const rawX = parseFloat(parts[4]);
       const rawY = parseFloat(parts[5]);
       const rawZ = parseFloat(parts[6]);
 
-      // Parse GUIDs if available (columns 8-11)
+      // Parse GUIDs if available (columns 7-10)
       const idA = parseInt(parts[7]);
       const idB = parseInt(parts[8]);
       const idC = parseInt(parts[9]);
       const idD = parseInt(parts[10]);
+
+      // Parse Drop JSON if available (column 11)
+      let drop: any = undefined;
+      if (parts.length > 11 && parts[11].trim()) {
+        try {
+          drop = JSON.parse(parts[11]);
+        } catch (e) {
+          console.warn(`Failed to parse Drop JSON at line ${i + 1}:`, e);
+        }
+      }
+
+      // Parse LootSpawnInfo JSON if available (column 12)
+      let lootSpawnInfo: any = undefined;
+      if (parts.length > 12 && parts[12].trim()) {
+        try {
+          lootSpawnInfo = JSON.parse(parts[12]);
+        } catch (e) {
+          console.warn(`Failed to parse LootSpawnInfo JSON at line ${i + 1}:`, e);
+        }
+      }
 
       totalObjects++;
 
@@ -181,9 +232,6 @@ class InteractiveMapApp {
       // Extract region from file path
       const region = this.extractRegionFromPath(filePath);
 
-      // Project world coordinates to image coordinates
-      const imageCoords = this.converter.worldToImage(worldX, worldZ, region);
-
       // Filter out-of-bounds objects based on actual projection
       /*if (imageCoords.x < 0 || imageCoords.x >= MAP_WIDTH ||
           imageCoords.y < 0 || imageCoords.y >= MAP_HEIGHT) {
@@ -213,6 +261,8 @@ class InteractiveMapApp {
         idB,
         idC,
         idD,
+        drop,
+        lootSpawnInfo,
       });
     }
 

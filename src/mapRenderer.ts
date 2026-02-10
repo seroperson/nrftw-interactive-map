@@ -153,11 +153,13 @@ export class MapRenderer {
     const worldX = feature.get("worldX") as number;
     const worldY = feature.get("worldY") as number;
     const worldZ = feature.get("worldZ") as number;
-    const idA = feature.get("idA") as number | undefined;
-    const idB = feature.get("idB") as number | undefined;
-    const idC = feature.get("idC") as number | undefined;
-    const idD = feature.get("idD") as number | undefined;
+    const idA = feature.get("idA") as number;
+    const idB = feature.get("idB") as number;
+    const idC = feature.get("idC") as number;
+    const idD = feature.get("idD") as number;
     const color = feature.get("color") as string;
+    const drop = feature.get("drop");
+    const lootSpawnInfo = feature.get("lootSpawnInfo");
 
     // Build popup content with icon
     const contentElement = this.popupElement.querySelector(
@@ -172,8 +174,10 @@ export class MapRenderer {
         <span class="popup-title">${popupTitle}</span>
       </div>
       <div class="popup-coords">${this.formatCoordinates(worldX, worldY, worldZ)}</div>
-      ${this.formatGuidHtml(idA, idB, idC, idD)}
-      ${this.formatPathHtml(feature.get("path"))}
+      ${this.formatGuidHtml("popup", idA, idB, idC, idD)}
+      ${this.formatPathHtml("popup", feature.get("path"))}
+      ${this.formatDropHtml("popup", drop)}
+      ${this.formatLootSpawnInfoHtml("popup", lootSpawnInfo)}
     `;
 
     contentElement.innerHTML = popupHtml;
@@ -324,6 +328,8 @@ export class MapRenderer {
       idB: resource.idB,
       idC: resource.idC,
       idD: resource.idD,
+      drop: resource.drop,
+      lootSpawnInfo: resource.lootSpawnInfo,
     });
 
     return feature;
@@ -396,7 +402,7 @@ export class MapRenderer {
 
       // Dispatch custom event with coordinates
       const event = new CustomEvent("mapcoordinates", {
-        detail: { worldX: worldCoords.x, worldZ: worldCoords.z },
+        detail: { worldX: worldCoords.x, worldZ: worldCoords.y },
       });
       window.dispatchEvent(event);
 
@@ -415,6 +421,8 @@ export class MapRenderer {
         const idB = feature.get("idB") as number;
         const idC = feature.get("idC") as number;
         const idD = feature.get("idD") as number;
+        const drop = feature.get("drop");
+        const lootSpawnInfo = feature.get("lootSpawnInfo");
 
         const tooltipTitle = this.formatResourceTitle(type, subtype);
 
@@ -422,7 +430,9 @@ export class MapRenderer {
         const tooltipHtml = `
           <div class="tooltip-type">${tooltipTitle}</div>
           <div class="tooltip-coords">${this.formatCoordinates(worldX, worldY, worldZ)}</div>
-          ${this.formatTooltipGuidHtml(idA, idB, idC, idD)}
+          ${this.formatGuidHtml("tooltip", idA, idB, idC, idD)}
+          ${this.formatDropHtml("tooltip", drop)}
+          ${this.formatLootSpawnInfoHtml("tooltip", lootSpawnInfo)}
         `;
 
         // Update tooltip content
@@ -485,6 +495,7 @@ export class MapRenderer {
   }
 
   private formatGuidHtml(
+    context: "popup" | "tooltip",
     idA: number,
     idB: number,
     idC: number,
@@ -494,39 +505,133 @@ export class MapRenderer {
       return "";
     }
     return `
-      <div class="popup-guid">
-        <div class="popup-guid-label">GUID:</div>
-        <div class="popup-guid-values">${idA},${idB},${idC},${idD}</div>
+      <div class="${context}-guid">
+        <div class="${context}-guid-label">GUID:</div>
+        <div class="${context}-guid-values">${idA},${idB},${idC},${idD}</div>
       </div>
     `;
   }
 
-  private formatPathHtml(path?: string): string {
+  private formatPathHtml(context: "popup" | "tooltip", path?: string): string {
     if (!this.isDevMode() || path === undefined) {
       return "";
     }
     return `
-      <div class="popup-guid">
-        <div class="popup-guid-label">Path:</div>
-        <div class="popup-guid-values">${path}</div>
+      <div class="${context}-path">
+        <div class="${context}-path-label">Path:</div>
+        <div class="${context}-path-values">${path}</div>
       </div>
     `;
   }
 
-  private formatTooltipGuidHtml(
-    idA: number,
-    idB: number,
-    idC: number,
-    idD: number,
-  ): string {
-    if (!this.isDevMode()) {
+  private formatDropHtml(context: "popup" | "tooltip", drop: any): string {
+    if (!drop || !drop.groups || drop.groups.length === 0) {
       return "";
     }
-    return `
-      <div class="tooltip-guid">
-        <div class="tooltip-guid-label">GUID:</div>
-        <div class="tooltip-guid-values">${idA},${idB},${idC},${idD}</div>
-      </div>
-    `;
+
+    let html = `<div class="${context}-drop"><div class="${context}-drop-label">Drop:</div>`;
+
+    for (const group of drop.groups) {
+      if (group.chances && group.chances.length > 0) {
+        html += `<div class="${context}-drop-chances">`;
+        html += group.chances
+          .map((c: any) => `${c.count}x (${c.chance}%)`)
+          .join(", ");
+        html += "</div>";
+      }
+
+      if (group.items && group.items.length > 0) {
+        html += `<div class="popup-drop-items">`;
+        html += "<ul>";
+        for (const item of group.items) {
+          if (item.specificItem && item.specificItem.length > 0) {
+            html += `<li>Item ID: ${item.specificItem.join(", ")}</li>`;
+          }
+          if (item.filterPool && item.filterPool.length > 0) {
+            html += `<li>${item.filterPool.join(", ")}</li>`;
+          }
+        }
+        html += "</ul>";
+        html += "</div>";
+      }
+    }
+
+    html += "</div>";
+    return html;
+  }
+
+  private formatLootSpawnInfoHtml(
+    context: "popup" | "tooltip",
+    lootSpawnInfo: any,
+  ): string {
+    if (
+      !lootSpawnInfo ||
+      (typeof lootSpawnInfo === "object" &&
+        Object.keys(lootSpawnInfo).length === 0)
+    ) {
+      return "";
+    }
+
+    const label = context === "popup" ? "Loot Spawn:" : "Spawns:";
+    let html = `<div class="${context}-loot-spawn"><div class="${context}-loot-spawn-label">${label}</div>`;
+    html += `<div class="${context}-loot-spawn-content">`;
+
+    const types: string[] = [];
+
+    // if (context === "popup") {
+    // Popup: with icons
+    if (lootSpawnInfo.shiny) types.push("✨ Shiny");
+    if (lootSpawnInfo.specialShiny) types.push("⭐ Special Shiny");
+    if (lootSpawnInfo.smallChest) types.push("📦 Small Chest");
+    if (lootSpawnInfo.mediumChest) types.push("📦 Medium Chest");
+    if (lootSpawnInfo.largeChest) types.push("📦 Large Chest");
+    if (lootSpawnInfo.specialChest) types.push("🎁 Special Chest");
+    /*} else {
+      // Tooltip: compact without icons
+      if (lootSpawnInfo.shiny) types.push("Shiny");
+      if (lootSpawnInfo.specialShiny) types.push("Special Shiny");
+      if (lootSpawnInfo.smallChest) types.push("Small");
+      if (lootSpawnInfo.mediumChest) types.push("Medium");
+      if (lootSpawnInfo.largeChest) types.push("Large");
+      if (lootSpawnInfo.specialChest) types.push("Special");
+    }*/
+
+    if (types.length > 0) {
+      html += types.join(", ");
+    }
+
+    // Add respawn info
+    const respawnDetails: string[] = [];
+
+    if (
+      lootSpawnInfo.respawnChance !== undefined &&
+      lootSpawnInfo.respawnChance !== null
+    ) {
+      respawnDetails.push(
+        `Chance: ${(lootSpawnInfo.respawnChance * 100).toFixed(0)}%`,
+      );
+    }
+
+    if (lootSpawnInfo.respawnFreq) {
+      respawnDetails.push(`Freq: ${lootSpawnInfo.respawnFreq}`);
+    }
+
+    if (lootSpawnInfo.spawnCondition) {
+      respawnDetails.push(`Condition: ${lootSpawnInfo.spawnCondition}`);
+    }
+
+    if (respawnDetails.length > 0) {
+      if (types.length > 0) {
+        html += /*context === "popup" ?*/ "<br>"; //: " | ";
+      }
+      html += respawnDetails.join(/*context === "popup" ?*/ "<br>" /*: ", "*/);
+    }
+
+    if (types.length === 0 && respawnDetails.length === 0) {
+      html += "None";
+    }
+
+    html += "</div></div>";
+    return html;
   }
 }

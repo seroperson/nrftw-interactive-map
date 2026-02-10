@@ -31,11 +31,7 @@ type MainGroupTypes = {
     trout: SubGroupDef;
     bass: SubGroupDef;
   };
-  digging: {
-    tier1: SubGroupDef;
-    tier2: SubGroupDef;
-    tier3: SubGroupDef;
-  };
+  digging: SubGroupDef;
   bonfire: SubGroupDef;
   ladder: SubGroupDef;
   whisper: SubGroupDef;
@@ -131,18 +127,8 @@ const TYPES: MainGroupTypes = {
     },
   },
   digging: {
-    tier1: {
-      displayName: "Tier 1",
-      color: "#CD853F",
-    },
-    tier2: {
-      displayName: "Tier 2",
-      color: "#D2691E",
-    },
-    tier3: {
-      displayName: "Tier 3",
-      color: "#A0522D",
-    },
+    displayName: "Dig Spot",
+    color: "#A0522D",
   },
   bonfire: {
     displayName: "Bonfire",

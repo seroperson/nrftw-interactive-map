@@ -5,6 +5,37 @@ export interface Coordinates {
   y: number;
 }
 
+export interface DropChance {
+  chance: number;
+  count: number;
+}
+
+export interface DropItem {
+  specificItem: number[];
+  filterPool: string[];
+}
+
+export interface DropGroup {
+  chances: DropChance[];
+  items: DropItem[];
+}
+
+export interface Drop {
+  groups: DropGroup[];
+}
+
+export interface LootSpawnInfo {
+  shiny: boolean;
+  specialShiny: boolean;
+  smallChest: boolean;
+  mediumChest: boolean;
+  largeChest: boolean;
+  specialChest: boolean;
+  respawnChance?: number;
+  respawnFreq?: string;
+  spawnCondition?: string;
+}
+
 export interface Resource {
   type: string;
   subtype: string;
@@ -14,10 +45,12 @@ export interface Resource {
   worldY: number;
   worldZ: number;
   filePath: string;
-  idA?: number;
-  idB?: number;
-  idC?: number;
-  idD?: number;
+  idA: number;
+  idB: number;
+  idC: number;
+  idD: number;
+  drop?: Drop;
+  lootSpawnInfo?: LootSpawnInfo;
 }
 
 export interface ResourceType {

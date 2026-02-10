@@ -632,7 +632,8 @@ body {
     font-size: 0.8rem;
 }
 
-.resource-tooltip .tooltip-guid {
+.resource-tooltip .tooltip-guid,
+.resource-tooltip .tooltip-path {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
     border-top: 1px solid var(--border);
@@ -640,16 +641,41 @@ body {
     font-size: 0.75rem;
 }
 
-.resource-tooltip .tooltip-guid-label {
+.resource-tooltip .tooltip-guid-label,
+.resource-tooltip .tooltip-path-label {
     color: var(--text-secondary);
     font-weight: 600;
     margin-bottom: 0.25rem;
 }
 
-.resource-tooltip .tooltip-guid-values {
+.resource-tooltip .tooltip-guid-values,
+.resource-tooltip .tooltip-path-values {
     color: var(--accent);
     line-height: 1.4;
 }
+
+.resource-tooltip .tooltip-drop,
+.resource-tooltip .tooltip-loot-spawn {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+}
+
+.resource-tooltip .tooltip-drop-label,
+.resource-tooltip .tooltip-loot-spawn-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.resource-tooltip .tooltip-drop-chances,
+.resource-tooltip .tooltip-drop-items {
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 0.25rem;
+}
+
 
 /* Popup Overlay */
 .ol-popup {
@@ -746,7 +772,8 @@ body {
     margin-bottom: 0.5rem;
 }
 
-.popup-guid {
+.popup-guid,
+.popup-path {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid var(--border);
@@ -754,15 +781,65 @@ body {
     font-size: 0.8rem;
 }
 
-.popup-guid-label {
+.popup-guid-label,
+.popup-path-label {
     color: var(--text-secondary);
     font-weight: 600;
     margin-bottom: 0.25rem;
 }
 
-.popup-guid-values {
+.popup-guid-values,
+.popup-path-values {
     color: var(--accent);
     line-height: 1.6;
+}
+
+.popup-drop,
+.popup-loot-spawn {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+}
+
+.popup-drop-label,
+.popup-loot-spawn-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.popup-drop-chances {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-family: 'Courier New', monospace;
+}
+
+.popup-drop-items {
+    color: var(--text-primary);
+}
+
+.popup-drop-items ul {
+    margin: 0.25rem 0;
+    padding-left: 1.25rem;
+}
+
+.popup-drop-items li {
+    color: var(--accent);
+    margin: 0.25rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+}
+
+.popup-loot-spawn-content,
+.tooltip-loot-spawn-content {
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 0.85rem;
+}
+
+.tooltip-loot-spawn-content {
+    font-size: 0.75rem;
 }
 
 /* Scrollbar */
