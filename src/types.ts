@@ -2,11 +2,6 @@
 
 export interface Coordinates {
   x: number;
-  z: number;
-}
-
-export interface ImageCoordinates {
-  x: number;
   y: number;
 }
 
@@ -19,7 +14,6 @@ export interface Resource {
   worldY: number;
   worldZ: number;
   filePath: string;
-  line: number;
   idA?: number;
   idB?: number;
   idC?: number;
@@ -38,13 +32,6 @@ export interface ResourceGroup {
   name: string;
   types: string[];
   expanded: boolean;
-}
-
-export interface CustomMarker {
-  id: string;
-  worldX: number;
-  worldZ: number;
-  label: string;
 }
 
 export interface RegionTransform {
@@ -67,17 +54,15 @@ export interface OpenedPopup {
   worldX: number;
   worldY: number;
   worldZ: number;
-  idA?: number;
-  idB?: number;
-  idC?: number;
-  idD?: number;
+  idA: number;
+  idB: number;
+  idC: number;
+  idD: number;
 }
 
 export interface AppState {
   viewport: ViewportState;
   visibleResources: Set<string>;
-  customMarkers: CustomMarker[];
-  markerMode: boolean;
   openedPopup: OpenedPopup | null;
   expandedGroups: Set<string>;
 }

@@ -491,80 +491,9 @@ body {
     transform: translateY(0);
 }
 
-/* Custom Markers */
-.custom-markers-controls {
-    margin-bottom: 0.75rem;
-}
-
-.hint {
-    margin-top: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    background: rgba(99, 102, 241, 0.08);
-    border-radius: 4px;
-    font-size: 0.8125rem;
-    color: var(--accent-light);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
-}
-
+/* Utility Classes */
 .hidden {
     display: none;
-}
-
-.marker-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.marker-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    transition: all 0.3s;
-}
-
-.marker-item:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: var(--border-light);
-}
-
-.marker-item input {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-    padding: 0.375rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    transition: all 0.2s;
-}
-
-.marker-item input:focus {
-    outline: none;
-    border-color: var(--accent);
-    background: rgba(99, 102, 241, 0.05);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.marker-item button {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    border-radius: 4px;
-    color: #ef4444;
-    cursor: pointer;
-    padding: 0.375rem 0.5rem;
-    transition: all 0.2s;
-}
-
-.marker-item button:hover {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: #ef4444;
-    transform: scale(1.05);
 }
 
 /* Feedback */
@@ -604,10 +533,6 @@ body {
     width: 100%;
     height: 100%;
     background: #000000;
-}
-
-#map.marker-mode {
-    cursor: crosshair;
 }
 
 /* OpenLayers overrides - Hide zoom controls */

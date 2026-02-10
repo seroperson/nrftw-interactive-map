@@ -2,90 +2,299 @@
 
 import { ResourceType, ResourceGroup, Resource } from "./types";
 
-const TYPES = {
+type MainGroupTypes = {
   ore: {
-    iron: "#4D4D4D",
-    copper: "#B87333",
-    silver: "#C0C0C0",
-    gold: "#FFD700",
+    iron: SubGroupDef;
+    copper: SubGroupDef;
+    silver: SubGroupDef;
+  };
+  wood: {
+    birch: SubGroupDef;
+    spruce: SubGroupDef;
+    pine: SubGroupDef;
+  };
+  herb: {
+    artemisia: SubGroupDef;
+    dracaena: SubGroupDef;
+    lithops: SubGroupDef;
+    mushroom: SubGroupDef;
+  };
+  food: {
+    blueberry: SubGroupDef;
+    firebrandberry: SubGroupDef;
+    horseshoe_crab: SubGroupDef;
+    potato: SubGroupDef;
+    tomato: SubGroupDef;
+  };
+  fishing: {
+    carp: SubGroupDef;
+    trout: SubGroupDef;
+    bass: SubGroupDef;
+  };
+  digging: {
+    tier1: SubGroupDef;
+    tier2: SubGroupDef;
+    tier3: SubGroupDef;
+  };
+  bonfire: SubGroupDef;
+  ladder: SubGroupDef;
+  whisper: SubGroupDef;
+  loot_spawn: SubGroupDef;
+};
+
+interface SubGroupDef {
+  displayName: string;
+  color: string;
+}
+
+const TYPES: MainGroupTypes = {
+  ore: {
+    iron: {
+      displayName: "Iron",
+      color: "#4D4D4D",
+    },
+    copper: {
+      displayName: "Copper",
+      color: "#B87333",
+    },
+    silver: {
+      displayName: "Silver",
+      color: "#C0C0C0",
+    },
   },
   wood: {
-    birch: "#F5DEB3",
-    spruce: "#6B8E23",
-    pine: "#556B2F",
+    birch: {
+      displayName: "Birch",
+      color: "#F5DEB3",
+    },
+    spruce: {
+      displayName: "Spruce",
+      color: "#6B8E23",
+    },
+    pine: {
+      displayName: "Pine",
+      color: "#556B2F",
+    },
   },
   herb: {
-    artemisia: "#9ACD32",
-    dracaena: "#228B22",
-    lithops: "#90EE90",
-    mushroom: "#DDA0DD",
+    artemisia: {
+      displayName: "Artemisia",
+      color: "#9ACD32",
+    },
+    dracaena: {
+      displayName: "Dracaena",
+      color: "#228B22",
+    },
+    lithops: {
+      displayName: "Lithops",
+      color: "#90EE90",
+    },
+    mushroom: {
+      displayName: "Mushroom",
+      color: "#DDA0DD",
+    },
   },
   food: {
-    blueberry: "#4169E1",
-    firebrandberry: "#DC143C",
-    horseshoe_crab: "#20B2AA",
-    potato: "#D2B48C",
-    tomato: "#FF6347",
+    blueberry: {
+      displayName: "Blueberry",
+      color: "#4169E1",
+    },
+    firebrandberry: {
+      displayName: "Firebrand Berry",
+      color: "#DC143C",
+    },
+    horseshoe_crab: {
+      displayName: "Horseshoe Crab",
+      color: "#20B2AA",
+    },
+    potato: {
+      displayName: "Potato",
+      color: "#D2B48C",
+    },
+    tomato: {
+      displayName: "Tomato",
+      color: "#FF6347",
+    },
   },
   fishing: {
-    carp: "#a6c3db",
-    trout: "#657e93",
-    bass: "#315B7E",
+    carp: {
+      displayName: "Carp",
+      color: "#a6c3db",
+    },
+    trout: {
+      displayName: "Trout",
+      color: "#657e93",
+    },
+    bass: {
+      displayName: "Bass",
+      color: "#315B7E",
+    },
   },
   digging: {
-    tier1: "#CD853F",
-    tier2: "#D2691E",
-    tier3: "#A0522D",
+    tier1: {
+      displayName: "Tier 1",
+      color: "#CD853F",
+    },
+    tier2: {
+      displayName: "Tier 2",
+      color: "#D2691E",
+    },
+    tier3: {
+      displayName: "Tier 3",
+      color: "#A0522D",
+    },
   },
-  bonfire: "#FF4500",
-  ladder: "#A0826D",
-  whisper: "#00BFFF",
-  loot: {
-    chest: "#DAA520",
-    shiny: "#FFD700",
-    container: "#FFD700"
+  bonfire: {
+    displayName: "Bonfire",
+    color: "#FF4500",
+  },
+  ladder: {
+    displayName: "Ladder",
+    color: "#A0826D",
+  },
+  whisper: {
+    displayName: "Whisper",
+    color: "#00BFFF",
+  },
+  loot_spawn: {
+    displayName: "Loot Spawn",
+    color: "#DAA520",
   },
 };
 
-export function getResourceColor(resourceType: string): string {
-  const lower = resourceType.toLowerCase();
+// Type utilities to extract all valid resource type keys
+type PathImpl<T, Key extends keyof T> = Key extends string
+  ? T[Key] extends SubGroupDef
+    ? Key
+    : Key | DeepPaths<T[Key]>
+  : never;
 
-  // Check if it's a direct type (bonfire, ladder, whisper)
-  if (typeof TYPES[lower as keyof typeof TYPES] === "string") {
-    return TYPES[lower as keyof typeof TYPES] as string;
+type DeepPaths<T> = T extends SubGroupDef
+  ? never
+  : { [Key in keyof T]: PathImpl<T, Key> }[keyof T];
+
+export type MainGroup = keyof typeof TYPES;
+export type ResourceTypeKey = DeepPaths<typeof TYPES>;
+
+// Helper to check if a value is a SubGroupDef
+function isSubGroupDef(value: unknown): value is SubGroupDef {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "color" in value &&
+    "displayName" in value
+  );
+}
+
+// Type guard to check if a key is a MainGroup
+export function isMainGroup(key: string): key is MainGroup {
+  return key in TYPES;
+}
+
+// Runtime validation to check if a string is a valid resource type
+export function isValidResourceType(type: string): type is ResourceTypeKey {
+  // Check if it's a main group or direct type
+  if (isMainGroup(type)) {
+    return true;
   }
 
-  // Check if it's a subtype within a group
-  for (const [group, value] of Object.entries(TYPES)) {
-    if (typeof value === "object" && !Array.isArray(value)) {
-      const color = value[lower as keyof typeof value];
-      if (color) {
-        return color;
+  // Check if it's a subtype
+  for (const value of Object.values(TYPES)) {
+    if (!isSubGroupDef(value) && typeof value === "object" && value !== null) {
+      if (type in value) {
+        return true;
       }
     }
   }
 
-  // Fallback color
-  return "#FF00FF";
+  return false;
 }
 
-export function extractResourceType(resource: any): string {
+// Validate that a subtype belongs to a specific group
+export function isValidSubtypeForGroup(
+  group: string,
+  subtype: string,
+): boolean {
+  if (!isMainGroup(group)) {
+    return false;
+  }
+
+  const groupValue = TYPES[group];
+
+  // If it's a direct SubGroupDef (bonfire, ladder, whisper), group and subtype should match
+  if (isSubGroupDef(groupValue)) {
+    return group === subtype;
+  }
+
+  // Check if subtype exists in the group
+  if (typeof groupValue === "object" && groupValue !== null) {
+    return subtype in groupValue;
+  }
+
+  return false;
+}
+
+// Get resource definition from TYPES - strongly typed, no casts
+function getResourceDef(
+  resourceType: ResourceTypeKey,
+): SubGroupDef | undefined {
+  // Check if it's a direct type (bonfire, ladder, whisper)
+  if (isMainGroup(resourceType)) {
+    const value = TYPES[resourceType];
+    if (isSubGroupDef(value)) {
+      return value;
+    }
+    // If it's a group (ore, wood, etc.), fall through to check subtypes
+  }
+
+  // Check if it's a subtype within a group (iron, birch, etc.)
+  for (const groupValue of Object.values(TYPES)) {
+    // Skip direct SubGroupDef entries
+    if (isSubGroupDef(groupValue)) {
+      continue;
+    }
+
+    // For nested groups, check if resourceType is a key in the group
+    if (
+      typeof groupValue === "object" &&
+      groupValue !== null &&
+      resourceType in groupValue
+    ) {
+      // TypeScript now knows resourceType is a key of groupValue
+      const potentialDef = (groupValue as Record<string, unknown>)[
+        resourceType
+      ];
+      if (isSubGroupDef(potentialDef)) {
+        return potentialDef;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+export function getResourceColor(resourceType: ResourceTypeKey): string {
+  const def = getResourceDef(resourceType);
+  return def?.color ?? "#FF00FF";
+}
+
+export function getResourceDisplayName(resourceType: ResourceTypeKey): string {
+  const def = getResourceDef(resourceType);
+  return def?.displayName ?? resourceType;
+}
+
+export function getGroupDisplayName(groupType: MainGroup): string {
+  const group = TYPES[groupType];
+  if (isSubGroupDef(group)) {
+    return group.displayName;
+  }
+  // For nested groups like ore, wood, return capitalized version
+  return groupType.charAt(0).toUpperCase() + groupType.slice(1);
+}
+
+export function extractResourceType(resource: Resource): string {
   // Use subtype as the resource type identifier
-  if (resource.subtype) {
-    return resource.subtype;
-  }
-  if (resource.type) {
-    return resource.type;
-  }
-  return "unknown";
-}
-
-export function getResourceGroup(resource: any): string {
-  // Use type as the group identifier
-  if (resource.type) {
-    return resource.type;
-  }
-  return "unknown";
+  return resource.subtype || resource.type || "unknown";
 }
 
 export function createResourceTypes(
@@ -99,7 +308,7 @@ export function createResourceTypes(
 
   resources.forEach((resource) => {
     const subtype = extractResourceType(resource);
-    const group = getResourceGroup(resource);
+    const group = resource.type;
 
     counts.set(subtype, (counts.get(subtype) || 0) + 1);
     typeToGroup.set(subtype, group);
@@ -107,7 +316,7 @@ export function createResourceTypes(
 
   // Create resource type entries for each subtype
   for (const [subtype, count] of counts.entries()) {
-    if (count > 0) {
+    if (count > 0 && isValidResourceType(subtype)) {
       typeMap.set(subtype, {
         name: subtype,
         color: getResourceColor(subtype),

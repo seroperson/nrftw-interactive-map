@@ -1,13 +1,14 @@
 // UI management for sidebar and controls
 
-import { ResourceType, CustomMarker, ResourceGroup } from './types';
+import { ResourceType, ResourceGroup } from './types';
 import { StateManager } from './stateManager';
+import { SIDEBAR_ANIMATION_DURATION, COPY_FEEDBACK_DURATION } from './constants';
+import { getResourceDisplayName, getGroupDisplayName, isValidResourceType, isMainGroup } from './resourceData';
 
 export class UIManager {
   private stateManager: StateManager;
   private resourceTypes: Map<string, ResourceType>;
   private resourceGroups: Map<string, ResourceGroup>;
-  private onMarkerClick: ((worldX: number, worldZ: number) => void) | null = null;
 
   constructor(stateManager: StateManager) {
     this.stateManager = stateManager;
@@ -35,7 +36,7 @@ export class UIManager {
       // Trigger map resize after sidebar animation completes
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
-      }, 400);
+      }, SIDEBAR_ANIMATION_DURATION);
     });
 
     // Close sidebar when clicking on map (on smaller screens)
@@ -82,18 +83,6 @@ export class UIManager {
       this.renderResourceFilters();
     });
 
-    // Add marker mode
-    const addMarkerBtn = document.getElementById('add-marker-mode');
-    const markerHint = document.getElementById('marker-mode-hint');
-    
-    addMarkerBtn?.addEventListener('click', () => {
-      const isActive = addMarkerBtn.classList.toggle('active');
-      markerHint?.classList.toggle('hidden', !isActive);
-      this.stateManager.setMarkerMode(isActive);
-      
-      addMarkerBtn.textContent = isActive ? 'Cancel' : 'Add Marker Mode';
-    });
-
     // Copy URL
     const copyBtn = document.getElementById('copy-url');
     const feedback = document.getElementById('copy-feedback');
@@ -104,14 +93,13 @@ export class UIManager {
       try {
         await navigator.clipboard.writeText(url);
         feedback?.classList.remove('hidden');
-        setTimeout(() => feedback?.classList.add('hidden'), 2000);
+        setTimeout(() => feedback?.classList.add('hidden'), COPY_FEEDBACK_DURATION);
       } catch (e) {
         console.error('Failed to copy URL:', e);
       }
     });
 
-    this.stateManager.subscribe((_) => {
-      console.log("Updating")
+    this.stateManager.subscribe(() => {
       this.renderResourceFilters();
     });
   }
@@ -205,7 +193,9 @@ export class UIManager {
       }
       
       const groupNameSpan = document.createElement('span');
-      groupNameSpan.textContent = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+      groupNameSpan.textContent = isMainGroup(groupName)
+        ? getGroupDisplayName(groupName)
+        : groupName.charAt(0).toUpperCase() + groupName.slice(1);
       
       // Calculate total count for group
       const totalCount = group.types.reduce((sum, type) => {
@@ -243,7 +233,6 @@ export class UIManager {
           return;
         }
         this.stateManager.toggleGroupExpansion(groupName);
-        console.log(`Toggle group expansion ${groupName}`)
       });
       
       // Prevent checkbox clicks from bubbling to prevent expansion
@@ -287,7 +276,9 @@ export class UIManager {
           colorBox.style.backgroundColor = type.color;
           
           const nameSpan = document.createElement('span');
-          nameSpan.textContent = type.name.charAt(0).toUpperCase() + type.name.slice(1);
+          nameSpan.textContent = isValidResourceType(type.name)
+            ? getResourceDisplayName(type.name)
+            : type.name.charAt(0).toUpperCase() + type.name.slice(1);
           
           const countSpan = document.createElement('span');
           countSpan.className = 'resource-count';
@@ -306,49 +297,6 @@ export class UIManager {
       }
 
       container.appendChild(groupElement);
-    }
-  }
-
-  public renderCustomMarkers(markers: CustomMarker[]): void {
-    const container = document.getElementById('custom-markers-list');
-    if (!container) return;
-
-    container.innerHTML = '';
-
-    for (const marker of markers) {
-      const item = document.createElement('div');
-      item.className = 'marker-item';
-
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = marker.label;
-      input.placeholder = 'Marker label';
-      
-      input.addEventListener('change', () => {
-        this.stateManager.updateCustomMarker(marker.id, input.value);
-      });
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = '🗑️';
-      deleteBtn.title = 'Delete marker';
-      
-      deleteBtn.addEventListener('click', () => {
-        this.stateManager.removeCustomMarker(marker.id);
-      });
-
-      item.appendChild(input);
-      item.appendChild(deleteBtn);
-      container.appendChild(item);
-    }
-  }
-
-  public setOnMarkerClick(callback: (worldX: number, worldZ: number) => void): void {
-    this.onMarkerClick = callback;
-  }
-
-  public handleCanvasClick(worldX: number, worldZ: number): void {
-    if (this.onMarkerClick) {
-      this.onMarkerClick(worldX, worldZ);
     }
   }
 }

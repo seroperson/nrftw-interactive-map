@@ -1,6 +1,7 @@
 // State management with URL and localStorage persistence
 
-import { AppState, ViewportState, CustomMarker, OpenedPopup } from './types';
+import { AppState, ViewportState, OpenedPopup } from './types';
+import { URL_UPDATE_THROTTLE } from './constants';
 
 export class StateManager {
   private readonly STORAGE_KEY = 'nrftw_map_state';
@@ -35,8 +36,6 @@ export class StateManager {
         scale: 0.1
       },
       visibleResources: new Set(['iron', 'copper', 'silver']),
-      customMarkers: [],
-      markerMode: false,
       openedPopup: null,
       expandedGroups: new Set(['ore'])
     };
@@ -57,8 +56,6 @@ export class StateManager {
       return {
         viewport: data.viewport || this.getDefaultState().viewport,
         visibleResources: new Set(data.visibleResources || []),
-        customMarkers: [],
-        markerMode: false,
         openedPopup: data.openedPopup || null,
         expandedGroups: new Set(data.expandedGroups || [])
       };
@@ -80,8 +77,6 @@ export class StateManager {
       return {
         viewport: data.viewport || this.getDefaultState().viewport,
         visibleResources: new Set(data.visibleResources || []),
-        customMarkers: data.customMarkers || [],
-        markerMode: false,
         openedPopup: data.openedPopup || null,
         expandedGroups: new Set(data.expandedGroups || [])
       };
@@ -97,7 +92,6 @@ export class StateManager {
 
   public updateViewport(viewport: ViewportState): void {
     if (JSON.stringify(this.state.viewport) != JSON.stringify(viewport)) {
-      console.log(`Updating viewport`);
       this.state.viewport = viewport;
       this.saveToLocalStorage();
       this.updateURL();
@@ -106,7 +100,6 @@ export class StateManager {
   }
 
   public toggleResourceType(resourceType: string): void {
-    console.log("Update toggling");
     if (this.state.visibleResources.has(resourceType)) {
       this.state.visibleResources.delete(resourceType);
     } else {
@@ -118,45 +111,13 @@ export class StateManager {
   }
 
   public setVisibleResources(types: Set<string>): void {
-    console.log("Update visible resources");
     this.state.visibleResources = types;
     this.saveToLocalStorage();
     this.updateURL();
     this.notifyListeners();
   }
 
-  public addCustomMarker(marker: CustomMarker): void {
-    console.log("Update custom marker");
-    this.state.customMarkers.push(marker);
-    this.saveToLocalStorage();
-    this.notifyListeners();
-  }
-
-  public updateCustomMarker(id: string, label: string): void {
-    console.log("Update custom marker");
-    const marker = this.state.customMarkers.find(m => m.id === id);
-    if (marker) {
-      marker.label = label;
-      this.saveToLocalStorage();
-      this.notifyListeners();
-    }
-  }
-
-  public removeCustomMarker(id: string): void {
-    console.log("Remove custom marker");
-    this.state.customMarkers = this.state.customMarkers.filter(m => m.id !== id);
-    this.saveToLocalStorage();
-    this.notifyListeners();
-  }
-
-  public setMarkerMode(enabled: boolean): void {
-    console.log("Set marker mode");
-    this.state.markerMode = enabled;
-    this.notifyListeners();
-  }
-
   public setOpenedPopup(popup: OpenedPopup | null): void {
-    console.log("Set opened popup");
     this.state.openedPopup = popup;
     this.saveToLocalStorage();
     this.updateURL();
@@ -164,7 +125,6 @@ export class StateManager {
   }
 
   public toggleGroupExpansion(groupName: string): void {
-    console.log("Toggle group expansion");
     if (this.state.expandedGroups.has(groupName)) {
       this.state.expandedGroups.delete(groupName);
     } else {
@@ -178,7 +138,6 @@ export class StateManager {
     const data = {
       viewport: this.state.viewport,
       visibleResources: Array.from(this.state.visibleResources),
-      customMarkers: this.state.customMarkers,
       openedPopup: this.state.openedPopup,
       expandedGroups: Array.from(this.state.expandedGroups)
     };
@@ -186,7 +145,7 @@ export class StateManager {
     const encoded = btoa(JSON.stringify(data));
     const url = new URL(window.location.href);
     url.searchParams.set('state', encoded);
-    
+
     return url.toString();
   }
 
@@ -195,11 +154,10 @@ export class StateManager {
       const data = {
         viewport: this.state.viewport,
         visibleResources: Array.from(this.state.visibleResources),
-        customMarkers: this.state.customMarkers,
         openedPopup: this.state.openedPopup,
         expandedGroups: Array.from(this.state.expandedGroups)
       };
-      
+
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save state to localStorage:', e);
@@ -211,7 +169,7 @@ export class StateManager {
     if (this.urlUpdateTimer !== null) {
       clearTimeout(this.urlUpdateTimer);
     }
-    
+
     this.urlUpdateTimer = window.setTimeout(() => {
       try {
         const data = {
@@ -223,15 +181,15 @@ export class StateManager {
         const encoded = btoa(JSON.stringify(data));
         const url = new URL(window.location.href);
         url.searchParams.set('state', encoded);
-        
+
         // Use replaceState to avoid cluttering browser history
         window.history.replaceState(null, '', url.toString());
       } catch (e) {
         console.error('Failed to update URL:', e);
       }
-      
+
       this.urlUpdateTimer = null;
-    }, 100); // 500ms throttle
+    }, URL_UPDATE_THROTTLE);
   }
 
   public subscribe(listener: (state: AppState) => void): () => void {

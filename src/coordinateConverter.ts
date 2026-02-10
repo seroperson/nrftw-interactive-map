@@ -1,6 +1,7 @@
 // Coordinate conversion logic extracted from plot_mines_on_map.py
 
-import { Coordinates, ImageCoordinates } from './types';
+import { Coordinates} from './types';
+import { MAP_WIDTH, MAP_HEIGHT } from './constants';
 
 interface Transform {
   scaling: number;
@@ -11,9 +12,6 @@ interface Transform {
 }
 
 export class CoordinateConverter {
-  // Map dimensions - based on ortho.asset configuration (8x8 tiles of 4096x4096 pixels each)
-  private readonly MAP_WIDTH = 16384;
-  private readonly MAP_HEIGHT = 16384;
   
   // Default world bounds - EXTRACTED FROM ortho.asset
   // BoundsCenter: {x: 422.5, y: 0, z: 614}
@@ -44,7 +42,7 @@ export class CoordinateConverter {
     this.regionTransforms.set(region, transform);
   }
 
-  public worldToImage(worldX: number, worldZ: number, region: string = 'default'): ImageCoordinates {
+  public worldToImage(worldX: number, worldZ: number, region: string = 'default'): Coordinates {
     const transform = this.regionTransforms.get(region) || this.DEFAULT_TRANSFORM;
     
     // Apply scaling to world bounds
@@ -72,8 +70,8 @@ export class CoordinateConverter {
     }
     
     // Map to pixel coordinates
-    const px = Math.floor(normX * this.MAP_WIDTH) + transform.offset_x;
-    const py = Math.floor(normZ * this.MAP_HEIGHT) + transform.offset_y;
+    const px = Math.floor(normX * MAP_WIDTH) + transform.offset_x;
+    const py = Math.floor(normZ * MAP_HEIGHT) + transform.offset_y;
     
     return { x: px, y: py };
   }
@@ -86,8 +84,8 @@ export class CoordinateConverter {
     let py = imageY - transform.offset_y;
     
     // Normalize from pixel to 0-1 range
-    let normX = px / this.MAP_WIDTH;
-    let normZ = py / this.MAP_HEIGHT;
+    let normX = px / MAP_WIDTH;
+    let normZ = py / MAP_HEIGHT;
     
     // Reverse inversions
     if (transform.invert_x) {
@@ -111,9 +109,9 @@ export class CoordinateConverter {
     
     // Denormalize to world coordinates
     const x = normX * worldWidth + worldBounds.x_min;
-    const z = normZ * worldHeight + worldBounds.z_min;
+    const y = normZ * worldHeight + worldBounds.z_min;
 
-    return { x, z };
+    return { x, y };
   }
 
   public loadTransformsFromCSV(csvText: string): void {
@@ -125,8 +123,6 @@ export class CoordinateConverter {
       if (!line) continue;
 
       const parts = line.split(',');
-      if (parts.length < 5) continue;
-
       const region = parts[0].trim();
       const transform: Transform = {
         scaling: parseFloat(parts[1]),
