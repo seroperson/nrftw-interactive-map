@@ -1,5 +1,3 @@
-// Type definitions for the interactive map
-
 export interface Coordinates {
   x: number;
   y: number;
@@ -11,7 +9,7 @@ export interface DropChance {
 }
 
 export interface DropItem {
-  specificItem: string[];  // Kept as strings to preserve precision of large integers
+  specificItem: string[];
   filterPool: string[];
 }
 
@@ -34,6 +32,12 @@ export interface LootSpawnInfo {
   respawnChance?: number;
   respawnFreq?: string;
   spawnCondition?: string;
+}
+
+export interface LoadedResources {
+  resources: Resource[];
+  resourceGroups: Map<string, ResourceGroup>;
+  resourceTypes: Map<string, ResourceType>;
 }
 
 export interface Resource {

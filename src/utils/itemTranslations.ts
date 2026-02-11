@@ -1,7 +1,7 @@
 // Item translation utilities
 // Maps specificItem IDs to their English names
 
-import itemTranslations from './assets/item_translations.json';
+import itemTranslations from "../assets/item_translations.json";
 
 // Type-safe translation map
 const translationMap: Record<string, string> = itemTranslations;

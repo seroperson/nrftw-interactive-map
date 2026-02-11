@@ -1233,6 +1233,22 @@ body {
     font-size: 1rem;
 }
 
+/* Error Message */
+.error-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ff4444;
+    color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
 /* Scrollbar */
 .sidebar-content::-webkit-scrollbar {
     width: 10px;

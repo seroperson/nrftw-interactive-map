@@ -1,10 +1,10 @@
 // State management with URL and localStorage persistence
 
-import { AppState, ViewportState, OpenedPopup } from './types';
-import { URL_UPDATE_THROTTLE } from './constants';
+import { AppState, ViewportState, OpenedPopup } from "./types";
+import { URL_UPDATE_THROTTLE } from "./utils/constants";
 
 export class StateManager {
-  private readonly STORAGE_KEY = 'nrftw_map_state';
+  private readonly STORAGE_KEY = "nrftw_map_state";
   private state: AppState;
   private listeners: Set<(state: AppState) => void> = new Set();
   private urlUpdateTimer: number | null = null;
@@ -33,24 +33,24 @@ export class StateManager {
       viewport: {
         x: 6144,
         y: 6144,
-        scale: 0.1
+        scale: 0.1,
       },
-      visibleResources: new Set(['iron', 'copper', 'silver']),
+      visibleResources: new Set(["iron", "copper", "silver"]),
       openedPopup: null,
-      expandedGroups: new Set(['ore']),
-      mapFilter: 'none'
+      expandedGroups: new Set(["ore"]),
+      mapFilter: "none",
     };
   }
 
   private loadFromURL(): AppState | null {
     try {
       const params = new URLSearchParams(window.location.search);
-      
-      if (!params.has('state')) {
+
+      if (!params.has("state")) {
         return null;
       }
 
-      const encoded = params.get('state')!;
+      const encoded = params.get("state")!;
       const decoded = atob(encoded);
       const data = JSON.parse(decoded);
 
@@ -59,10 +59,10 @@ export class StateManager {
         visibleResources: new Set(data.visibleResources || []),
         openedPopup: data.openedPopup || null,
         expandedGroups: new Set(data.expandedGroups || []),
-        mapFilter: data.mapFilter || 'none'
+        mapFilter: data.mapFilter || "none",
       };
     } catch (e) {
-      console.error('Failed to load state from URL:', e);
+      console.error("Failed to load state from URL:", e);
       return null;
     }
   }
@@ -75,16 +75,16 @@ export class StateManager {
       }
 
       const data = JSON.parse(stored);
-      
+
       return {
         viewport: data.viewport || this.getDefaultState().viewport,
         visibleResources: new Set(data.visibleResources || []),
         openedPopup: data.openedPopup || null,
         expandedGroups: new Set(data.expandedGroups || []),
-        mapFilter: data.mapFilter || 'none'
+        mapFilter: data.mapFilter || "none",
       };
     } catch (e) {
-      console.error('Failed to load state from localStorage:', e);
+      console.error("Failed to load state from localStorage:", e);
       return null;
     }
   }
@@ -150,12 +150,12 @@ export class StateManager {
       visibleResources: Array.from(this.state.visibleResources),
       openedPopup: this.state.openedPopup,
       expandedGroups: Array.from(this.state.expandedGroups),
-      mapFilter: this.state.mapFilter
+      mapFilter: this.state.mapFilter,
     };
 
     const encoded = btoa(JSON.stringify(data));
     const url = new URL(window.location.href);
-    url.searchParams.set('state', encoded);
+    url.searchParams.set("state", encoded);
 
     return url.toString();
   }
@@ -167,12 +167,12 @@ export class StateManager {
         visibleResources: Array.from(this.state.visibleResources),
         openedPopup: this.state.openedPopup,
         expandedGroups: Array.from(this.state.expandedGroups),
-        mapFilter: this.state.mapFilter
+        mapFilter: this.state.mapFilter,
       };
 
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
     } catch (e) {
-      console.error('Failed to save state to localStorage:', e);
+      console.error("Failed to save state to localStorage:", e);
     }
   }
 
@@ -188,17 +188,17 @@ export class StateManager {
           viewport: this.state.viewport,
           visibleResources: Array.from(this.state.visibleResources),
           openedPopup: this.state.openedPopup,
-          mapFilter: this.state.mapFilter
+          mapFilter: this.state.mapFilter,
         };
 
         const encoded = btoa(JSON.stringify(data));
         const url = new URL(window.location.href);
-        url.searchParams.set('state', encoded);
+        url.searchParams.set("state", encoded);
 
         // Use replaceState to avoid cluttering browser history
-        window.history.replaceState(null, '', url.toString());
+        window.history.replaceState(null, "", url.toString());
       } catch (e) {
-        console.error('Failed to update URL:', e);
+        console.error("Failed to update URL:", e);
       }
 
       this.urlUpdateTimer = null;
@@ -211,6 +211,6 @@ export class StateManager {
   }
 
   private notifyListeners(): void {
-    this.listeners.forEach(listener => listener(this.state));
+    this.listeners.forEach((listener) => listener(this.state));
   }
 }

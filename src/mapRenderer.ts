@@ -13,17 +13,22 @@ import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
 import type { FeatureLike } from "ol/Feature";
 
-import { Resource, Coordinates, OpenedPopup } from "./types";
-import { CoordinateConverter } from "./coordinateConverter";
+import { Resource, Coordinates, OpenedPopup, LoadedResources } from "./types";
+import { CoordinateConverter } from "./utils/coordinateConverter";
 import {
   getResourceColor,
   extractResourceType,
-  getResourceDisplayName,
   isValidResourceType,
-} from "./resourceData";
+} from "./resourceManager";
 import { StateManager } from "./stateManager";
-import { MAP_WIDTH, MAP_HEIGHT, COORD_PRECISION } from "./constants";
-import { getItemName } from "./itemTranslations";
+import { MAP_WIDTH, MAP_HEIGHT } from "./utils/constants";
+import {
+  formatResourceTitle,
+  formatCoordinates,
+  formatGuidHtml,
+  formatDropHtml,
+  formatLootSpawnInfoHtml,
+} from "./ui/formatters";
 
 export class MapRenderer {
   private map: Map;
@@ -37,11 +42,9 @@ export class MapRenderer {
   private mapElement: HTMLElement;
   private currentFilter: string = "none";
 
-  private resources: Resource[] = [];
   private visibleResourceTypes: Set<string> = new Set();
 
   private tooltipElement!: HTMLElement;
-  private onPopupChange: ((popup: OpenedPopup | null) => void) | null = null;
   private selectedFeature: FeatureLike | null = null;
   private isTouchDevice: boolean = false;
 
@@ -104,6 +107,17 @@ export class MapRenderer {
     window.addEventListener("resize", () => {
       this.map.updateSize();
     });
+
+    // Listen for close resource details event from UI
+    window.addEventListener("closeResourceDetails", () => {
+      this.clearSelection();
+    });
+
+    // Listen for select feature by coords event from UI
+    window.addEventListener("selectFeatureByCoords", ((event: CustomEvent) => {
+      const popup = event.detail;
+      this.selectFeatureByCoords(popup);
+    }) as EventListener);
   }
 
   private setupPopup(): void {
@@ -113,19 +127,15 @@ export class MapRenderer {
       const feature = this.map.forEachFeatureAtPixel(pixel, (feat) => feat);
 
       if (feature) {
-        this.showPopup(feature);
+        this.selectFeature(feature);
       } else {
-        // Clicked on empty map - close popup
-        this.closePopup();
+        // Clicked on empty map - clear selection
+        this.clearSelection();
       }
     });
   }
 
-  private showPopup(feature: FeatureLike): void {
-    // Hide tooltip if any
-    this.tooltipElement.classList.remove("visible");
-    (this.map.getTargetElement() as HTMLElement).style.cursor = "";
-
+  private selectFeature(feature: FeatureLike): void {
     // Clear previous selection
     if (this.selectedFeature) {
       // @ts-ignore
@@ -138,57 +148,27 @@ export class MapRenderer {
     feature.set("selected", true);
     this.resourceLayer.changed(); // Trigger re-render to show outline
 
-    const type = feature.get("resourceType") as string;
-    const subtype = feature.get("subtype") as string;
-    const resourceType = feature.get("type") as string;
-    const worldX = feature.get("worldX") as number;
-    const worldY = feature.get("worldY") as number;
-    const worldZ = feature.get("worldZ") as number;
-    const idA = feature.get("idA") as number;
-    const idB = feature.get("idB") as number;
-    const idC = feature.get("idC") as number;
-    const idD = feature.get("idD") as number;
-    const color = feature.get("color") as string;
-    const drop = feature.get("drop");
-    const lootSpawnInfo = feature.get("lootSpawnInfo");
-
-    const popupTitle = this.formatResourceTitle(type, subtype);
-    const name = feature.get("name") as string;
-
-    const popupHtml = `
-      <div class="popup-header">
-        <span class="popup-icon" style="background-color: ${color}"></span>
-        <div class="popup-title-group">
-          <span class="popup-title">${popupTitle}</span>
-          ${name ? `<span class="popup-subtitle">${name}</span>` : ""}
-        </div>
-      </div>
-      ${this.formatCoordinates("popup", worldX, worldY, worldZ)}
-      ${this.formatGuidHtml("popup", idA, idB, idC, idD)}
-      ${this.formatPathHtml("popup", feature.get("path"))}
-      ${this.formatDropHtml("popup", drop)}
-      ${this.formatLootSpawnInfoHtml("popup", lootSpawnInfo)}
-    `;
-
-    // Dispatch event to show in sidebar instead of popup
-    const event = new CustomEvent("resourceSelected", {
-      detail: { html: popupHtml },
+    // Dispatch event with feature data for UI to handle
+    const event = new CustomEvent("featureSelected", {
+      detail: {
+        type: feature.get("resourceType"),
+        subtype: feature.get("subtype"),
+        resourceType: feature.get("type"),
+        name: feature.get("name"),
+        color: feature.get("color"),
+        worldX: feature.get("worldX"),
+        worldY: feature.get("worldY"),
+        worldZ: feature.get("worldZ"),
+        idA: feature.get("idA"),
+        idB: feature.get("idB"),
+        idC: feature.get("idC"),
+        idD: feature.get("idD"),
+        path: feature.get("path"),
+        drop: feature.get("drop"),
+        lootSpawnInfo: feature.get("lootSpawnInfo"),
+      },
     });
     window.dispatchEvent(event);
-
-    // Notify state manager about opened popup
-    if (this.onPopupChange) {
-      this.onPopupChange({
-        resourceType,
-        worldX,
-        worldY,
-        worldZ,
-        idA,
-        idB,
-        idC,
-        idD,
-      });
-    }
   }
 
   public setupViewportListeners(stateManager: StateManager) {
@@ -198,7 +178,7 @@ export class MapRenderer {
     });
   }
 
-  public closePopup(): void {
+  private clearSelection(): void {
     // Clear selection
     if (this.selectedFeature) {
       // @ts-ignore
@@ -208,20 +188,11 @@ export class MapRenderer {
     }
 
     // Dispatch event to hide sidebar section
-    const event = new CustomEvent("resourceDeselected");
+    const event = new CustomEvent("featureDeselected");
     window.dispatchEvent(event);
-
-    if (this.onPopupChange) {
-      this.onPopupChange(null);
-    }
   }
 
-  public setOpenedPopup(popup: OpenedPopup | null): void {
-    if (!popup) {
-      this.closePopup();
-      return;
-    }
-
+  private selectFeatureByCoords(popup: OpenedPopup): void {
     // Find the feature that matches this popup
     const source = this.resourceLayer.getSource();
     if (!source) return;
@@ -235,19 +206,10 @@ export class MapRenderer {
         Math.abs(worldX - popup.worldX) < 0.1 &&
         Math.abs(worldZ - popup.worldZ) < 0.1
       ) {
-        const geometry = feature.getGeometry();
-        if (geometry) {
-          this.showPopup(feature);
-        }
+        this.selectFeature(feature);
         break;
       }
     }
-  }
-
-  public onPopupStateChange(
-    callback: (popup: OpenedPopup | null) => void,
-  ): void {
-    this.onPopupChange = callback;
   }
 
   public loadMapImage(tilesPath: string = `/tiles/{z}/{y}/{x}.jpg`): void {
@@ -330,17 +292,15 @@ export class MapRenderer {
     console.log(`Applied filter: ${filterName} (${filterValue}) to tile layer`);
   }
 
-  public setResources(resources: Resource[]): void {
-    this.resources = resources;
-    this.updateResourceLayer();
-  }
-
-  public setVisibleResourceTypes(types: Set<string>): void {
+  public setVisibleResourceTypes(
+    loadedResources: LoadedResources,
+    types: Set<string>,
+  ): void {
     this.visibleResourceTypes = types;
-    this.updateResourceLayer();
+    this.updateResourceLayer(loadedResources);
   }
 
-  private updateResourceLayer(): void {
+  public updateResourceLayer(loadedResources: LoadedResources): void {
     const source = this.resourceLayer.getSource();
     if (!source) return;
 
@@ -353,14 +313,14 @@ export class MapRenderer {
       } as Resource);
 
       if (!this.visibleResourceTypes.has(selectedType)) {
-        // Selected feature will no longer be visible, close popup
-        this.closePopup();
+        // Selected feature will no longer be visible, clear selection
+        this.clearSelection();
       }
     }
 
     source.clear();
 
-    const visibleResources = this.resources.filter((resource) => {
+    const visibleResources = loadedResources.resources.filter((resource) => {
       const type = extractResourceType(resource);
       return this.visibleResourceTypes.has(type);
     });
@@ -551,7 +511,7 @@ export class MapRenderer {
         const drop = feature.get("drop");
         const lootSpawnInfo = feature.get("lootSpawnInfo");
 
-        const tooltipTitle = this.formatResourceTitle(type, subtype);
+        const tooltipTitle = formatResourceTitle(type, subtype);
         const name = feature.get("name") as string;
 
         // Build tooltip content
@@ -560,10 +520,10 @@ export class MapRenderer {
             <div class="tooltip-type">${tooltipTitle}</div>
             ${name ? `<div class="tooltip-subtitle">${name}</div>` : ""}
           </div>
-          ${this.formatCoordinates("tooltip", worldX, worldY, worldZ)}
-          ${this.formatGuidHtml("tooltip", idA, idB, idC, idD)}
-          ${this.formatDropHtml("tooltip", drop)}
-          ${this.formatLootSpawnInfoHtml("tooltip", lootSpawnInfo)}
+          ${formatCoordinates("tooltip", worldX, worldY, worldZ)}
+          ${formatGuidHtml("tooltip", idA, idB, idC, idD)}
+          ${formatDropHtml("tooltip", drop)}
+          ${formatLootSpawnInfoHtml("tooltip", lootSpawnInfo)}
         `;
 
         // Update tooltip content
@@ -590,257 +550,7 @@ export class MapRenderer {
     });
   }
 
-  public getMap(): Map {
-    return this.map;
-  }
-
   private detectTouchDevice(): boolean {
     return window.matchMedia("(pointer: coarse)").matches;
-  }
-
-  private isDevMode(): boolean {
-    // Check URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("dev")) {
-      return true;
-    }
-    // Check localStorage
-    try {
-      return localStorage.getItem("nrftw_dev_mode") === "true";
-    } catch {
-      return false;
-    }
-  }
-
-  private formatResourceTitle(type: string, subtype: string): string {
-    if (type == "loot_spawn") {
-      return "Loot Spawn";
-    }
-    const typeDisplay = isValidResourceType(type)
-      ? getResourceDisplayName(type)
-      : type;
-
-    const subtypeDisplay = isValidResourceType(subtype)
-      ? getResourceDisplayName(subtype)
-      : subtype;
-
-    if (type === subtype) {
-      return subtypeDisplay;
-    }
-    return `${typeDisplay.charAt(0).toUpperCase() + typeDisplay.slice(1)}, ${subtypeDisplay.charAt(0).toUpperCase() + subtypeDisplay.slice(1)}`;
-  }
-
-  private formatCoordinates(
-    context: "popup" | "tooltip",
-    worldX: number,
-    worldY: number,
-    worldZ: number,
-  ): string {
-    return `
-      <div class="${context}-coords">
-        <span class="${context}-coord ${context}-coord-x">
-          <span class="${context}-coord-label">X</span>
-          <span class="${context}-coord-value">${worldX.toFixed(COORD_PRECISION)}</span>
-        </span>
-        <span class="${context}-coord ${context}-coord-y">
-          <span class="${context}-coord-label">Y</span>
-          <span class="${context}-coord-value">${worldY.toFixed(COORD_PRECISION)}</span>
-        </span>
-        <span class="${context}-coord ${context}-coord-z">
-          <span class="${context}-coord-label">Z</span>
-          <span class="${context}-coord-value">${worldZ.toFixed(COORD_PRECISION)}</span>
-        </span>
-      </div>
-    `;
-  }
-
-  private formatGuidHtml(
-    context: "popup" | "tooltip",
-    idA: number,
-    idB: number,
-    idC: number,
-    idD: number,
-  ): string {
-    if (!this.isDevMode()) {
-      return "";
-    }
-    return `
-      <div class="${context}-section ${context}-guid">
-        <div class="${context}-section-header">🔑 GUID</div>
-        <div class="${context}-section-content">
-          <code class="${context}-code">${idA},${idB},${idC},${idD}</code>
-        </div>
-      </div>
-    `;
-  }
-
-  private formatPathHtml(context: "popup" | "tooltip", path?: string): string {
-    if (!this.isDevMode() || path === undefined) {
-      return "";
-    }
-    return `
-      <div class="${context}-section ${context}-path">
-        <div class="${context}-section-header">📁 File Path</div>
-        <div class="${context}-section-content">
-          <code class="${context}-code ${context}-code-path">${path}</code>
-        </div>
-      </div>
-    `;
-  }
-
-  private formatDropHtml(context: "popup" | "tooltip", drop: any): string {
-    if (!drop || !drop.groups || drop.groups.length === 0) {
-      return "";
-    }
-
-    let html = `<div class="${context}-section ${context}-drop">`;
-    html += `<div class="${context}-section-header">💎 Drop Rates</div>`;
-    html += `<div class="${context}-section-content">`;
-
-    drop.groups.forEach((group: any, groupIndex: number) => {
-      // Add separator between groups
-      if (groupIndex > 0) {
-        html += `<div class="${context}-drop-group-separator"></div>`;
-      }
-
-      html += `<div class="${context}-drop-group">`;
-
-      if (group.chances && group.chances.length > 0) {
-        html += `<div class="${context}-drop-chances">`;
-        html += group.chances
-          .map(
-            (c: any) =>
-              `<span class="${context}-badge ${context}-badge-chance">x${c.count} (${c.chance}%)</span>`,
-          )
-          .join("");
-        html += "</div>";
-      }
-
-      if (group.items && group.items.length > 0) {
-        html += `<div class="${context}-drop-items">`;
-        for (const item of group.items) {
-          if (item.specificItem && item.specificItem.length > 0) {
-            html += `<div class="${context}-drop-item">`;
-            html += `<span class="${context}-item-label">Items:</span> `;
-            html += item.specificItem
-              .map(
-                (id: any) =>
-                  `<span class="${context}-badge ${context}-badge-pool">${getItemName(id)}</span>`,
-              )
-              .join(" ");
-            html += `</div>`;
-          }
-          if (item.filterPool && item.filterPool.length > 0) {
-            html += `<div class="${context}-drop-item">`;
-            html += `<span class="${context}-item-label">Item Pool:</span> `;
-            html += item.filterPool
-              .map(
-                (p: string) =>
-                  `<span class="${context}-badge ${context}-badge-pool">${p}</span>`,
-              )
-              .join(" ");
-            html += `</div>`;
-          }
-        }
-        html += "</div>";
-      }
-
-      html += `</div>`;
-    });
-
-    html += "</div></div>";
-    return html;
-  }
-
-  private formatLootSpawnInfoHtml(
-    context: "popup" | "tooltip",
-    lootSpawnInfo: any,
-  ): string {
-    if (
-      !lootSpawnInfo ||
-      (typeof lootSpawnInfo === "object" &&
-        Object.keys(lootSpawnInfo).length === 0)
-    ) {
-      return "";
-    }
-
-    let html = `<div class="${context}-section ${context}-loot-spawn">`;
-    html += `<div class="${context}-section-header">📍 Loot Spawn Info</div>`;
-    html += `<div class="${context}-section-content">`;
-
-    // Chest/Shiny types as badges
-    const typeBadges: string[] = [];
-
-    if (lootSpawnInfo.shiny)
-      typeBadges.push(
-        `<span class="${context}-badge ${context}-badge-shiny">✨ Shiny</span>`,
-      );
-    if (lootSpawnInfo.specialShiny)
-      typeBadges.push(
-        `<span class="${context}-badge ${context}-badge-special">⭐ Special Shiny</span>`,
-      );
-    if (lootSpawnInfo.smallChest)
-      typeBadges.push(
-        `<span class="${context}-badge ${context}-badge-chest">📦 Small Chest</span>`,
-      );
-    if (lootSpawnInfo.mediumChest)
-      typeBadges.push(
-        `<span class="${context}-badge ${context}-badge-chest">📦 Medium Chest</span>`,
-      );
-    if (lootSpawnInfo.largeChest)
-      typeBadges.push(
-        `<span class="${context}-badge ${context}-badge-chest">📦 Large Chest</span>`,
-      );
-    if (lootSpawnInfo.specialChest)
-      typeBadges.push(
-        `<span class="${context}-badge ${context}-badge-special">🎁 Special Chest</span>`,
-      );
-
-    if (typeBadges.length > 0) {
-      html += `<div class="${context}-badges">${typeBadges.join("")}</div>`;
-    }
-
-    // Respawn info as properties
-    const hasRespawnInfo =
-      lootSpawnInfo.respawnChance !== undefined ||
-      lootSpawnInfo.respawnFreq ||
-      lootSpawnInfo.spawnCondition;
-
-    if (hasRespawnInfo) {
-      html += `<div class="${context}-properties">`;
-
-      if (
-        lootSpawnInfo.respawnChance !== undefined &&
-        lootSpawnInfo.respawnChance !== null
-      ) {
-        html += `<div class="${context}-property">`;
-        html += `<span class="${context}-property-label">Spawn Chance:</span>`;
-        html += `<span class="${context}-property-value">${(lootSpawnInfo.respawnChance * 100).toFixed(0)}%</span>`;
-        html += `</div>`;
-      }
-
-      if (lootSpawnInfo.respawnFreq) {
-        html += `<div class="${context}-property">`;
-        html += `<span class="${context}-property-label">Frequency:</span>`;
-        html += `<span class="${context}-property-value">${lootSpawnInfo.respawnFreq}</span>`;
-        html += `</div>`;
-      }
-
-      if (lootSpawnInfo.spawnCondition) {
-        html += `<div class="${context}-property">`;
-        html += `<span class="${context}-property-label">Condition:</span>`;
-        html += `<span class="${context}-property-value ${context}-property-value-small">${lootSpawnInfo.spawnCondition}</span>`;
-        html += `</div>`;
-      }
-
-      html += `</div>`;
-    }
-
-    if (typeBadges.length === 0 && !hasRespawnInfo) {
-      html += `<div class="${context}-empty">No spawn info</div>`;
-    }
-
-    html += "</div></div>";
-    return html;
   }
 }

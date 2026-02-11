@@ -1,6 +1,15 @@
-// Resource type definitions and colors
+// Resource management: definitions, loading, and parsing
 
-import { ResourceType, ResourceGroup, Resource } from "./types";
+import {
+  ResourceType,
+  ResourceGroup,
+  Resource,
+  LoadedResources,
+} from "./types";
+
+// ============================================================================
+// Resource Type Definitions
+// ============================================================================
 
 type MainGroupTypes = {
   ore: {
@@ -211,7 +220,10 @@ const TYPES: MainGroupTypes = {
   },
 };
 
-// Type utilities to extract all valid resource type keys
+// ============================================================================
+// Type Utilities
+// ============================================================================
+
 type PathImpl<T, Key extends keyof T> = Key extends string
   ? T[Key] extends SubGroupDef
     ? Key
@@ -283,7 +295,7 @@ export function isValidSubtypeForGroup(
   return false;
 }
 
-// Get resource definition from TYPES - strongly typed, no casts
+// Get resource definition from TYPES
 function getResourceDef(
   resourceType: ResourceTypeKey,
 ): SubGroupDef | undefined {
@@ -293,23 +305,19 @@ function getResourceDef(
     if (isSubGroupDef(value)) {
       return value;
     }
-    // If it's a group (ore, wood, etc.), fall through to check subtypes
   }
 
   // Check if it's a subtype within a group (iron, birch, etc.)
   for (const groupValue of Object.values(TYPES)) {
-    // Skip direct SubGroupDef entries
     if (isSubGroupDef(groupValue)) {
       continue;
     }
 
-    // For nested groups, check if resourceType is a key in the group
     if (
       typeof groupValue === "object" &&
       groupValue !== null &&
       resourceType in groupValue
     ) {
-      // TypeScript now knows resourceType is a key of groupValue
       const potentialDef = (groupValue as Record<string, unknown>)[
         resourceType
       ];
@@ -359,7 +367,7 @@ export function extractResourceType(resource: Resource): string {
       if (info.shiny) return "shiny";
     }
 
-    // Fallback for loot_spawn without valid lootSpawnInfo - use "other" category
+    // Fallback for loot_spawn without valid lootSpawnInfo
     return "other_loot";
   }
 
@@ -367,9 +375,7 @@ export function extractResourceType(resource: Resource): string {
   return resource.subtype || resource.type || "unknown";
 }
 
-export function createResourceTypes(
-  resources: Resource[],
-): Map<string, ResourceType> {
+function createResourceTypes(resources: Resource[]): Map<string, ResourceType> {
   const typeMap = new Map<string, ResourceType>();
 
   // Count resources by subtype and track their group
@@ -400,7 +406,7 @@ export function createResourceTypes(
   return typeMap;
 }
 
-export function createResourceGroups(
+function createResourceGroups(
   typeMap: Map<string, ResourceType>,
 ): Map<string, ResourceGroup> {
   const groupMap = new Map<string, ResourceGroup>();
@@ -432,4 +438,264 @@ export function createResourceGroups(
   }
 
   return groupMap;
+}
+
+// ============================================================================
+// Resource Loading and Parsing
+// ============================================================================
+
+export class ResourceLoader {
+  private disabledItems: Set<string> = new Set();
+  private loadedResources?: LoadedResources;
+
+  public getResources(): LoadedResources | undefined {
+    return this.loadedResources;
+  }
+
+  /**
+   * Load disabled items from JSON
+   */
+  public loadDisabledItems(jsonData: string): void {
+    try {
+      const disabledItemsList = JSON.parse(jsonData) as string[];
+      this.disabledItems = new Set(disabledItemsList);
+      console.log(`Loaded ${this.disabledItems.size} disabled items`);
+    } catch (error) {
+      console.warn("Could not load disabled_items.json", error);
+      this.disabledItems = new Set();
+    }
+  }
+
+  /**
+   * Parse CSV line handling quoted fields
+   */
+  private parseCSVLine(line: string): string[] {
+    const result: string[] = [];
+    let current = "";
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      const nextChar = line[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          // Escaped quote
+          current += '"';
+          i++; // Skip next quote
+        } else {
+          // Toggle quote state
+          inQuotes = !inQuotes;
+        }
+      } else if (char === "," && !inQuotes) {
+        // Field separator
+        result.push(current);
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+
+    // Add last field
+    result.push(current);
+    return result;
+  }
+
+  /**
+   * Extract region from file path
+   */
+  private extractRegionFromPath(filePath: string): string {
+    // Extract region from path like: ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity
+    // We want to get "coastA" not "coast"
+    const match = filePath.match(/worlds\/isolaSacra\/[^\/]+\/([^\/]+)/);
+    if (match) {
+      return match[1];
+    }
+
+    // For paths that don't follow the isolaSacra pattern (like infiniteDungeon), use default
+    return "default";
+  }
+
+  /**
+   * Parse resources from CSV text
+   */
+  public loadResourceCSV(csvText: string): LoadedResources {
+    const lines = csvText.trim().split("\n");
+
+    let totalObjects = 0;
+    let filteredObjects = 0;
+    let duplicateObjects = 0;
+    let invalidTypeObjects = 0;
+    let disabledObjects = 0;
+
+    // Track seen objects to filter duplicates
+    // Key format: "type:subtype:worldX:worldZ" (rounded to avoid floating point issues)
+    const seenObjects = new Set<string>();
+
+    // Track invalid types for reporting
+    const invalidTypes = new Set<string>();
+
+    var loadedResources: LoadedResources = {
+      resourceGroups: new Map(),
+      resourceTypes: new Map(),
+      resources: [],
+    };
+
+    // Skip header: Type,Subtype,Name,File,RawX,RawY,RawZ,id_a,id_b,id_c,id_d,Drop,LootSpawnInfo
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      const parts = this.parseCSVLine(line);
+      if (parts.length < 8) continue;
+
+      const type = parts[0].trim().toLowerCase();
+      const subtype = parts[1].trim().toLowerCase();
+      const name = parts[2].trim();
+      const filePath = parts[3].trim();
+      const rawX = parseFloat(parts[4]);
+      const rawY = parseFloat(parts[5]);
+      const rawZ = parseFloat(parts[6]);
+
+      // Parse GUIDs if available (columns 7-10)
+      const idA = parseInt(parts[7]);
+      const idB = parseInt(parts[8]);
+      const idC = parseInt(parts[9]);
+      const idD = parseInt(parts[10]);
+
+      // Check if this item is disabled
+      const guidKey = `${idA},${idB},${idC},${idD}`;
+      if (this.disabledItems.has(guidKey)) {
+        disabledObjects++;
+        continue;
+      }
+
+      // Parse Drop JSON if available (column 11)
+      let drop: any = undefined;
+      if (parts.length > 11 && parts[11].trim()) {
+        try {
+          drop = JSON.parse(parts[11]);
+        } catch (e) {
+          console.warn(`Failed to parse Drop JSON at line ${i + 1}:`, e);
+        }
+      }
+
+      // Parse LootSpawnInfo JSON if available (column 12)
+      let lootSpawnInfo: any = undefined;
+      if (parts.length > 12 && parts[12].trim()) {
+        try {
+          lootSpawnInfo = JSON.parse(parts[12]);
+        } catch (e) {
+          console.warn(
+            `Failed to parse LootSpawnInfo JSON at line ${i + 1}:`,
+            e,
+          );
+        }
+      }
+
+      totalObjects++;
+
+      // Validate resource types against TYPES definition
+      // Special case: loot_spawn subtype will be determined from lootSpawnInfo later
+      if (type !== "loot_spawn") {
+        if (!isValidResourceType(type) || !isValidResourceType(subtype)) {
+          invalidTypeObjects++;
+          const invalidKey = `${type}:${subtype}`;
+          if (!invalidTypes.has(invalidKey)) {
+            invalidTypes.add(invalidKey);
+            console.warn(
+              `Invalid resource type in CSV: type="${type}", subtype="${subtype}" at line ${i + 1}`,
+            );
+          }
+          continue;
+        }
+
+        // Validate that subtype belongs to the correct group
+        if (!isValidSubtypeForGroup(type, subtype)) {
+          invalidTypeObjects++;
+          const invalidKey = `${type}:${subtype}`;
+          if (!invalidTypes.has(invalidKey)) {
+            invalidTypes.add(invalidKey);
+            console.warn(
+              `Subtype "${subtype}" does not belong to group "${type}" at line ${i + 1}`,
+            );
+          }
+          continue;
+        }
+      } else {
+        // For loot_spawn, just validate that the type is valid
+        if (!isValidResourceType(type)) {
+          invalidTypeObjects++;
+          const invalidKey = `${type}:${subtype}`;
+          if (!invalidTypes.has(invalidKey)) {
+            invalidTypes.add(invalidKey);
+            console.warn(
+              `Invalid resource type in CSV: type="${type}" at line ${i + 1}`,
+            );
+          }
+          continue;
+        }
+      }
+
+      // Convert from Unity units (appears to be in centimeters * 65536) to game world units
+      const worldX = rawX / 1_000_000;
+      const worldY = rawY / 1_000_000;
+      const worldZ = rawZ / 1_000_000;
+
+      // Extract region from file path
+      const region = this.extractRegionFromPath(filePath);
+
+      // Check for duplicates (same type and coordinates)
+      // Round coordinates to 3 decimal places to handle floating point precision
+      const coordKey = `${type}:${subtype}:${worldX.toFixed(3)}:${worldZ.toFixed(3)}`;
+      if (seenObjects.has(coordKey)) {
+        duplicateObjects++;
+        continue;
+      }
+      seenObjects.add(coordKey);
+
+      loadedResources.resources.push({
+        type,
+        subtype,
+        name,
+        region,
+        worldX,
+        worldY,
+        worldZ,
+        filePath,
+        idA,
+        idB,
+        idC,
+        idD,
+        drop,
+        lootSpawnInfo,
+      });
+    }
+
+    console.log(
+      `Filtered ${filteredObjects} out-of-bounds objects out of ${totalObjects} total objects`,
+    );
+    console.log(`Filtered ${duplicateObjects} duplicate objects`);
+    console.log(`Filtered ${invalidTypeObjects} invalid type objects`);
+    console.log(`Filtered ${disabledObjects} disabled objects`);
+    if (invalidTypes.size > 0) {
+      console.warn(
+        `Found ${invalidTypes.size} unique invalid type combinations:`,
+        Array.from(invalidTypes),
+      );
+    }
+    console.log(
+      `Loaded ${loadedResources.resources.length} unique valid resources`,
+    );
+
+    const resourceTypes = createResourceTypes(loadedResources.resources);
+    const resourceGroups = createResourceGroups(resourceTypes);
+
+    loadedResources.resourceTypes = resourceTypes;
+    loadedResources.resourceGroups = resourceGroups;
+
+    this.loadedResources = loadedResources;
+
+    return loadedResources;
+  }
 }
