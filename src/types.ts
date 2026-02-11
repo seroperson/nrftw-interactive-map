@@ -11,7 +11,7 @@ export interface DropChance {
 }
 
 export interface DropItem {
-  specificItem: number[];
+  specificItem: string[];  // Kept as strings to preserve precision of large integers
   filterPool: string[];
 }
 

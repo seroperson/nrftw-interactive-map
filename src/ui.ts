@@ -9,11 +9,15 @@ export class UIManager {
   private stateManager: StateManager;
   private resourceTypes: Map<string, ResourceType>;
   private resourceGroups: Map<string, ResourceGroup>;
+  private sidebar: HTMLElement | null = null;
+  private toggleBtn: HTMLElement | null = null;
 
   constructor(stateManager: StateManager) {
     this.stateManager = stateManager;
     this.resourceTypes = new Map();
     this.resourceGroups = new Map();
+    this.sidebar = document.getElementById('sidebar');
+    this.toggleBtn = document.getElementById('toggle-sidebar');
     this.setupEventListeners();
     this.setupMapFilters();
   }
@@ -345,6 +349,24 @@ export class UIManager {
       }
 
       container.appendChild(groupElement);
+    }
+  }
+
+  public ensureSidebarOpen(): void {
+    if (!this.sidebar || !this.toggleBtn) return;
+
+    // Check if sidebar is collapsed
+    if (this.sidebar.classList.contains('collapsed')) {
+      // Open the sidebar
+      this.sidebar.classList.remove('collapsed');
+      this.toggleBtn.textContent = '◀';
+      this.toggleBtn.setAttribute('aria-label', 'Hide sidebar');
+      this.toggleBtn.classList.remove('sidebar-collapsed');
+
+      // Trigger map resize after sidebar animation completes
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, SIDEBAR_ANIMATION_DURATION);
     }
   }
 }

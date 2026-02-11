@@ -24,6 +24,7 @@ import {
 } from "./resourceData";
 import { StateManager } from "./stateManager";
 import { MAP_WIDTH, MAP_HEIGHT, COORD_PRECISION } from "./constants";
+import { getItemName } from "./itemTranslations";
 
 export class MapRenderer {
   private map: Map;
@@ -35,7 +36,7 @@ export class MapRenderer {
   private resourceLayer: VectorLayer<VectorSource>;
   private tileLayer: TileLayer<XYZ> | null = null;
   private mapElement: HTMLElement;
-  private currentFilter: string = 'none';
+  private currentFilter: string = "none";
 
   private resources: Resource[] = [];
   private visibleResourceTypes: Set<string> = new Set();
@@ -46,9 +47,14 @@ export class MapRenderer {
   private popupCloser!: HTMLElement;
   private onPopupChange: ((popup: OpenedPopup | null) => void) | null = null;
   private isPopupOpen: boolean = false;
+  private selectedFeature: FeatureLike | null = null;
+  private isTouchDevice: boolean = false;
 
   constructor(targetElement: string, converter: CoordinateConverter) {
     this.converter = converter;
+
+    // Detect if device has touch capability
+    this.isTouchDevice = this.detectTouchDevice();
 
     // Store map element reference
     const element = document.getElementById(targetElement);
@@ -143,33 +149,30 @@ export class MapRenderer {
       const feature = this.map.forEachFeatureAtPixel(pixel, (feat) => feat);
 
       if (feature) {
-        const coordinate = evt.coordinate;
-        this.showPopup(feature, coordinate);
+        this.showPopup(feature);
       } else {
         // Clicked on empty map - close popup
         this.closePopup();
       }
     });
-
-    // Close popup when user interacts with the map (panning or zooming)
-    this.map.on("movestart", () => {
-      if (this.isPopupOpen) {
-        this.closePopup();
-      }
-    });
-
-    // Close popup when zooming
-    this.map.getView().on("change:resolution", () => {
-      if (this.isPopupOpen) {
-        this.closePopup();
-      }
-    });
   }
 
-  private showPopup(feature: FeatureLike, coordinate: number[]): void {
+  private showPopup(feature: FeatureLike): void {
     // Hide tooltip if any
     this.tooltipElement.classList.remove("visible");
     (this.map.getTargetElement() as HTMLElement).style.cursor = "";
+
+    // Clear previous selection
+    if (this.selectedFeature) {
+      // @ts-ignore
+      this.selectedFeature.set("selected", false);
+    }
+
+    // Set new selection
+    this.selectedFeature = feature;
+    // @ts-ignore
+    feature.set("selected", true);
+    this.resourceLayer.changed(); // Trigger re-render to show outline
 
     const type = feature.get("resourceType") as string;
     const subtype = feature.get("subtype") as string;
@@ -184,11 +187,6 @@ export class MapRenderer {
     const color = feature.get("color") as string;
     const drop = feature.get("drop");
     const lootSpawnInfo = feature.get("lootSpawnInfo");
-
-    // Build popup content with icon
-    const contentElement = this.popupElement.querySelector(
-      "#popup-content",
-    ) as HTMLElement;
 
     const popupTitle = this.formatResourceTitle(type, subtype);
     const name = feature.get("name") as string;
@@ -208,10 +206,12 @@ export class MapRenderer {
       ${this.formatLootSpawnInfoHtml("popup", lootSpawnInfo)}
     `;
 
-    contentElement.innerHTML = popupHtml;
+    // Dispatch event to show in sidebar instead of popup
+    const event = new CustomEvent("resourceSelected", {
+      detail: { html: popupHtml },
+    });
+    window.dispatchEvent(event);
 
-    // Show popup at coordinate
-    this.popupOverlay.setPosition(coordinate);
     this.isPopupOpen = true;
 
     // Notify state manager about opened popup
@@ -239,6 +239,19 @@ export class MapRenderer {
   public closePopup(): void {
     this.popupOverlay.setPosition(undefined);
     this.isPopupOpen = false;
+
+    // Clear selection
+    if (this.selectedFeature) {
+      // @ts-ignore
+      this.selectedFeature.set("selected", false);
+      this.selectedFeature = null;
+      this.resourceLayer.changed(); // Trigger re-render to remove outline
+    }
+
+    // Dispatch event to hide sidebar section
+    const event = new CustomEvent("resourceDeselected");
+    window.dispatchEvent(event);
+
     if (this.onPopupChange) {
       this.onPopupChange(null);
     }
@@ -265,8 +278,7 @@ export class MapRenderer {
       ) {
         const geometry = feature.getGeometry();
         if (geometry) {
-          const coords = (geometry as Point).getCoordinates();
-          this.showPopup(feature, coords);
+          this.showPopup(feature);
         }
         break;
       }
@@ -293,15 +305,15 @@ export class MapRenderer {
         minZoom: 0,
         maxZoom: 6,
       }),
-      className: 'tile-layer', // Add custom class for targeting
+      className: "tile-layer", // Add custom class for targeting
     });
 
     // Insert tile layer as the base layer
     this.map.getLayers().insertAt(0, this.tileLayer);
 
     // Wait for the map to render, then apply any pending filter
-    this.map.once('rendercomplete', () => {
-      if (this.currentFilter !== 'none') {
+    this.map.once("rendercomplete", () => {
+      if (this.currentFilter !== "none") {
         this.applyFilterToTileLayer(this.currentFilter);
       }
     });
@@ -317,40 +329,42 @@ export class MapRenderer {
 
   private applyFilterToTileLayer(filterName: string): void {
     if (!this.mapElement) {
-      console.warn('Map element not found, cannot apply filter');
+      console.warn("Map element not found, cannot apply filter");
       return;
     }
 
     // Find the tile layer element by the custom class we added
-    const tileLayerElement = this.mapElement.querySelector('.tile-layer') as HTMLElement;
+    const tileLayerElement = this.mapElement.querySelector(
+      ".tile-layer",
+    ) as HTMLElement;
 
     if (!tileLayerElement) {
-      console.warn('Tile layer element not found yet, will retry after render');
+      console.warn("Tile layer element not found yet, will retry after render");
       return;
     }
 
     // Apply the selected filter to the tile layer element
-    let filterValue = 'none';
+    let filterValue = "none";
 
     switch (filterName) {
-      case 'grayscale':
-        filterValue = 'grayscale(100%)';
+      case "grayscale":
+        filterValue = "grayscale(100%)";
         break;
-      case 'sepia':
-        filterValue = 'sepia(100%)';
+      case "sepia":
+        filterValue = "sepia(100%)";
         break;
-      case 'contrast':
-        filterValue = 'contrast(150%) saturate(120%)';
+      case "contrast":
+        filterValue = "contrast(150%) saturate(120%)";
         break;
-      case 'brightness':
-        filterValue = 'brightness(130%) saturate(110%)';
+      case "brightness":
+        filterValue = "brightness(130%) saturate(110%)";
         break;
-      case 'dark':
-        filterValue = 'brightness(70%) contrast(110%)';
+      case "dark":
+        filterValue = "brightness(70%) contrast(110%)";
         break;
-      case 'none':
+      case "none":
       default:
-        filterValue = 'none';
+        filterValue = "none";
         break;
     }
 
@@ -373,6 +387,20 @@ export class MapRenderer {
     const source = this.resourceLayer.getSource();
     if (!source) return;
 
+    // Check if the currently selected feature will still be visible
+    if (this.selectedFeature) {
+      const selectedType = extractResourceType({
+        type: this.selectedFeature.get("resourceType"),
+        subtype: this.selectedFeature.get("subtype"),
+        lootSpawnInfo: this.selectedFeature.get("lootSpawnInfo"),
+      } as Resource);
+
+      if (!this.visibleResourceTypes.has(selectedType)) {
+        // Selected feature will no longer be visible, close popup
+        this.closePopup();
+      }
+    }
+
     source.clear();
 
     const visibleResources = this.resources.filter((resource) => {
@@ -387,7 +415,22 @@ export class MapRenderer {
         resource.worldZ,
         resource.region,
       );
-      features.push(this.createResourceFeature(resource, coords));
+      const feature = this.createResourceFeature(resource, coords);
+
+      // Restore selection if this was the selected feature
+      if (this.selectedFeature) {
+        const selectedX = this.selectedFeature.get("worldX");
+        const selectedZ = this.selectedFeature.get("worldZ");
+        if (
+          Math.abs(resource.worldX - selectedX) < 0.1 &&
+          Math.abs(resource.worldZ - selectedZ) < 0.1
+        ) {
+          feature.set("selected", true);
+          this.selectedFeature = feature;
+        }
+      }
+
+      features.push(feature);
     }
     source.addFeatures(features);
   }
@@ -423,9 +466,10 @@ export class MapRenderer {
     return feature;
   }
 
-  private getResourceStyle(feature: FeatureLike): Style {
+  private getResourceStyle(feature: FeatureLike): Style | Style[] {
     const color = feature.get("color") as string;
     const zoom = this.map.getView().getZoom() || 2;
+    const isSelected = feature.get("selected") === true;
 
     // Scale radius based on zoom level (exponential growth)
     // At zoom 2: radius ~4, at zoom 5: radius ~8, at zoom 8: radius ~16
@@ -435,6 +479,44 @@ export class MapRenderer {
 
     // Scale stroke width proportionally
     const strokeWidth = Math.max(1, Math.min(4, radius / 3));
+
+    // If selected, add multiple strokes for a glowing effect
+    if (isSelected) {
+      return [
+        // Outer glow (largest)
+        new Style({
+          image: new Circle({
+            radius: radius + 4,
+            fill: new Fill({ color: "rgba(255, 255, 255, 0.3)" }),
+            stroke: new Stroke({
+              color: "rgba(255, 255, 255, 0.6)",
+              width: 2,
+            }),
+          }),
+        }),
+        // Middle outline
+        new Style({
+          image: new Circle({
+            radius: radius + 2,
+            stroke: new Stroke({
+              color: "#ffffff",
+              width: 3,
+            }),
+          }),
+        }),
+        // Inner circle (original)
+        new Style({
+          image: new Circle({
+            radius: radius,
+            fill: new Fill({ color: color }),
+            stroke: new Stroke({
+              color: "rgba(255, 255, 255, 0.8)",
+              width: strokeWidth,
+            }),
+          }),
+        }),
+      ];
+    }
 
     return new Style({
       image: new Circle({
@@ -498,8 +580,8 @@ export class MapRenderer {
       const pixel = evt.pixel;
       const feature = this.map.forEachFeatureAtPixel(pixel, (feat) => feat);
 
-      // Don't show tooltip if popup is open
-      if (!this.isPopupOpen && feature) {
+      // Don't show tooltip if popup is open or on pointer devices (non-touch)
+      if (!this.isPopupOpen && feature && this.isTouchDevice) {
         const type = feature.get("resourceType") as string;
         const subtype = feature.get("subtype") as string;
         const worldX = feature.get("worldX") as number;
@@ -540,13 +622,27 @@ export class MapRenderer {
       } else {
         // Hide tooltip
         this.tooltipElement.classList.remove("visible");
-        (this.map.getTargetElement() as HTMLElement).style.cursor = "";
+
+        // Show pointer cursor on hover over features (for non-touch devices)
+        if (feature && !this.isTouchDevice) {
+          (this.map.getTargetElement() as HTMLElement).style.cursor = "pointer";
+        } else {
+          (this.map.getTargetElement() as HTMLElement).style.cursor = "";
+        }
       }
     });
   }
 
   public getMap(): Map {
     return this.map;
+  }
+
+  private detectTouchDevice(): boolean {
+    // Check for touch support
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+      return true;
+    }
+    return false;
   }
 
   private isDevMode(): boolean {
@@ -564,6 +660,9 @@ export class MapRenderer {
   }
 
   private formatResourceTitle(type: string, subtype: string): string {
+    if (type == "loot_spawn") {
+      return "Loot Spawn";
+    }
     const typeDisplay = isValidResourceType(type)
       ? getResourceDisplayName(type)
       : type;
@@ -616,7 +715,7 @@ export class MapRenderer {
       <div class="${context}-section ${context}-guid">
         <div class="${context}-section-header">🔑 GUID</div>
         <div class="${context}-section-content">
-          <code class="${context}-code">${idA}, ${idB}, ${idC}, ${idD}</code>
+          <code class="${context}-code">${idA},${idB},${idC},${idD}</code>
         </div>
       </div>
     `;
@@ -658,7 +757,7 @@ export class MapRenderer {
         html += group.chances
           .map(
             (c: any) =>
-              `<span class="${context}-badge ${context}-badge-chance">${c.count}x @ ${c.chance}%</span>`,
+              `<span class="${context}-badge ${context}-badge-chance">x${c.count} (${c.chance}%)</span>`,
           )
           .join("");
         html += "</div>";
@@ -669,11 +768,11 @@ export class MapRenderer {
         for (const item of group.items) {
           if (item.specificItem && item.specificItem.length > 0) {
             html += `<div class="${context}-drop-item">`;
-            html += `<span class="${context}-item-label">ID:</span> `;
+            html += `<span class="${context}-item-label">Items:</span> `;
             html += item.specificItem
               .map(
                 (id: any) =>
-                  `<span class="${context}-badge ${context}-badge-pool">${id}</span>`,
+                  `<span class="${context}-badge ${context}-badge-pool">${getItemName(id)}</span>`,
               )
               .join(" ");
             html += `</div>`;

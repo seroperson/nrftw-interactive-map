@@ -14,6 +14,7 @@ import {
 import { VIEWPORT_UPDATE_INTERVAL } from "./constants";
 import oreCoordinates from "./assets/ore_coordinates.csv?raw";
 import regionTransform from "./assets/region_transforms.csv?raw";
+import disabledItemsJson from "./assets/disabled_items.json?raw";
 
 class InteractiveMapApp {
   private converter: CoordinateConverter;
@@ -21,6 +22,7 @@ class InteractiveMapApp {
   private stateManager: StateManager;
   private uiManager: UIManager;
   private resources: Resource[] = [];
+  private disabledItems: Set<string> = new Set();
 
   constructor() {
     // Initialize core components
@@ -33,6 +35,9 @@ class InteractiveMapApp {
 
   private async setupApplication(): Promise<void> {
     try {
+      // Load disabled items list
+      this.loadDisabledItems();
+
       // Load resources from CSV
       await this.loadResources();
 
@@ -88,6 +93,9 @@ class InteractiveMapApp {
 
       this.renderer.setupViewportListeners(this.stateManager);
 
+      // Setup resource selection handlers
+      this.setupResourceSelection();
+
       console.log("Interactive map initialized successfully");
       console.log(`Loaded ${this.resources.length} resources`);
     } catch (error) {
@@ -95,6 +103,17 @@ class InteractiveMapApp {
       this.showError(
         "Failed to load map data. Please check the console for details.",
       );
+    }
+  }
+
+  private loadDisabledItems(): void {
+    try {
+      const disabledItemsList = JSON.parse(disabledItemsJson) as string[];
+      this.disabledItems = new Set(disabledItemsList);
+      console.log(`Loaded ${this.disabledItems.size} disabled items`);
+    } catch (error) {
+      console.warn("Could not load disabled_items.json", error);
+      this.disabledItems = new Set();
     }
   }
 
@@ -147,6 +166,7 @@ class InteractiveMapApp {
     let filteredObjects = 0;
     let duplicateObjects = 0;
     let invalidTypeObjects = 0;
+    let disabledObjects = 0;
 
     // Track seen objects to filter duplicates
     // Key format: "type:subtype:worldX:worldZ" (rounded to avoid floating point issues)
@@ -176,6 +196,13 @@ class InteractiveMapApp {
       const idB = parseInt(parts[8]);
       const idC = parseInt(parts[9]);
       const idD = parseInt(parts[10]);
+
+      // Check if this item is disabled
+      const guidKey = `${idA},${idB},${idC},${idD}`;
+      if (this.disabledItems.has(guidKey)) {
+        disabledObjects++;
+        continue;
+      }
 
       // Parse Drop JSON if available (column 11)
       let drop: any = undefined;
@@ -249,13 +276,6 @@ class InteractiveMapApp {
       // Extract region from file path
       const region = this.extractRegionFromPath(filePath);
 
-      // Filter out-of-bounds objects based on actual projection
-      /*if (imageCoords.x < 0 || imageCoords.x >= MAP_WIDTH ||
-          imageCoords.y < 0 || imageCoords.y >= MAP_HEIGHT) {
-        filteredObjects++;
-        continue;
-      }*/
-
       // Check for duplicates (same type and coordinates)
       // Round coordinates to 3 decimal places to handle floating point precision
       const coordKey = `${type}:${subtype}:${worldX.toFixed(3)}:${worldZ.toFixed(3)}`;
@@ -288,6 +308,7 @@ class InteractiveMapApp {
     );
     console.log(`Filtered ${duplicateObjects} duplicate objects`);
     console.log(`Filtered ${invalidTypeObjects} invalid type objects`);
+    console.log(`Filtered ${disabledObjects} disabled objects`);
     if (invalidTypes.size > 0) {
       console.warn(
         `Found ${invalidTypes.size} unique invalid type combinations:`,
@@ -347,6 +368,41 @@ class InteractiveMapApp {
       const viewport = this.renderer.getViewportState();
       this.stateManager.updateViewport(viewport);
     }, VIEWPORT_UPDATE_INTERVAL);
+  }
+
+  private setupResourceSelection(): void {
+    const detailsSection = document.getElementById("resource-details-section");
+    const detailsContent = document.getElementById("resource-details-content");
+    const closeButton = document.getElementById("close-resource-details");
+
+    if (!detailsSection || !detailsContent || !closeButton) {
+      console.warn("Resource details elements not found");
+      return;
+    }
+
+    // Handle resource selection
+    window.addEventListener("resourceSelected", ((event: CustomEvent) => {
+      const { html } = event.detail;
+      detailsContent.innerHTML = html;
+      detailsSection.style.display = "block";
+
+      // Ensure sidebar is open when selecting a resource
+      this.uiManager.ensureSidebarOpen();
+
+      // Scroll the section into view
+      detailsSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }) as EventListener);
+
+    // Handle resource deselection
+    window.addEventListener("resourceDeselected", () => {
+      detailsSection.style.display = "none";
+      detailsContent.innerHTML = "";
+    });
+
+    // Handle close button click
+    closeButton.addEventListener("click", () => {
+      this.renderer.closePopup();
+    });
   }
 
   private showError(message: string): void {

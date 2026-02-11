@@ -42,6 +42,7 @@ type MainGroupTypes = {
     medium_chest: SubGroupDef;
     large_chest: SubGroupDef;
     special_chest: SubGroupDef;
+    other_loot: SubGroupDef;
   };
   interactible: {
     ladder: SubGroupDef;
@@ -61,125 +62,129 @@ const TYPES: MainGroupTypes = {
   ore: {
     iron: {
       displayName: "Iron",
-      color: "#4D4D4D",
+      color: "#9E9E9E", // Medium gray
     },
     copper: {
       displayName: "Copper",
-      color: "#B87333",
+      color: "#D84315", // Dark copper red-orange
     },
     silver: {
       displayName: "Silver",
-      color: "#C0C0C0",
+      color: "#ECEFF1", // Bright silver-white
     },
   },
   wood: {
     birch: {
       displayName: "Birch",
-      color: "#F5DEB3",
+      color: "#F4E4C1", // Pale birch
     },
     spruce: {
       displayName: "Spruce",
-      color: "#6B8E23",
+      color: "#2D5016", // Dark forest green
     },
     pine: {
       displayName: "Pine",
-      color: "#556B2F",
+      color: "#7CB342", // Light green
     },
   },
   herb: {
     artemisia: {
       displayName: "Artemisia",
-      color: "#9ACD32",
+      color: "#CDDC39", // Lime green
     },
     dracaena: {
       displayName: "Dracaena",
-      color: "#228B22",
+      color: "#00C853", // Vibrant green
     },
     lithops: {
       displayName: "Lithops",
-      color: "#90EE90",
+      color: "#69F0AE", // Mint green
     },
     mushroom: {
       displayName: "Mushroom",
-      color: "#DDA0DD",
+      color: "#E040FB", // Bright purple
     },
   },
   food: {
     blueberry: {
       displayName: "Blueberry",
-      color: "#4169E1",
+      color: "#3D5AFE", // Bright indigo blue
     },
     firebrandberry: {
       displayName: "Firebrand Berry",
-      color: "#DC143C",
+      color: "#FF1744", // Vibrant red
     },
     horseshoe_crab: {
       displayName: "Horseshoe Crab",
-      color: "#20B2AA",
+      color: "#00E5FF", // Cyan
     },
     potato: {
       displayName: "Potato",
-      color: "#D2B48C",
+      color: "#D4A574", // Tan potato
     },
     tomato: {
       displayName: "Tomato",
-      color: "#FF6347",
+      color: "#FF5722", // Deep orange-red
     },
   },
   fishing: {
     carp: {
       displayName: "Carp",
-      color: "#a6c3db",
+      color: "#82B1FF", // Light blue
     },
     trout: {
       displayName: "Trout",
-      color: "#657e93",
+      color: "#2962FF", // Deep blue
     },
     bass: {
       displayName: "Bass",
-      color: "#315B7E",
+      color: "#0D47A1", // Dark blue
     },
   },
   digging: {
     displayName: "Dig Spot",
-    color: "#A0522D",
+    color: "#8D6E63", // Brown
   },
   bonfire: {
     displayName: "Bonfire",
-    color: "#FF4500",
+    color: "#FF6F00", // Bright orange
   },
   ladder: {
     displayName: "Ladder",
-    color: "#A0826D",
+    color: "#5D4037", // Dark brown
   },
   whisper: {
     displayName: "Whisper",
-    color: "#00BFFF",
+    color: "#18FFFF", // Aqua cyan
   },
   loot_spawn: {
     shiny: {
       displayName: "Shiny",
-      color: "#FFD700",
+      color: "#FFD700", // Gold
     },
     special_shiny: {
       displayName: "Special Shiny",
-      color: "#FF8C00",
+      color: "#FF6D00", // Bright amber
     },
     small_chest: {
       displayName: "Small Chest",
-      color: "#8B7355",
+      color: "#A1887F", // Light brown
     },
     medium_chest: {
       displayName: "Medium Chest",
-      color: "#CD853F",
+      color: "#FFA726", // Orange
     },
     large_chest: {
       displayName: "Large Chest",
-      color: "#DAA520",
+      color: "#F57C00", // Deep orange
     },
     special_chest: {
       displayName: "Special Chest",
-      color: "#B8860B",
+      color: "#E65100", // Dark orange-red
+    },
+    other_loot: {
+      displayName: "Other",
+      color: "#9E9E9E", // Gray
     },
   },
   interactible: {
@@ -203,7 +208,7 @@ const TYPES: MainGroupTypes = {
       displayName: "Other",
       color: "#D2691E",
     },
-  }
+  },
 };
 
 // Type utilities to extract all valid resource type keys
@@ -354,8 +359,8 @@ export function extractResourceType(resource: Resource): string {
       if (info.shiny) return "shiny";
     }
 
-    // Fallback for loot_spawn without valid lootSpawnInfo - use small_chest as default
-    return "small_chest";
+    // Fallback for loot_spawn without valid lootSpawnInfo - use "other" category
+    return "other_loot";
   }
 
   // Use subtype as the resource type identifier
