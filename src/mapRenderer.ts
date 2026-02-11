@@ -140,6 +140,20 @@ export class MapRenderer {
         this.closePopup();
       }
     });
+
+    // Close popup when user interacts with the map (panning or zooming)
+    this.map.on("movestart", () => {
+      if (this.isPopupOpen) {
+        this.closePopup();
+      }
+    });
+
+    // Close popup when zooming
+    this.map.getView().on("change:resolution", () => {
+      if (this.isPopupOpen) {
+        this.closePopup();
+      }
+    });
   }
 
   private showPopup(feature: FeatureLike, coordinate: number[]): void {
@@ -167,13 +181,17 @@ export class MapRenderer {
     ) as HTMLElement;
 
     const popupTitle = this.formatResourceTitle(type, subtype);
+    const name = feature.get("name") as string;
 
     const popupHtml = `
       <div class="popup-header">
         <span class="popup-icon" style="background-color: ${color}"></span>
-        <span class="popup-title">${popupTitle}</span>
+        <div class="popup-title-group">
+          <span class="popup-title">${popupTitle}</span>
+          ${name ? `<span class="popup-subtitle">${name}</span>` : ""}
+        </div>
       </div>
-      <div class="popup-coords">${this.formatCoordinates(worldX, worldY, worldZ)}</div>
+      ${this.formatCoordinates("popup", worldX, worldY, worldZ)}
       ${this.formatGuidHtml("popup", idA, idB, idC, idD)}
       ${this.formatPathHtml("popup", feature.get("path"))}
       ${this.formatDropHtml("popup", drop)}
@@ -425,11 +443,15 @@ export class MapRenderer {
         const lootSpawnInfo = feature.get("lootSpawnInfo");
 
         const tooltipTitle = this.formatResourceTitle(type, subtype);
+        const name = feature.get("name") as string;
 
         // Build tooltip content
         const tooltipHtml = `
-          <div class="tooltip-type">${tooltipTitle}</div>
-          <div class="tooltip-coords">${this.formatCoordinates(worldX, worldY, worldZ)}</div>
+          <div class="tooltip-title-group">
+            <div class="tooltip-type">${tooltipTitle}</div>
+            ${name ? `<div class="tooltip-subtitle">${name}</div>` : ""}
+          </div>
+          ${this.formatCoordinates("tooltip", worldX, worldY, worldZ)}
           ${this.formatGuidHtml("tooltip", idA, idB, idC, idD)}
           ${this.formatDropHtml("tooltip", drop)}
           ${this.formatLootSpawnInfoHtml("tooltip", lootSpawnInfo)}
@@ -474,24 +496,40 @@ export class MapRenderer {
   private formatResourceTitle(type: string, subtype: string): string {
     const typeDisplay = isValidResourceType(type)
       ? getResourceDisplayName(type)
-      : type.charAt(0).toUpperCase() + type.slice(1);
+      : type;
 
     const subtypeDisplay = isValidResourceType(subtype)
       ? getResourceDisplayName(subtype)
-      : subtype.charAt(0).toUpperCase() + subtype.slice(1);
+      : subtype;
 
     if (type === subtype) {
       return subtypeDisplay;
     }
-    return `${typeDisplay}, ${subtypeDisplay}`;
+    return `${typeDisplay.charAt(0).toUpperCase() + typeDisplay.slice(1)}, ${subtypeDisplay.charAt(0).toUpperCase() + subtypeDisplay.slice(1)}`;
   }
 
   private formatCoordinates(
+    context: "popup" | "tooltip",
     worldX: number,
     worldY: number,
     worldZ: number,
   ): string {
-    return `X: ${worldX.toFixed(COORD_PRECISION)}, Y: ${worldY.toFixed(COORD_PRECISION)}, Z: ${worldZ.toFixed(COORD_PRECISION)}`;
+    return `
+      <div class="${context}-coords">
+        <span class="${context}-coord ${context}-coord-x">
+          <span class="${context}-coord-label">X</span>
+          <span class="${context}-coord-value">${worldX.toFixed(COORD_PRECISION)}</span>
+        </span>
+        <span class="${context}-coord ${context}-coord-y">
+          <span class="${context}-coord-label">Y</span>
+          <span class="${context}-coord-value">${worldY.toFixed(COORD_PRECISION)}</span>
+        </span>
+        <span class="${context}-coord ${context}-coord-z">
+          <span class="${context}-coord-label">Z</span>
+          <span class="${context}-coord-value">${worldZ.toFixed(COORD_PRECISION)}</span>
+        </span>
+      </div>
+    `;
   }
 
   private formatGuidHtml(
@@ -505,9 +543,11 @@ export class MapRenderer {
       return "";
     }
     return `
-      <div class="${context}-guid">
-        <div class="${context}-guid-label">GUID:</div>
-        <div class="${context}-guid-values">${idA},${idB},${idC},${idD}</div>
+      <div class="${context}-section ${context}-guid">
+        <div class="${context}-section-header">🔑 GUID</div>
+        <div class="${context}-section-content">
+          <code class="${context}-code">${idA}, ${idB}, ${idC}, ${idD}</code>
+        </div>
       </div>
     `;
   }
@@ -517,9 +557,11 @@ export class MapRenderer {
       return "";
     }
     return `
-      <div class="${context}-path">
-        <div class="${context}-path-label">Path:</div>
-        <div class="${context}-path-values">${path}</div>
+      <div class="${context}-section ${context}-path">
+        <div class="${context}-section-header">📁 File Path</div>
+        <div class="${context}-section-content">
+          <code class="${context}-code ${context}-code-path">${path}</code>
+        </div>
       </div>
     `;
   }
@@ -529,34 +571,62 @@ export class MapRenderer {
       return "";
     }
 
-    let html = `<div class="${context}-drop"><div class="${context}-drop-label">Drop:</div>`;
+    let html = `<div class="${context}-section ${context}-drop">`;
+    html += `<div class="${context}-section-header">💎 Drop Rates</div>`;
+    html += `<div class="${context}-section-content">`;
 
-    for (const group of drop.groups) {
+    drop.groups.forEach((group: any, groupIndex: number) => {
+      // Add separator between groups
+      if (groupIndex > 0) {
+        html += `<div class="${context}-drop-group-separator"></div>`;
+      }
+
+      html += `<div class="${context}-drop-group">`;
+
       if (group.chances && group.chances.length > 0) {
         html += `<div class="${context}-drop-chances">`;
         html += group.chances
-          .map((c: any) => `${c.count}x (${c.chance}%)`)
-          .join(", ");
+          .map(
+            (c: any) =>
+              `<span class="${context}-badge ${context}-badge-chance">${c.count}x @ ${c.chance}%</span>`,
+          )
+          .join("");
         html += "</div>";
       }
 
       if (group.items && group.items.length > 0) {
-        html += `<div class="popup-drop-items">`;
-        html += "<ul>";
+        html += `<div class="${context}-drop-items">`;
         for (const item of group.items) {
           if (item.specificItem && item.specificItem.length > 0) {
-            html += `<li>Item ID: ${item.specificItem.join(", ")}</li>`;
+            html += `<div class="${context}-drop-item">`;
+            html += `<span class="${context}-item-label">ID:</span> `;
+            html += item.specificItem
+              .map(
+                (id: any) =>
+                  `<span class="${context}-badge ${context}-badge-pool">${id}</span>`,
+              )
+              .join(" ");
+            html += `</div>`;
           }
           if (item.filterPool && item.filterPool.length > 0) {
-            html += `<li>${item.filterPool.join(", ")}</li>`;
+            html += `<div class="${context}-drop-item">`;
+            html += `<span class="${context}-item-label">Item Pool:</span> `;
+            html += item.filterPool
+              .map(
+                (p: string) =>
+                  `<span class="${context}-badge ${context}-badge-pool">${p}</span>`,
+              )
+              .join(" ");
+            html += `</div>`;
           }
         }
-        html += "</ul>";
         html += "</div>";
       }
-    }
 
-    html += "</div>";
+      html += `</div>`;
+    });
+
+    html += "</div></div>";
     return html;
   }
 
@@ -572,63 +642,80 @@ export class MapRenderer {
       return "";
     }
 
-    const label = context === "popup" ? "Loot Spawn:" : "Spawns:";
-    let html = `<div class="${context}-loot-spawn"><div class="${context}-loot-spawn-label">${label}</div>`;
-    html += `<div class="${context}-loot-spawn-content">`;
+    let html = `<div class="${context}-section ${context}-loot-spawn">`;
+    html += `<div class="${context}-section-header">📍 Loot Spawn Info</div>`;
+    html += `<div class="${context}-section-content">`;
 
-    const types: string[] = [];
+    // Chest/Shiny types as badges
+    const typeBadges: string[] = [];
 
-    // if (context === "popup") {
-    // Popup: with icons
-    if (lootSpawnInfo.shiny) types.push("✨ Shiny");
-    if (lootSpawnInfo.specialShiny) types.push("⭐ Special Shiny");
-    if (lootSpawnInfo.smallChest) types.push("📦 Small Chest");
-    if (lootSpawnInfo.mediumChest) types.push("📦 Medium Chest");
-    if (lootSpawnInfo.largeChest) types.push("📦 Large Chest");
-    if (lootSpawnInfo.specialChest) types.push("🎁 Special Chest");
-    /*} else {
-      // Tooltip: compact without icons
-      if (lootSpawnInfo.shiny) types.push("Shiny");
-      if (lootSpawnInfo.specialShiny) types.push("Special Shiny");
-      if (lootSpawnInfo.smallChest) types.push("Small");
-      if (lootSpawnInfo.mediumChest) types.push("Medium");
-      if (lootSpawnInfo.largeChest) types.push("Large");
-      if (lootSpawnInfo.specialChest) types.push("Special");
-    }*/
-
-    if (types.length > 0) {
-      html += types.join(", ");
-    }
-
-    // Add respawn info
-    const respawnDetails: string[] = [];
-
-    if (
-      lootSpawnInfo.respawnChance !== undefined &&
-      lootSpawnInfo.respawnChance !== null
-    ) {
-      respawnDetails.push(
-        `Chance: ${(lootSpawnInfo.respawnChance * 100).toFixed(0)}%`,
+    if (lootSpawnInfo.shiny)
+      typeBadges.push(
+        `<span class="${context}-badge ${context}-badge-shiny">✨ Shiny</span>`,
       );
+    if (lootSpawnInfo.specialShiny)
+      typeBadges.push(
+        `<span class="${context}-badge ${context}-badge-special">⭐ Special Shiny</span>`,
+      );
+    if (lootSpawnInfo.smallChest)
+      typeBadges.push(
+        `<span class="${context}-badge ${context}-badge-chest">📦 Small Chest</span>`,
+      );
+    if (lootSpawnInfo.mediumChest)
+      typeBadges.push(
+        `<span class="${context}-badge ${context}-badge-chest">📦 Medium Chest</span>`,
+      );
+    if (lootSpawnInfo.largeChest)
+      typeBadges.push(
+        `<span class="${context}-badge ${context}-badge-chest">📦 Large Chest</span>`,
+      );
+    if (lootSpawnInfo.specialChest)
+      typeBadges.push(
+        `<span class="${context}-badge ${context}-badge-special">🎁 Special Chest</span>`,
+      );
+
+    if (typeBadges.length > 0) {
+      html += `<div class="${context}-badges">${typeBadges.join("")}</div>`;
     }
 
-    if (lootSpawnInfo.respawnFreq) {
-      respawnDetails.push(`Freq: ${lootSpawnInfo.respawnFreq}`);
-    }
+    // Respawn info as properties
+    const hasRespawnInfo =
+      lootSpawnInfo.respawnChance !== undefined ||
+      lootSpawnInfo.respawnFreq ||
+      lootSpawnInfo.spawnCondition;
 
-    if (lootSpawnInfo.spawnCondition) {
-      respawnDetails.push(`Condition: ${lootSpawnInfo.spawnCondition}`);
-    }
+    if (hasRespawnInfo) {
+      html += `<div class="${context}-properties">`;
 
-    if (respawnDetails.length > 0) {
-      if (types.length > 0) {
-        html += /*context === "popup" ?*/ "<br>"; //: " | ";
+      if (
+        lootSpawnInfo.respawnChance !== undefined &&
+        lootSpawnInfo.respawnChance !== null
+      ) {
+        html += `<div class="${context}-property">`;
+        html += `<span class="${context}-property-label">Spawn Chance:</span>`;
+        html += `<span class="${context}-property-value">${(lootSpawnInfo.respawnChance * 100).toFixed(0)}%</span>`;
+        html += `</div>`;
       }
-      html += respawnDetails.join(/*context === "popup" ?*/ "<br>" /*: ", "*/);
+
+      if (lootSpawnInfo.respawnFreq) {
+        html += `<div class="${context}-property">`;
+        html += `<span class="${context}-property-label">Frequency:</span>`;
+        html += `<span class="${context}-property-value">${lootSpawnInfo.respawnFreq}</span>`;
+        html += `</div>`;
+      }
+
+      if (lootSpawnInfo.spawnCondition) {
+        html += `<div class="${context}-property">`;
+        html += `<span class="${context}-property-label">Condition:</span>`;
+        html += `<span class="${context}-property-value ${context}-property-value-small">${lootSpawnInfo.spawnCondition}</span>`;
+        html += `</div>`;
+      }
+
+      html += `</div>`;
     }
 
-    if (types.length === 0 && respawnDetails.length === 0) {
-      html += "None";
+    if (typeBadges.length === 0 && !hasRespawnInfo) {
+      html += `<div class="${context}-empty">No spawn info</div>`;
     }
 
     html += "</div></div>";

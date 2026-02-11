@@ -36,6 +36,13 @@ type MainGroupTypes = {
   ladder: SubGroupDef;
   whisper: SubGroupDef;
   loot_spawn: SubGroupDef;
+  interactible: {
+    ladder: SubGroupDef;
+    door: SubGroupDef;
+    lever: SubGroupDef;
+    readable: SubGroupDef;
+    other: SubGroupDef;
+  };
 };
 
 interface SubGroupDef {
@@ -146,6 +153,28 @@ const TYPES: MainGroupTypes = {
     displayName: "Loot Spawn",
     color: "#DAA520",
   },
+  interactible: {
+    ladder: {
+      displayName: "Ladder",
+      color: "#A0826D",
+    },
+    door: {
+      displayName: "Door",
+      color: "#8B4513",
+    },
+    lever: {
+      displayName: "Lever",
+      color: "#CD853F",
+    },
+    readable: {
+      displayName: "Readable",
+      color: "#DEB887",
+    },
+    other: {
+      displayName: "Other",
+      color: "#D2691E",
+    },
+  }
 };
 
 // Type utilities to extract all valid resource type keys

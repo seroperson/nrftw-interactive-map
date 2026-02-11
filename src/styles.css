@@ -604,90 +604,67 @@ body {
 
 .resource-tooltip {
     position: absolute;
-    background: var(--bg-secondary);
-    padding: 0.5rem 0.75rem;
-    border-radius: 4px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    backdrop-filter: blur(10px);
+    padding: 0.625rem 0.875rem;
+    border-radius: 8px;
     font-size: 0.875rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-light);
     pointer-events: none;
     z-index: 1000;
-    white-space: nowrap;
-    box-shadow: 0 2px 8px var(--shadow);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border);
     display: none;
+    max-width: 350px;
 }
 
 .resource-tooltip.visible {
     display: block;
 }
 
+.resource-tooltip .tooltip-title-group {
+    margin-bottom: 0.5rem;
+}
+
 .resource-tooltip .tooltip-type {
-    font-weight: 600;
-    color: var(--accent);
-    margin-bottom: 0.25rem;
+    font-weight: 700;
+    color: var(--accent-light);
+    font-size: 0.875rem;
+    line-height: 1.2;
 }
 
-.resource-tooltip .tooltip-coords {
-    font-family: 'Courier New', monospace;
+.resource-tooltip .tooltip-subtitle {
+    font-weight: 500;
+    font-size: 0.75rem;
     color: var(--text-secondary);
-    font-size: 0.8rem;
+    opacity: 0.85;
+    line-height: 1.3;
+    margin-top: 0.2rem;
 }
 
-.resource-tooltip .tooltip-guid,
-.resource-tooltip .tooltip-path {
+/* Tooltip sections have tighter spacing */
+.resource-tooltip .tooltip-section {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
-    border-top: 1px solid var(--border);
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
 }
 
-.resource-tooltip .tooltip-guid-label,
-.resource-tooltip .tooltip-path-label {
-    color: var(--text-secondary);
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-}
-
-.resource-tooltip .tooltip-guid-values,
-.resource-tooltip .tooltip-path-values {
-    color: var(--accent);
-    line-height: 1.4;
-}
-
-.resource-tooltip .tooltip-drop,
-.resource-tooltip .tooltip-loot-spawn {
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--border);
-    font-size: 0.75rem;
-}
-
-.resource-tooltip .tooltip-drop-label,
-.resource-tooltip .tooltip-loot-spawn-label {
-    color: var(--text-secondary);
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-}
-
-.resource-tooltip .tooltip-drop-chances,
-.resource-tooltip .tooltip-drop-items {
-    color: var(--text-primary);
-    line-height: 1.4;
-    margin-bottom: 0.25rem;
+.resource-tooltip .tooltip-section-header {
+    font-size: 0.7rem;
 }
 
 
 /* Popup Overlay */
 .ol-popup {
     position: absolute;
-    background-color: var(--bg-secondary);
-    box-shadow: 0 4px 16px var(--shadow);
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border);
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
     padding: 0;
     bottom: 12px;
     left: -50px;
-    min-width: 280px;
+    min-width: 300px;
+    max-width: 400px;
     z-index: 1000;
 }
 
@@ -702,14 +679,14 @@ body {
 }
 
 .ol-popup:after {
-    border-top-color: var(--bg-secondary);
+    border-top-color: var(--bg-tertiary);
     border-width: 10px;
     left: 48px;
     margin-left: -10px;
 }
 
 .ol-popup:before {
-    border-top-color: var(--border);
+    border-top-color: var(--border-light);
     border-width: 11px;
     left: 48px;
     margin-left: -11px;
@@ -739,106 +716,346 @@ body {
 }
 
 .ol-popup-content {
-    padding: 1rem;
-    max-width: 400px;
+    padding: 1.25rem;
 }
 
 .popup-header {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    align-items: flex-start;
+    gap: 0.625rem;
+    margin-bottom: 0.875rem;
     padding-right: 1.5rem;
 }
 
 .popup-icon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.popup-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
 }
 
 .popup-title {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: var(--accent);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--accent-light);
+    letter-spacing: -0.3px;
+    line-height: 1.2;
 }
 
-.popup-coords {
-    font-family: 'Courier New', monospace;
+.popup-subtitle {
+    font-weight: 500;
+    font-size: 0.8rem;
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    opacity: 0.85;
+    line-height: 1.3;
+}
+
+/* Coordinates inline */
+.popup-coords,
+.tooltip-coords {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.tooltip-coords {
+    gap: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
-.popup-guid,
-.popup-path {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--border);
+.popup-coord,
+.tooltip-coord {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.375rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.375rem 0.625rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.2s ease;
+}
+
+.popup-coord:hover,
+.tooltip-coord:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.tooltip-coord {
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+}
+
+.popup-coord-label,
+.tooltip-coord-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    opacity: 0.9;
+}
+
+.tooltip-coord-label {
+    font-size: 0.65rem;
+}
+
+.popup-coord-x .popup-coord-label,
+.tooltip-coord-x .tooltip-coord-label {
+    color: #ff6b6b;
+}
+
+.popup-coord-y .popup-coord-label,
+.tooltip-coord-y .tooltip-coord-label {
+    color: #51cf66;
+}
+
+.popup-coord-z .popup-coord-label,
+.tooltip-coord-z .tooltip-coord-label {
+    color: #74c0fc;
+}
+
+.popup-coord-value,
+.tooltip-coord-value {
     font-family: 'Courier New', monospace;
     font-size: 0.8rem;
-}
-
-.popup-guid-label,
-.popup-path-label {
-    color: var(--text-secondary);
     font-weight: 600;
-    margin-bottom: 0.25rem;
-}
-
-.popup-guid-values,
-.popup-path-values {
-    color: var(--accent);
-    line-height: 1.6;
-}
-
-.popup-drop,
-.popup-loot-spawn {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--border);
-    font-size: 0.8rem;
-}
-
-.popup-drop-label,
-.popup-loot-spawn-label {
-    color: var(--text-secondary);
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.popup-drop-chances {
     color: var(--text-primary);
-    margin-bottom: 0.5rem;
-    font-family: 'Courier New', monospace;
+    letter-spacing: 0.3px;
 }
 
-.popup-drop-items {
-    color: var(--text-primary);
-}
-
-.popup-drop-items ul {
-    margin: 0.25rem 0;
-    padding-left: 1.25rem;
-}
-
-.popup-drop-items li {
-    color: var(--accent);
-    margin: 0.25rem 0;
-    font-family: 'Courier New', monospace;
+.tooltip-coord-value {
     font-size: 0.75rem;
 }
 
-.popup-loot-spawn-content,
-.tooltip-loot-spawn-content {
-    color: var(--text-primary);
-    line-height: 1.6;
-    font-size: 0.85rem;
+/* Shared section styles */
+.popup-section,
+.tooltip-section {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
 }
 
-.tooltip-loot-spawn-content {
+.popup-section-header,
+.tooltip-section-header {
+    color: var(--accent-light);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.tooltip-section-header {
+    margin-bottom: 0.5rem;
+}
+
+.popup-section-content,
+.tooltip-section-content {
+    color: var(--text-primary);
+}
+
+/* Code blocks */
+.popup-code,
+.tooltip-code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.375rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    display: block;
+    word-break: break-all;
+}
+
+.tooltip-code {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.375rem;
+}
+
+.popup-code-path,
+.tooltip-code-path {
+    font-size: 0.7rem;
+    line-height: 1.4;
+}
+
+/* Badges */
+.popup-badges,
+.tooltip-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
+}
+
+.popup-badge,
+.tooltip-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.tooltip-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+}
+
+.popup-badge-shiny,
+.tooltip-badge-shiny {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #000;
+}
+
+.popup-badge-special,
+.tooltip-badge-special {
+    background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%);
+    color: #000;
+}
+
+.popup-badge-chest,
+.tooltip-badge-chest {
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+    color: #000;
+}
+
+.popup-badge-chance,
+.tooltip-badge-chance {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    color: #000;
+}
+
+.popup-badge-pool,
+.tooltip-badge-pool {
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid var(--accent);
+    color: var(--accent-light);
+}
+
+.popup-badge-id,
+.tooltip-badge-id {
+    background: rgba(218, 165, 32, 0.2);
+    border: 1px solid #DAA520;
+    color: #F4D03F;
+    font-family: 'Courier New', monospace;
+}
+
+/* Properties (key-value pairs) */
+.popup-properties,
+.tooltip-properties {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.popup-property,
+.tooltip-property {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.popup-property-label,
+.tooltip-property-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.tooltip-property-label {
+    font-size: 0.7rem;
+}
+
+.popup-property-value,
+.tooltip-property-value {
+    color: var(--accent-light);
+    font-size: 0.8rem;
+}
+
+.tooltip-property-value {
+    font-size: 0.75rem;
+}
+
+.popup-property-value-small,
+.tooltip-property-value-small {
+    font-size: 0.7rem;
+    word-break: break-all;
+}
+
+/* Drop groups */
+.popup-drop-group,
+.tooltip-drop-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-drop-group-separator,
+.tooltip-drop-group-separator {
+    height: 1px;
+    background: var(--border);
+    margin: 0.75rem 0;
+}
+
+.tooltip-drop-group-separator {
+    margin: 0.5rem 0;
+}
+
+/* Drop items */
+.popup-drop-chances,
+.tooltip-drop-chances {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
+}
+
+.popup-drop-items,
+.tooltip-drop-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.popup-drop-item,
+.tooltip-drop-item {
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.tooltip-drop-item {
+    font-size: 0.75rem;
+}
+
+.popup-item-label,
+.tooltip-item-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-right: 0.375rem;
+}
+
+/* Empty state */
+.popup-empty,
+.tooltip-empty {
+    color: var(--text-muted);
+    font-style: italic;
     font-size: 0.75rem;
 }
 
