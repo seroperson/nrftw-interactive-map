@@ -98,4 +98,5 @@ export interface AppState {
   visibleResources: Set<string>;
   openedPopup: OpenedPopup | null;
   expandedGroups: Set<string>;
+  mapFilter: string;
 }

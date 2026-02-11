@@ -35,7 +35,14 @@ type MainGroupTypes = {
   bonfire: SubGroupDef;
   ladder: SubGroupDef;
   whisper: SubGroupDef;
-  loot_spawn: SubGroupDef;
+  loot_spawn: {
+    shiny: SubGroupDef;
+    special_shiny: SubGroupDef;
+    small_chest: SubGroupDef;
+    medium_chest: SubGroupDef;
+    large_chest: SubGroupDef;
+    special_chest: SubGroupDef;
+  };
   interactible: {
     ladder: SubGroupDef;
     door: SubGroupDef;
@@ -150,8 +157,30 @@ const TYPES: MainGroupTypes = {
     color: "#00BFFF",
   },
   loot_spawn: {
-    displayName: "Loot Spawn",
-    color: "#DAA520",
+    shiny: {
+      displayName: "Shiny",
+      color: "#FFD700",
+    },
+    special_shiny: {
+      displayName: "Special Shiny",
+      color: "#FF8C00",
+    },
+    small_chest: {
+      displayName: "Small Chest",
+      color: "#8B7355",
+    },
+    medium_chest: {
+      displayName: "Medium Chest",
+      color: "#CD853F",
+    },
+    large_chest: {
+      displayName: "Large Chest",
+      color: "#DAA520",
+    },
+    special_chest: {
+      displayName: "Special Chest",
+      color: "#B8860B",
+    },
   },
   interactible: {
     ladder: {
@@ -303,11 +332,32 @@ export function getGroupDisplayName(groupType: MainGroup): string {
   if (isSubGroupDef(group)) {
     return group.displayName;
   }
-  // For nested groups like ore, wood, return capitalized version
+  // For nested groups like ore, wood, loot_spawn, return formatted version
+  if (groupType === "loot_spawn") {
+    return "Loot Spawn";
+  }
   return groupType.charAt(0).toUpperCase() + groupType.slice(1);
 }
 
 export function extractResourceType(resource: Resource): string {
+  // Special handling for loot_spawn - determine subtype from lootSpawnInfo
+  if (resource.type === "loot_spawn") {
+    if (resource.lootSpawnInfo) {
+      const info = resource.lootSpawnInfo;
+
+      // Priority order: special types first, then regular chests, then shiny
+      if (info.specialChest) return "special_chest";
+      if (info.specialShiny) return "special_shiny";
+      if (info.largeChest) return "large_chest";
+      if (info.mediumChest) return "medium_chest";
+      if (info.smallChest) return "small_chest";
+      if (info.shiny) return "shiny";
+    }
+
+    // Fallback for loot_spawn without valid lootSpawnInfo - use small_chest as default
+    return "small_chest";
+  }
+
   // Use subtype as the resource type identifier
   return resource.subtype || resource.type || "unknown";
 }

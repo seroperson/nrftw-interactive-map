@@ -45,6 +45,9 @@ class InteractiveMapApp {
       this.uiManager.setResourceTypes(resourceTypes);
       this.uiManager.setResourceGroups(resourceGroups);
 
+      // Load map tiles first
+      this.renderer.loadMapImage(); // Uses default 'tiles/{z}/{y}/{x}.jpg'
+
       // Apply initial state
       const state = this.stateManager.getState();
 
@@ -56,6 +59,7 @@ class InteractiveMapApp {
       // Subscribe to state changes
       this.stateManager.subscribe((state) => {
         this.renderer.setVisibleResourceTypes(state.visibleResources);
+        this.renderer.setMapFilter(state.mapFilter);
 
         // Close popup when visible resources change
         const resourcesChanged =
@@ -81,9 +85,6 @@ class InteractiveMapApp {
 
       // Setup coordinate display
       this.setupCoordinateDisplay();
-
-      // Load map tiles
-      this.renderer.loadMapImage(); // Uses default 'tiles/{z}/{y}/{x}.jpg'
 
       this.renderer.setupViewportListeners(this.stateManager);
 
@@ -199,29 +200,45 @@ class InteractiveMapApp {
       totalObjects++;
 
       // Validate resource types against TYPES definition
-      if (!isValidResourceType(type) || !isValidResourceType(subtype)) {
-        invalidTypeObjects++;
-        const invalidKey = `${type}:${subtype}`;
-        if (!invalidTypes.has(invalidKey)) {
-          invalidTypes.add(invalidKey);
-          console.warn(
-            `Invalid resource type in CSV: type="${type}", subtype="${subtype}" at line ${i + 1}`,
-          );
+      // Special case: loot_spawn subtype will be determined from lootSpawnInfo later
+      if (type !== "loot_spawn") {
+        if (!isValidResourceType(type) || !isValidResourceType(subtype)) {
+          invalidTypeObjects++;
+          const invalidKey = `${type}:${subtype}`;
+          if (!invalidTypes.has(invalidKey)) {
+            invalidTypes.add(invalidKey);
+            console.warn(
+              `Invalid resource type in CSV: type="${type}", subtype="${subtype}" at line ${i + 1}`,
+            );
+          }
+          continue;
         }
-        continue;
-      }
 
-      // Validate that subtype belongs to the correct group
-      if (!isValidSubtypeForGroup(type, subtype)) {
-        invalidTypeObjects++;
-        const invalidKey = `${type}:${subtype}`;
-        if (!invalidTypes.has(invalidKey)) {
-          invalidTypes.add(invalidKey);
-          console.warn(
-            `Subtype "${subtype}" does not belong to group "${type}" at line ${i + 1}`,
-          );
+        // Validate that subtype belongs to the correct group
+        if (!isValidSubtypeForGroup(type, subtype)) {
+          invalidTypeObjects++;
+          const invalidKey = `${type}:${subtype}`;
+          if (!invalidTypes.has(invalidKey)) {
+            invalidTypes.add(invalidKey);
+            console.warn(
+              `Subtype "${subtype}" does not belong to group "${type}" at line ${i + 1}`,
+            );
+          }
+          continue;
         }
-        continue;
+      } else {
+        // For loot_spawn, just validate that the type is valid
+        if (!isValidResourceType(type)) {
+          invalidTypeObjects++;
+          const invalidKey = `${type}:${subtype}`;
+          if (!invalidTypes.has(invalidKey)) {
+            invalidTypes.add(invalidKey);
+            console.warn(
+              `Invalid resource type in CSV: type="${type}" at line ${i + 1}`,
+            );
+          }
+          continue;
+        }
       }
 
       // Convert from Unity units (appears to be in centimeters * 65536) to game world units
@@ -314,6 +331,9 @@ class InteractiveMapApp {
 
     // Apply resource visibility
     this.renderer.setVisibleResourceTypes(state.visibleResources);
+
+    // Apply map filter
+    this.renderer.setMapFilter(state.mapFilter);
 
     // Apply opened popup if exists
     if (state.openedPopup) {

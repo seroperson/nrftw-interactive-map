@@ -37,7 +37,8 @@ export class StateManager {
       },
       visibleResources: new Set(['iron', 'copper', 'silver']),
       openedPopup: null,
-      expandedGroups: new Set(['ore'])
+      expandedGroups: new Set(['ore']),
+      mapFilter: 'none'
     };
   }
 
@@ -57,7 +58,8 @@ export class StateManager {
         viewport: data.viewport || this.getDefaultState().viewport,
         visibleResources: new Set(data.visibleResources || []),
         openedPopup: data.openedPopup || null,
-        expandedGroups: new Set(data.expandedGroups || [])
+        expandedGroups: new Set(data.expandedGroups || []),
+        mapFilter: data.mapFilter || 'none'
       };
     } catch (e) {
       console.error('Failed to load state from URL:', e);
@@ -78,7 +80,8 @@ export class StateManager {
         viewport: data.viewport || this.getDefaultState().viewport,
         visibleResources: new Set(data.visibleResources || []),
         openedPopup: data.openedPopup || null,
-        expandedGroups: new Set(data.expandedGroups || [])
+        expandedGroups: new Set(data.expandedGroups || []),
+        mapFilter: data.mapFilter || 'none'
       };
     } catch (e) {
       console.error('Failed to load state from localStorage:', e);
@@ -134,12 +137,20 @@ export class StateManager {
     this.notifyListeners();
   }
 
+  public setMapFilter(filter: string): void {
+    this.state.mapFilter = filter;
+    this.saveToLocalStorage();
+    this.updateURL();
+    this.notifyListeners();
+  }
+
   public getShareableURL(): string {
     const data = {
       viewport: this.state.viewport,
       visibleResources: Array.from(this.state.visibleResources),
       openedPopup: this.state.openedPopup,
-      expandedGroups: Array.from(this.state.expandedGroups)
+      expandedGroups: Array.from(this.state.expandedGroups),
+      mapFilter: this.state.mapFilter
     };
 
     const encoded = btoa(JSON.stringify(data));
@@ -155,7 +166,8 @@ export class StateManager {
         viewport: this.state.viewport,
         visibleResources: Array.from(this.state.visibleResources),
         openedPopup: this.state.openedPopup,
-        expandedGroups: Array.from(this.state.expandedGroups)
+        expandedGroups: Array.from(this.state.expandedGroups),
+        mapFilter: this.state.mapFilter
       };
 
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
@@ -175,7 +187,8 @@ export class StateManager {
         const data = {
           viewport: this.state.viewport,
           visibleResources: Array.from(this.state.visibleResources),
-          openedPopup: this.state.openedPopup
+          openedPopup: this.state.openedPopup,
+          mapFilter: this.state.mapFilter
         };
 
         const encoded = btoa(JSON.stringify(data));

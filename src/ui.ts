@@ -15,6 +15,7 @@ export class UIManager {
     this.resourceTypes = new Map();
     this.resourceGroups = new Map();
     this.setupEventListeners();
+    this.setupMapFilters();
   }
 
   private setupEventListeners(): void {
@@ -101,6 +102,53 @@ export class UIManager {
 
     this.stateManager.subscribe(() => {
       this.renderResourceFilters();
+      this.updateMapFilterButtons();
+    });
+  }
+
+  private setupMapFilters(): void {
+    const container = document.getElementById('map-filter-buttons');
+    if (!container) return;
+
+    const filters = [
+      { id: 'none', icon: '🌈', label: 'Normal' },
+      { id: 'grayscale', icon: '⚫', label: 'B&W' },
+      { id: 'sepia', icon: '🟤', label: 'Sepia' },
+      { id: 'contrast', icon: '◐', label: 'High Contrast' },
+      { id: 'brightness', icon: '☀️', label: 'Bright' },
+      { id: 'dark', icon: '🌙', label: 'Dark' },
+    ];
+
+    filters.forEach(filter => {
+      const button = document.createElement('button');
+      button.className = 'btn-map-filter';
+      button.id = `filter-${filter.id}`;
+      button.innerHTML = `
+        <span class="map-filter-icon">${filter.icon}</span>
+        <span>${filter.label}</span>
+      `;
+
+      button.addEventListener('click', () => {
+        this.stateManager.setMapFilter(filter.id);
+      });
+
+      container.appendChild(button);
+    });
+
+    this.updateMapFilterButtons();
+  }
+
+  private updateMapFilterButtons(): void {
+    const state = this.stateManager.getState();
+    const buttons = document.querySelectorAll('.btn-map-filter');
+
+    buttons.forEach(button => {
+      const filterId = button.id.replace('filter-', '');
+      if (filterId === state.mapFilter) {
+        button.classList.add('active');
+      } else {
+        button.classList.remove('active');
+      }
     });
   }
 

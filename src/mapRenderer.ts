@@ -33,6 +33,9 @@ export class MapRenderer {
   private mapHeight: number = MAP_HEIGHT;
 
   private resourceLayer: VectorLayer<VectorSource>;
+  private tileLayer: TileLayer<XYZ> | null = null;
+  private mapElement: HTMLElement;
+  private currentFilter: string = 'none';
 
   private resources: Resource[] = [];
   private visibleResourceTypes: Set<string> = new Set();
@@ -46,6 +49,13 @@ export class MapRenderer {
 
   constructor(targetElement: string, converter: CoordinateConverter) {
     this.converter = converter;
+
+    // Store map element reference
+    const element = document.getElementById(targetElement);
+    if (!element) {
+      throw new Error(`Map element with id '${targetElement}' not found`);
+    }
+    this.mapElement = element;
 
     // Setup projection for the static image
     const extent = [0, 0, this.mapWidth, this.mapHeight];
@@ -275,7 +285,7 @@ export class MapRenderer {
     const projection = this.map.getView().getProjection();
 
     // Create tile layer with XYZ source
-    const tileLayer = new TileLayer({
+    this.tileLayer = new TileLayer({
       source: new XYZ({
         url: tilesPath,
         projection: projection,
@@ -283,10 +293,70 @@ export class MapRenderer {
         minZoom: 0,
         maxZoom: 6,
       }),
+      className: 'tile-layer', // Add custom class for targeting
     });
 
     // Insert tile layer as the base layer
-    this.map.getLayers().insertAt(0, tileLayer);
+    this.map.getLayers().insertAt(0, this.tileLayer);
+
+    // Wait for the map to render, then apply any pending filter
+    this.map.once('rendercomplete', () => {
+      if (this.currentFilter !== 'none') {
+        this.applyFilterToTileLayer(this.currentFilter);
+      }
+    });
+  }
+
+  public setMapFilter(filterName: string): void {
+    // Store the current filter
+    this.currentFilter = filterName;
+
+    // Try to apply it immediately
+    this.applyFilterToTileLayer(filterName);
+  }
+
+  private applyFilterToTileLayer(filterName: string): void {
+    if (!this.mapElement) {
+      console.warn('Map element not found, cannot apply filter');
+      return;
+    }
+
+    // Find the tile layer element by the custom class we added
+    const tileLayerElement = this.mapElement.querySelector('.tile-layer') as HTMLElement;
+
+    if (!tileLayerElement) {
+      console.warn('Tile layer element not found yet, will retry after render');
+      return;
+    }
+
+    // Apply the selected filter to the tile layer element
+    let filterValue = 'none';
+
+    switch (filterName) {
+      case 'grayscale':
+        filterValue = 'grayscale(100%)';
+        break;
+      case 'sepia':
+        filterValue = 'sepia(100%)';
+        break;
+      case 'contrast':
+        filterValue = 'contrast(150%) saturate(120%)';
+        break;
+      case 'brightness':
+        filterValue = 'brightness(130%) saturate(110%)';
+        break;
+      case 'dark':
+        filterValue = 'brightness(70%) contrast(110%)';
+        break;
+      case 'none':
+      default:
+        filterValue = 'none';
+        break;
+    }
+
+    tileLayerElement.style.filter = filterValue;
+
+    console.log(`Applied filter: ${filterName} (${filterValue}) to tile layer`);
   }
 
   public setResources(resources: Resource[]): void {
