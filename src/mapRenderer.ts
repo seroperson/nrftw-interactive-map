@@ -291,9 +291,7 @@ export class MapRenderer {
     this.onPopupChange = callback;
   }
 
-  public loadMapImage(
-    tilesPath: string = `/tiles/{z}/{y}/{x}.jpg`,
-  ): void {
+  public loadMapImage(tilesPath: string = `/tiles/{z}/{y}/{x}.jpg`): void {
     const projection = this.map.getView().getProjection();
 
     // Create tile layer with XYZ source
@@ -581,7 +579,7 @@ export class MapRenderer {
       const feature = this.map.forEachFeatureAtPixel(pixel, (feat) => feat);
 
       // Don't show tooltip if popup is open or on pointer devices (non-touch)
-      if (!this.isPopupOpen && feature && this.isTouchDevice) {
+      if (feature && !this.isTouchDevice) {
         const type = feature.get("resourceType") as string;
         const subtype = feature.get("subtype") as string;
         const worldX = feature.get("worldX") as number;
@@ -639,7 +637,7 @@ export class MapRenderer {
 
   private detectTouchDevice(): boolean {
     // Check for touch support
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
       return true;
     }
     return false;
