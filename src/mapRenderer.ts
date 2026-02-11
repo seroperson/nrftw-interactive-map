@@ -12,7 +12,6 @@ import { Style, Circle, Fill, Stroke } from "ol/style";
 import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
 import type { FeatureLike } from "ol/Feature";
-import Overlay from "ol/Overlay";
 
 import { Resource, Coordinates, OpenedPopup } from "./types";
 import { CoordinateConverter } from "./coordinateConverter";
@@ -42,11 +41,7 @@ export class MapRenderer {
   private visibleResourceTypes: Set<string> = new Set();
 
   private tooltipElement!: HTMLElement;
-  private popupOverlay!: Overlay;
-  private popupElement!: HTMLElement;
-  private popupCloser!: HTMLElement;
   private onPopupChange: ((popup: OpenedPopup | null) => void) | null = null;
-  private isPopupOpen: boolean = false;
   private selectedFeature: FeatureLike | null = null;
   private isTouchDevice: boolean = false;
 
@@ -112,37 +107,6 @@ export class MapRenderer {
   }
 
   private setupPopup(): void {
-    // Create popup element
-    this.popupElement = document.createElement("div");
-    this.popupElement.className = "ol-popup";
-    this.popupElement.innerHTML = `
-      <div class="ol-popup-closer" id="popup-closer">×</div>
-      <div class="ol-popup-content" id="popup-content"></div>
-    `;
-
-    this.popupCloser = this.popupElement.querySelector(
-      "#popup-closer",
-    ) as HTMLElement;
-
-    // Create overlay for popup
-    this.popupOverlay = new Overlay({
-      element: this.popupElement,
-      autoPan: {
-        animation: {
-          duration: 250,
-        },
-      },
-      positioning: "bottom-center",
-      offset: [0, -10],
-    });
-
-    this.map.addOverlay(this.popupOverlay);
-
-    // Close popup handler
-    this.popupCloser.addEventListener("click", () => {
-      this.closePopup();
-    });
-
     // Handle clicks on features and map
     this.map.on("click", (evt) => {
       const pixel = evt.pixel;
@@ -212,8 +176,6 @@ export class MapRenderer {
     });
     window.dispatchEvent(event);
 
-    this.isPopupOpen = true;
-
     // Notify state manager about opened popup
     if (this.onPopupChange) {
       this.onPopupChange({
@@ -237,9 +199,6 @@ export class MapRenderer {
   }
 
   public closePopup(): void {
-    this.popupOverlay.setPosition(undefined);
-    this.isPopupOpen = false;
-
     // Clear selection
     if (this.selectedFeature) {
       // @ts-ignore
@@ -636,11 +595,7 @@ export class MapRenderer {
   }
 
   private detectTouchDevice(): boolean {
-    // Check for touch support
-    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
-      return true;
-    }
-    return false;
+    return window.matchMedia("(pointer: coarse)").matches;
   }
 
   private isDevMode(): boolean {

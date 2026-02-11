@@ -11,6 +11,7 @@ export class UIManager {
   private resourceGroups: Map<string, ResourceGroup>;
   private sidebar: HTMLElement | null = null;
   private toggleBtn: HTMLElement | null = null;
+  private preventAutoClose: boolean = false;
 
   constructor(stateManager: StateManager) {
     this.stateManager = stateManager;
@@ -29,15 +30,19 @@ export class UIManager {
     
     toggleBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
+
+      // Clear prevent flag when manually toggling
+      this.preventAutoClose = false;
+
       const isCollapsed = sidebar?.classList.toggle('collapsed');
-      
+
       // Update button icon and class based on state
       if (toggleBtn) {
         toggleBtn.textContent = isCollapsed ? '▶' : '◀';
         toggleBtn.setAttribute('aria-label', isCollapsed ? 'Show sidebar' : 'Hide sidebar');
         toggleBtn.classList.toggle('sidebar-collapsed', isCollapsed);
       }
-      
+
       // Trigger map resize after sidebar animation completes
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
@@ -48,16 +53,21 @@ export class UIManager {
     const mapContainer = document.getElementById('map-container');
     mapContainer?.addEventListener('click', () => {
       if (!sidebar) return;
-      
+
+      // Don't auto-close if we just opened it programmatically
+      if (this.preventAutoClose) {
+        return;
+      }
+
       // Check if sidebar is wide enough and screen is not so wide
       const sidebarWidth = 340; // var(--sidebar-width)
       const isSidebarWide = sidebarWidth >= 300;
       const isScreenNarrow = window.innerWidth <= 1024;
-      
+
       // Close sidebar if it's open, wide enough, and screen is narrow
       if (!sidebar.classList.contains('collapsed') && isSidebarWide && isScreenNarrow) {
         sidebar.classList.add('collapsed');
-        
+
         // Update toggle button
         const toggleBtn = document.getElementById('toggle-sidebar');
         if (toggleBtn) {
@@ -65,7 +75,7 @@ export class UIManager {
           toggleBtn.setAttribute('aria-label', 'Show sidebar');
           toggleBtn.classList.add('sidebar-collapsed');
         }
-        
+
         // Trigger map resize after sidebar animation completes
         setTimeout(() => {
           window.dispatchEvent(new Event('resize'));
@@ -357,6 +367,9 @@ export class UIManager {
 
     // Check if sidebar is collapsed
     if (this.sidebar.classList.contains('collapsed')) {
+      // Set flag to prevent auto-close
+      this.preventAutoClose = true;
+
       // Open the sidebar
       this.sidebar.classList.remove('collapsed');
       this.toggleBtn.textContent = '◀';
@@ -367,6 +380,17 @@ export class UIManager {
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
       }, SIDEBAR_ANIMATION_DURATION);
+
+      // Clear the flag after animation completes + small buffer
+      setTimeout(() => {
+        this.preventAutoClose = false;
+      }, SIDEBAR_ANIMATION_DURATION + 100);
+    } else {
+      // Sidebar already open, but still set flag briefly to prevent immediate close
+      this.preventAutoClose = true;
+      setTimeout(() => {
+        this.preventAutoClose = false;
+      }, 100);
     }
   }
 }

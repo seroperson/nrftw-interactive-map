@@ -28,6 +28,8 @@ body {
     color: var(--text-primary);
     background: var(--bg-primary);
     overflow: hidden;
+    touch-action: pan-x pan-y;
+    -ms-touch-action: pan-x pan-y;
 }
 
 #app {
@@ -569,12 +571,16 @@ body {
     position: relative;
     overflow: hidden;
     background: #000000;
+    touch-action: none;
+    -ms-touch-action: none;
 }
 
 #map {
     width: 100%;
     height: 100%;
     background: #000000;
+    touch-action: none;
+    -ms-touch-action: none;
 }
 
 /* OpenLayers overrides - Hide zoom controls */
