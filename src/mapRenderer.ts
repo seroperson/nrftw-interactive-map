@@ -292,7 +292,7 @@ export class MapRenderer {
   }
 
   public loadMapImage(
-    tilesPath: string = `${import.meta.env.BASE_URL}/tiles/{z}/{y}/{x}.jpg`,
+    tilesPath: string = `/tiles/{z}/{y}/{x}.jpg`,
   ): void {
     const projection = this.map.getView().getProjection();
 

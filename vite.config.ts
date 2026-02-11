@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  base: "/nrftw-interactive-map/",
+  base: "/",
   assetsInclude: ["**/*.csv"],
   server: {
     port: 3000,
@@ -18,7 +18,7 @@ export default defineConfig({
         theme_color: "#1a1a1a",
         background_color: "#1a1a1a",
         display: "standalone",
-        id: "/nrftw-interactive-map/",
+        id: "/",
         scope: "./",
         start_url: "./",
         orientation: "any",
