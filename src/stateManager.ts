@@ -1,31 +1,42 @@
-// State management with URL and localStorage persistence
+// State management with localStorage persistence
 
 import { AppState, ViewportState, OpenedPopup } from "./types";
-import { URL_UPDATE_THROTTLE } from "./utils/constants";
 
 export class StateManager {
   private readonly STORAGE_KEY = "nrftw_map_state";
   private state: AppState;
   private listeners: Set<(state: AppState) => void> = new Set();
-  private urlUpdateTimer: number | null = null;
+  private urlParams: { viewport?: ViewportState; openedPopup?: OpenedPopup } =
+    {};
 
   constructor() {
     this.state = this.loadInitialState();
   }
 
   private loadInitialState(): AppState {
-    // Try to load from URL first, then localStorage, then defaults
-    const urlState = this.loadFromURL();
-    if (urlState) {
-      return urlState;
-    }
+    // Read URL parameters for viewport and openedPopup only
+    this.urlParams = this.loadFromURL();
 
+    // Load main state from localStorage or defaults
     const storageState = this.loadFromLocalStorage();
-    if (storageState) {
-      return storageState;
+    const baseState = storageState || this.getDefaultState();
+
+    // Override viewport and openedPopup from URL if available
+    if (this.urlParams.viewport) {
+      baseState.viewport = this.urlParams.viewport;
+    }
+    if (this.urlParams.openedPopup) {
+      baseState.openedPopup = this.urlParams.openedPopup;
     }
 
-    return this.getDefaultState();
+    return baseState;
+  }
+
+  public getUrlParams(): {
+    viewport?: ViewportState;
+    openedPopup?: OpenedPopup;
+  } {
+    return this.urlParams;
   }
 
   private getDefaultState(): AppState {
@@ -42,28 +53,47 @@ export class StateManager {
     };
   }
 
-  private loadFromURL(): AppState | null {
+  private loadFromURL(): {
+    viewport?: ViewportState;
+    openedPopup?: OpenedPopup;
+  } {
     try {
       const params = new URLSearchParams(window.location.search);
+      const result: { viewport?: ViewportState; openedPopup?: OpenedPopup } =
+        {};
 
-      if (!params.has("state")) {
-        return null;
+      // Read viewport parameters
+      if (params.has("x") && params.has("y") && params.has("scale")) {
+        const x = parseFloat(params.get("x")!);
+        const y = parseFloat(params.get("y")!);
+        const scale = parseFloat(params.get("scale")!);
+
+        if (!isNaN(x) && !isNaN(y) && !isNaN(scale)) {
+          result.viewport = { x, y, scale };
+        }
       }
 
-      const encoded = params.get("state")!;
-      const decoded = atob(encoded);
-      const data = JSON.parse(decoded);
+      // Read openedPopup parameters
+      if (
+        params.has("idA") &&
+        params.has("idB") &&
+        params.has("idC") &&
+        params.has("idD")
+      ) {
+        const idA = parseInt(params.get("idA")!);
+        const idB = parseInt(params.get("idB")!);
+        const idC = parseInt(params.get("idC")!);
+        const idD = parseInt(params.get("idD")!);
 
-      return {
-        viewport: data.viewport || this.getDefaultState().viewport,
-        visibleResources: new Set(data.visibleResources || []),
-        openedPopup: data.openedPopup || null,
-        expandedGroups: new Set(data.expandedGroups || []),
-        mapFilter: data.mapFilter || "none",
-      };
+        if (!isNaN(idA) && !isNaN(idB) && !isNaN(idC) && !isNaN(idD)) {
+          result.openedPopup = { idA, idB, idC, idD };
+        }
+      }
+
+      return result;
     } catch (e) {
-      console.error("Failed to load state from URL:", e);
-      return null;
+      console.error("Failed to load parameters from URL:", e);
+      return {};
     }
   }
 
@@ -97,7 +127,6 @@ export class StateManager {
     if (JSON.stringify(this.state.viewport) != JSON.stringify(viewport)) {
       this.state.viewport = viewport;
       this.saveToLocalStorage();
-      this.updateURL();
       this.notifyListeners();
     }
   }
@@ -109,21 +138,18 @@ export class StateManager {
       this.state.visibleResources.add(resourceType);
     }
     this.saveToLocalStorage();
-    this.updateURL();
     this.notifyListeners();
   }
 
   public setVisibleResources(types: Set<string>): void {
     this.state.visibleResources = types;
     this.saveToLocalStorage();
-    this.updateURL();
     this.notifyListeners();
   }
 
   public setOpenedPopup(popup: OpenedPopup | null): void {
     this.state.openedPopup = popup;
     this.saveToLocalStorage();
-    this.updateURL();
     this.notifyListeners();
   }
 
@@ -140,22 +166,27 @@ export class StateManager {
   public setMapFilter(filter: string): void {
     this.state.mapFilter = filter;
     this.saveToLocalStorage();
-    this.updateURL();
     this.notifyListeners();
   }
 
   public getShareableURL(): string {
-    const data = {
-      viewport: this.state.viewport,
-      visibleResources: Array.from(this.state.visibleResources),
-      openedPopup: this.state.openedPopup,
-      expandedGroups: Array.from(this.state.expandedGroups),
-      mapFilter: this.state.mapFilter,
-    };
+    const url = new URL(window.location.origin + window.location.pathname);
 
-    const encoded = btoa(JSON.stringify(data));
-    const url = new URL(window.location.href);
-    url.searchParams.set("state", encoded);
+    // Add viewport parameters
+    url.searchParams.set("x", this.state.viewport.x.toFixed(1).toString());
+    url.searchParams.set("y", this.state.viewport.y.toFixed(1).toString());
+    url.searchParams.set(
+      "scale",
+      this.state.viewport.scale.toFixed(1).toString(),
+    );
+
+    // Add openedPopup parameters if there's an opened popup
+    if (this.state.openedPopup) {
+      url.searchParams.set("idA", this.state.openedPopup.idA.toString());
+      url.searchParams.set("idB", this.state.openedPopup.idB.toString());
+      url.searchParams.set("idC", this.state.openedPopup.idC.toString());
+      url.searchParams.set("idD", this.state.openedPopup.idD.toString());
+    }
 
     return url.toString();
   }
@@ -174,35 +205,6 @@ export class StateManager {
     } catch (e) {
       console.error("Failed to save state to localStorage:", e);
     }
-  }
-
-  private updateURL(): void {
-    // Throttle URL updates to avoid too many history entries
-    if (this.urlUpdateTimer !== null) {
-      clearTimeout(this.urlUpdateTimer);
-    }
-
-    this.urlUpdateTimer = window.setTimeout(() => {
-      try {
-        const data = {
-          viewport: this.state.viewport,
-          visibleResources: Array.from(this.state.visibleResources),
-          openedPopup: this.state.openedPopup,
-          mapFilter: this.state.mapFilter,
-        };
-
-        const encoded = btoa(JSON.stringify(data));
-        const url = new URL(window.location.href);
-        url.searchParams.set("state", encoded);
-
-        // Use replaceState to avoid cluttering browser history
-        window.history.replaceState(null, "", url.toString());
-      } catch (e) {
-        console.error("Failed to update URL:", e);
-      }
-
-      this.urlUpdateTimer = null;
-    }, URL_UPDATE_THROTTLE);
   }
 
   public subscribe(listener: (state: AppState) => void): () => void {

@@ -6,9 +6,6 @@ export const MAP_HEIGHT = 16384;
 // Coordinate display precision
 export const COORD_PRECISION = 1;
 
-// URL update throttle (ms)
-export const URL_UPDATE_THROTTLE = 100;
-
 // Viewport update interval (ms)
 export const VIEWPORT_UPDATE_INTERVAL = 1000;
 

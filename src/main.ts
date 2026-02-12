@@ -99,6 +99,7 @@ class InteractiveMapApp {
 
   private applyState(loadedResources: LoadedResources): void {
     const state = this.stateManager.getState();
+    const urlParams = this.stateManager.getUrlParams();
 
     // Apply viewport state
     this.renderer.setViewportState(
@@ -106,6 +107,29 @@ class InteractiveMapApp {
       state.viewport.y,
       state.viewport.scale,
     );
+
+    // If there's an openedPopup from URL, auto-select only the group containing that object
+    if (urlParams.openedPopup) {
+      const resource = loadedResources.resources.find(
+        (r) =>
+          r.idA === urlParams.openedPopup!.idA &&
+          r.idB === urlParams.openedPopup!.idB &&
+          r.idC === urlParams.openedPopup!.idC &&
+          r.idD === urlParams.openedPopup!.idD,
+      );
+
+      if (resource) {
+        // Find the group for this resource
+        const groupName = resource.type;
+        const group = loadedResources.resourceGroups.get(groupName);
+
+        if (group) {
+          // Set visible resources to only include types from this group
+          const groupTypes = new Set(group.types);
+          this.stateManager.setVisibleResources(groupTypes);
+        }
+      }
+    }
 
     // Apply resource visibility
     this.renderer.setVisibleResourceTypes(
