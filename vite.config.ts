@@ -1,13 +1,22 @@
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { createHtmlPlugin } from "vite-plugin-html";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: "/",
   assetsInclude: ["**/*.csv"],
   server: {
     port: 3000,
   },
   plugins: [
+    createHtmlPlugin({
+      minify: true,
+      inject: {
+        data: {
+          PROD: mode === "production",
+        },
+      },
+    }),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["icon-192x192.png", "icon-512x512.png", "*.csv"],
@@ -71,4 +80,4 @@ export default defineConfig({
       },
     }),
   ],
-});
+}));
