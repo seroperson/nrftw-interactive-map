@@ -37,7 +37,7 @@ Still there is a lot of work to be done, such as:
   project object correctly on the map. Ideally this offset must be extracted
   from the game.
 
-# How I built it
+# How to build it
 
 The process is actually challenging, but in a nutshell there is no rocket
 science:
@@ -51,7 +51,7 @@ science:
   necessary constants and so on.
 
 After configuring the setup, everything left is to find the necessary game
-objects, dump them and draw on the map.
+objects, dump them and put them on the map.
 
 All necessary code is already in this repository:
 
@@ -61,6 +61,8 @@ All necessary code is already in this repository:
 - `scripts/extract_item_translations.py` - extacts item names from `.asset`
   files.
 - The rest code in this repository is an actual interactive web map.
+
+To compile a bundle, just run `npm run build`.
 
 # License
 
