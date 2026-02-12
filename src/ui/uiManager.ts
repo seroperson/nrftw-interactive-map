@@ -427,8 +427,25 @@ export class UIManager {
       // Ensure sidebar is open when selecting a resource
       this.ensureSidebarOpen();
 
-      // Scroll the section into view
-      detailsSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      // Scroll the section into view with padding
+      // Use setTimeout to ensure sidebar animation completes first
+      setTimeout(() => {
+        const sidebarContent = document.querySelector('.sidebar-content');
+        if (sidebarContent) {
+          const sectionRect = detailsSection.getBoundingClientRect();
+          const containerRect = sidebarContent.getBoundingClientRect();
+          const padding = 16; // Respect padding
+
+          // Check if element is not fully visible
+          if (sectionRect.top < containerRect.top + padding ||
+              sectionRect.bottom > containerRect.bottom - padding) {
+            // Calculate scroll position with padding
+            const scrollTop = sidebarContent.scrollTop +
+                            (sectionRect.top - containerRect.top) - padding;
+            sidebarContent.scrollTo({ top: scrollTop, behavior: "smooth" });
+          }
+        }
+      }, 100);
 
       // Notify state manager
       if (this.onPopupChange) {

@@ -533,10 +533,30 @@ export class MapRenderer {
         // Update tooltip content
         this.tooltipElement.innerHTML = tooltipHtml;
 
-        // Position tooltip near cursor
-        this.tooltipElement.style.left = `${(evt.originalEvent as PointerEvent).pageX + 15}px`;
-        this.tooltipElement.style.top = `${(evt.originalEvent as PointerEvent).pageY + 15}px`;
+        // Position tooltip near cursor with overflow detection
+        const mouseX = (evt.originalEvent as PointerEvent).pageX;
+        const mouseY = (evt.originalEvent as PointerEvent).pageY;
+        const offset = 15;
+
+        // Get tooltip dimensions (need to make it visible first to measure)
+        this.tooltipElement.style.visibility = 'hidden';
         this.tooltipElement.classList.add("visible");
+        const tooltipRect = this.tooltipElement.getBoundingClientRect();
+
+        // Check if tooltip would overflow bottom of viewport
+        const viewportHeight = window.innerHeight;
+        const wouldOverflowBottom = mouseY + offset + tooltipRect.height > viewportHeight;
+
+        // Position tooltip
+        this.tooltipElement.style.left = `${mouseX + offset}px`;
+        if (wouldOverflowBottom) {
+          // Position above cursor
+          this.tooltipElement.style.top = `${mouseY - tooltipRect.height - offset}px`;
+        } else {
+          // Position below cursor
+          this.tooltipElement.style.top = `${mouseY + offset}px`;
+        }
+        this.tooltipElement.style.visibility = 'visible';
 
         // Change cursor to pointer
         (this.map.getTargetElement() as HTMLElement).style.cursor = "pointer";
