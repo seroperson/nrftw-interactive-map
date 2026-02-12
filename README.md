@@ -8,11 +8,11 @@ Live at **🗺 [nrftw.seroperson.me][1]**.
 # Why another map?
 
 This map is completely extracted from game resources, so it's the most complete
-map at the moment. But still some things could be inaccurate, as my algorithm
+map at the moment. Still some things could be inaccurate, as my algorithm
 probably isn't perfect, resource misreads are possible, and there is quite a lot
 of game logic which must be treated properly to project everyhing on the map.
 
-As it's extracted from game resources, you can notice the following neat things:
+As it's extracted from game resources, you can notice the following features:
 
 - Currently there are around 2000 objects on the map, including: chest, shiny,
   item spawn points; lore readables; interactables, like doors or ladders; and
