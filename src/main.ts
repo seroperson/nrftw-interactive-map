@@ -6,9 +6,9 @@ import { StateManager } from "./stateManager";
 import { UIManager } from "./ui/uiManager";
 import { ResourceLoader } from "./resourceManager";
 import { VIEWPORT_UPDATE_INTERVAL } from "./utils/constants";
-import oreCoordinates from "./assets/ore_coordinates.csv?raw";
-import regionTransform from "./assets/region_transforms.csv?raw";
-import disabledItemsJson from "./assets/disabled_items.json?raw";
+import itemCoordinates from "./assets/item_coordinates.csv?raw";
+import regionOffsets from "./assets/region_offsets.csv?raw";
+import itemDisabledJson from "./assets/item_disabled.json?raw";
 import { LoadedResources } from "./types";
 
 class InteractiveMapApp {
@@ -31,11 +31,11 @@ class InteractiveMapApp {
   private async setupApplication(): Promise<void> {
     try {
       // Load disabled items and parse resources
-      this.resourceLoader.loadDisabledItems(disabledItemsJson);
-      var loadedResources = this.resourceLoader.loadResourceCSV(oreCoordinates);
+      this.resourceLoader.loadDisabledItems(itemDisabledJson);
+      var loadedResources = this.resourceLoader.loadResourceCSV(itemCoordinates);
 
       // Load region transforms
-      this.converter.loadTransformsFromCSV(regionTransform);
+      this.converter.loadTransformsFromCSV(regionOffsets);
 
       // Set resources in renderer
       this.renderer.updateResourceLayer(loadedResources);

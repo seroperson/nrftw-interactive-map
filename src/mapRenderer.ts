@@ -199,12 +199,16 @@ export class MapRenderer {
 
     const features = source.getFeatures();
     for (const feature of features) {
-      const worldX = feature.get("worldX") as number;
-      const worldZ = feature.get("worldZ") as number;
+      const idA = feature.get("idA") as number;
+      const idB = feature.get("idB") as number;
+      const idC = feature.get("idC") as number;
+      const idD = feature.get("idD") as number;
 
       if (
-        Math.abs(worldX - popup.worldX) < 0.1 &&
-        Math.abs(worldZ - popup.worldZ) < 0.1
+        idA == popup.idA &&
+        idB == popup.idB &&
+        idC == popup.idC &&
+        idD == popup.idD
       ) {
         this.selectFeature(feature);
         break;

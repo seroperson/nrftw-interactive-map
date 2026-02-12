@@ -433,10 +433,6 @@ export class UIManager {
       // Notify state manager
       if (this.onPopupChange) {
         this.onPopupChange({
-          resourceType: featureData.resourceType,
-          worldX: featureData.worldX,
-          worldY: featureData.worldY,
-          worldZ: featureData.worldZ,
           idA: featureData.idA,
           idB: featureData.idB,
           idC: featureData.idC,

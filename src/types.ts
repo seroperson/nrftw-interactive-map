@@ -87,10 +87,6 @@ export interface ViewportState {
 }
 
 export interface OpenedPopup {
-  resourceType: string;
-  worldX: number;
-  worldY: number;
-  worldZ: number;
   idA: number;
   idB: number;
   idC: number;

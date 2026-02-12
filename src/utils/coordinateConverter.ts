@@ -7,8 +7,6 @@ interface Transform {
   scaling: number;
   offset_x: number;
   offset_y: number;
-  invert_x: boolean;
-  invert_z: boolean;
 }
 
 export class CoordinateConverter {
@@ -26,9 +24,7 @@ export class CoordinateConverter {
   private readonly DEFAULT_TRANSFORM: Transform = {
     scaling: 30.0,
     offset_x: 0,
-    offset_y: 0,
-    invert_x: false,
-    invert_z: true,
+    offset_y: 0
   };
 
   private regionTransforms: Map<string, Transform> = new Map();
@@ -65,14 +61,6 @@ export class CoordinateConverter {
     let normX = (worldX - worldBounds.x_min) / worldWidth;
     let normZ = (worldZ - worldBounds.z_min) / worldHeight;
 
-    // Apply inversions if configured
-    if (transform.invert_x) {
-      normX = 1.0 - normX;
-    }
-    if (transform.invert_z) {
-      normZ = 1.0 - normZ;
-    }
-
     // Map to pixel coordinates
     const px = Math.floor(normX * MAP_WIDTH) + transform.offset_x;
     const py = Math.floor(normZ * MAP_HEIGHT) + transform.offset_y;
@@ -95,14 +83,6 @@ export class CoordinateConverter {
     // Normalize from pixel to 0-1 range
     let normX = px / MAP_WIDTH;
     let normZ = py / MAP_HEIGHT;
-
-    // Reverse inversions
-    if (transform.invert_x) {
-      normX = 1.0 - normX;
-    }
-    if (transform.invert_z) {
-      normZ = 1.0 - normZ;
-    }
 
     // Apply scaling to world bounds
     const scaling = transform.scaling;
@@ -136,9 +116,7 @@ export class CoordinateConverter {
       const transform: Transform = {
         scaling: parseFloat(parts[1]),
         offset_x: parseInt(parts[2]),
-        offset_y: parseInt(parts[3]),
-        invert_x: parts[4].toLowerCase() === "true",
-        invert_z: parts[5].toLowerCase() === "true",
+        offset_y: parseInt(parts[3])
       };
 
       this.setRegionTransform(region, transform);

@@ -1,0 +1,576 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<RootNamespace>nrftw_loot_dumper</RootNamespace>
+		<LangVersion>default</LangVersion>
+		<IsPackable>false</IsPackable>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<AssemblyName>nrftw_loot_dumper</AssemblyName>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Platforms>AnyCPU;x64</Platforms>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="Assembly-CSharp-firstpass">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Assembly-CSharp-firstpass.dll</HintPath>
+		</Reference>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppAk.Wwise.Api.WAAPI">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppAk.Wwise.Api.WAAPI.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppAK.Wwise.Unity.API">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppAK.Wwise.Unity.API.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppAK.Wwise.Unity.API.WwiseTypes">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppAK.Wwise.Unity.API.WwiseTypes.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppBacktrace.Unity">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppBacktrace.Unity.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppcom.rlabrecque.steamworks.net">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppcom.rlabrecque.steamworks.net.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppDearImguiAPI">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppDearImguiAPI.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppFidelityFX.FSR">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppFidelityFX.FSR.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppfluxy">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppfluxy.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppHBAO.Runtime">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppHBAO.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppJ2i.Net.XInputWrapper">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppJ2i.Net.XInputWrapper.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppMicrosoft.IdentityModel.Abstractions">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppMicrosoft.IdentityModel.Abstractions.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppMicrosoft.IdentityModel.JsonWebTokens">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppMicrosoft.IdentityModel.JsonWebTokens.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppMicrosoft.IdentityModel.Logging">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppMicrosoft.IdentityModel.Logging.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppMicrosoft.IdentityModel.Tokens">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppMicrosoft.IdentityModel.Tokens.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppMono.Security">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppMono.Security.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmoon.backend">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppmoon.backend.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmoon.cerimal">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppmoon.cerimal.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmoon.common">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppmoon.common.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmoon.common.tools">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppmoon.common.tools.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmoon.common.unity">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppmoon.common.unity.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppMoon.Interceptor">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppMoon.Interceptor.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmoon.quantum.forsaken">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppmoon.quantum.forsaken.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmoon.quantum.serialization">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppmoon.quantum.serialization.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmoon.telemetria">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppmoon.telemetria.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmscorlib">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppnetstandard">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppnetstandard.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppNewtonsoft.Json">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppNewtonsoft.Json.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppNewtonsoft.Json.UnityConverters">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppNewtonsoft.Json.UnityConverters.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppOdinPlaceholder">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppOdinPlaceholder.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppPhoton.Realtime">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppPhoton.Realtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppPhotonClient">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppPhotonClient.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppQuantum.Deterministic">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppQuantum.Deterministic.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppQuantum.Engine">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppQuantum.Engine.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppQuantum.Log">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppQuantum.Log.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppsc.posteffects.runtime">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cppsc.posteffects.runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSirenix.OdinInspector.Attributes">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSirenix.OdinInspector.Attributes.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Configuration">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Configuration.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Core">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Data">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Data.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Drawing">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Drawing.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.IdentityModel.Tokens.Jwt">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.IdentityModel.Tokens.Jwt.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.IO.Compression">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.IO.Compression.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.IO.Compression.FileSystem">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.IO.Compression.FileSystem.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Net.Http">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Net.Http.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Numerics">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Numerics.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Runtime.CompilerServices.Unsafe">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Runtime.CompilerServices.Unsafe.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Runtime.Serialization">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Runtime.Serialization.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Security.Cryptography.Cng">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Security.Cryptography.Cng.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Text.Encodings.Web">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Text.Encodings.Web.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Text.Json">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Text.Json.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Xml">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Xml.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Xml.Linq">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppSystem.Xml.Linq.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppVisualEffectGraphExtras.Runtime">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2CppVisualEffectGraphExtras.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__3rdParty">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__3rdParty.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__animation">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__animation.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__aotHelper">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__aotHelper.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__continuousIntegration">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__continuousIntegration.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__crossSceneReferences">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__crossSceneReferences.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__dreamtecSplines">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__dreamtecSplines.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__dreamtecUtilities">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__dreamtecUtilities.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__effectsJunk">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__effectsJunk.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__experiments">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__experiments.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__forsaken">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__forsaken.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__Generated">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__Generated.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__meshTrail">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__meshTrail.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__moonCore">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__moonCore.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__moonCoreAttributes">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__moonCoreAttributes.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__moonCoreCommon">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__moonCoreCommon.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__moonCoreExtensions">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__moonCoreExtensions.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__moonCoreRendering">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__moonCoreRendering.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__moonDebug">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__moonDebug.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__moonDriver">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__moonDriver.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__moonRecording">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__moonRecording.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__moonType">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__moonType.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__network">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__network.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__nintendoSDK">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__nintendoSDK.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__nintendoSystem">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__nintendoSystem.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__paintIn3d">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__paintIn3d.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__reviewFrameworkCoreAssemblyDefinition">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__reviewFrameworkCoreAssemblyDefinition.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__suspend">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__suspend.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__systemsAssemblyDefinition">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__systemsAssemblyDefinition.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__timeline">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__timeline.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__triangleDotNet">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__triangleDotNet.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cpp__wwise">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Il2Cpp__wwise.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Addressables">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Addressables.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Burst">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Burst.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Burst.Unsafe">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Burst.Unsafe.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Collections">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Collections.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Collections.LowLevel.ILSupport">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Formats.Alembic.Runtime">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Formats.Alembic.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Mathematics">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Mathematics.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.MemoryProfiler">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.MemoryProfiler.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Postprocessing.Runtime">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Postprocessing.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.ProBuilder">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.ProBuilder.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.ProBuilder.KdTree">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.ProBuilder.KdTree.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.ProBuilder.Poly2Tri">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.ProBuilder.Poly2Tri.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Profiling.Core">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Profiling.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Core.Runtime">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.ResourceManager">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.ResourceManager.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.TextMeshPro">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.TextMeshPro.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Timeline">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.Timeline.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.VisualEffectGraph.Runtime">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\Unity.VisualEffectGraph.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AccessibilityModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.AccessibilityModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AIModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.AIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AndroidJNIModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.AndroidJNIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AnimationModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.AnimationModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ARModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.ARModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AssetBundleModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.AssetBundleModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AudioModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.AudioModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ClothModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.ClothModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ContentLoadModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.ContentLoadModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CrashReportingModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.CrashReportingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.DirectorModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.DirectorModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.DSPGraphModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.DSPGraphModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GameCenterModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.GameCenterModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GIModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.GIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GraphicsStateCollectionSerializerModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.GraphicsStateCollectionSerializerModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GridModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.GridModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.HierarchyCoreModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.HierarchyCoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.HotReloadModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.HotReloadModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ImageConversionModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.ImageConversionModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.IMGUIModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.IMGUIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputForUIModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.InputForUIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputLegacyModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.InputLegacyModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.InputModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.JSONSerializeModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.JSONSerializeModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.LocalizationModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.LocalizationModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.MarshallingModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.MarshallingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.MultiplayerModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.MultiplayerModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.NVIDIAModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.NVIDIAModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ParticleSystemModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.ParticleSystemModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PerformanceReportingModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.PerformanceReportingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.Physics2DModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.Physics2DModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PropertiesModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.PropertiesModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ScreenCaptureModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.ScreenCaptureModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ShaderVariantAnalyticsModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.ShaderVariantAnalyticsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SharedInternalsModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.SharedInternalsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SpriteMaskModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.SpriteMaskModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SpriteShapeModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.SpriteShapeModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.StreamingModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.StreamingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SubstanceModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.SubstanceModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SubsystemsModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.SubsystemsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.TerrainModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainPhysicsModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextCoreFontEngineModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextCoreTextEngineModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextRenderingModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.TextRenderingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TilemapModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.TilemapModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TLSModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.TLSModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UI">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UI.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIElementsModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UIElementsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UmbraModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UmbraModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityAnalyticsCommonModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityAnalyticsModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityConnectModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityConnectModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityCurlModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityCurlModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityTestProtocolModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestAudioModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestTextureModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestWWWModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VehiclesModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.VehiclesModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VFXModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.VFXModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VideoModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.VideoModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VRModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.VRModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.WindModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.WindModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.XRModule">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\Il2CppAssemblies\UnityEngine.XRModule.dll</HintPath>
+		</Reference>
+		<Reference Include="MelonLoader">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\net6\MelonLoader.dll</HintPath>
+		</Reference>
+		<Reference Include="0Harmony">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\net6\0Harmony.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppInterop.Runtime">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppInterop.Common">
+			<HintPath>D:\SteamLibrary\steamapps\common\NoRestForTheWicked\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
+		</Reference>
+
+	</ItemGroup>
+
+	<PropertyGroup>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<OutputType>Library</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="Utils.cs" />
+		<Compile Include="Core.cs" />
+	</ItemGroup>
+	
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="COPY &quot;$(TargetPath)&quot; &quot;D:\SteamLibrary\steamapps\common\NoRestForTheWicked\Mods&quot;" />
+	</Target>
+</Project>

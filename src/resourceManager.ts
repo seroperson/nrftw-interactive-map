@@ -71,129 +71,129 @@ const TYPES: MainGroupTypes = {
   ore: {
     iron: {
       displayName: "Iron",
-      color: "#9E9E9E", // Medium gray
+      color: "#9E9E9E",
     },
     copper: {
       displayName: "Copper",
-      color: "#D84315", // Dark copper red-orange
+      color: "#D84315",
     },
     silver: {
       displayName: "Silver",
-      color: "#ECEFF1", // Bright silver-white
+      color: "#ECEFF1",
     },
   },
   wood: {
     birch: {
       displayName: "Birch",
-      color: "#F4E4C1", // Pale birch
+      color: "#F4E4C1",
     },
     spruce: {
       displayName: "Spruce",
-      color: "#2D5016", // Dark forest green
+      color: "#2D5016",
     },
     pine: {
       displayName: "Pine",
-      color: "#7CB342", // Light green
+      color: "#7CB342",
     },
   },
   herb: {
     artemisia: {
       displayName: "Artemisia",
-      color: "#CDDC39", // Lime green
+      color: "#CDDC39",
     },
     dracaena: {
       displayName: "Dracaena",
-      color: "#00C853", // Vibrant green
+      color: "#00C853",
     },
     lithops: {
       displayName: "Lithops",
-      color: "#69F0AE", // Mint green
+      color: "#69F0AE",
     },
     mushroom: {
       displayName: "Mushroom",
-      color: "#E040FB", // Bright purple
+      color: "#E040FB",
     },
   },
   food: {
     blueberry: {
       displayName: "Blueberry",
-      color: "#3D5AFE", // Bright indigo blue
+      color: "#3D5AFE",
     },
     firebrandberry: {
       displayName: "Firebrand Berry",
-      color: "#FF1744", // Vibrant red
+      color: "#FF1744",
     },
     horseshoe_crab: {
       displayName: "Horseshoe Crab",
-      color: "#00E5FF", // Cyan
+      color: "#00E5FF",
     },
     potato: {
       displayName: "Potato",
-      color: "#D4A574", // Tan potato
+      color: "#D4A574",
     },
     tomato: {
       displayName: "Tomato",
-      color: "#FF5722", // Deep orange-red
+      color: "#FF5722",
     },
   },
   fishing: {
     carp: {
       displayName: "Carp",
-      color: "#82B1FF", // Light blue
+      color: "#82B1FF",
     },
     trout: {
       displayName: "Trout",
-      color: "#2962FF", // Deep blue
+      color: "#2962FF",
     },
     bass: {
       displayName: "Bass",
-      color: "#0D47A1", // Dark blue
+      color: "#0D47A1",
     },
   },
   digging: {
     displayName: "Dig Spot",
-    color: "#8D6E63", // Brown
+    color: "#8D6E63",
   },
   bonfire: {
     displayName: "Bonfire",
-    color: "#FF6F00", // Bright orange
+    color: "#FF6F00",
   },
   ladder: {
     displayName: "Ladder",
-    color: "#5D4037", // Dark brown
+    color: "#5D4037",
   },
   whisper: {
     displayName: "Whisper",
-    color: "#18FFFF", // Aqua cyan
+    color: "#18FFFF",
   },
   loot_spawn: {
     shiny: {
       displayName: "Shiny",
-      color: "#FFD700", // Gold
+      color: "#FFD700",
     },
     special_shiny: {
       displayName: "Special Shiny",
-      color: "#FF6D00", // Bright amber
+      color: "#FF6D00",
     },
     small_chest: {
       displayName: "Small Chest",
-      color: "#A1887F", // Light brown
+      color: "#A1887F",
     },
     medium_chest: {
       displayName: "Medium Chest",
-      color: "#FFA726", // Orange
+      color: "#FFA726",
     },
     large_chest: {
       displayName: "Large Chest",
-      color: "#F57C00", // Deep orange
+      color: "#F57C00",
     },
     special_chest: {
       displayName: "Special Chest",
-      color: "#E65100", // Dark orange-red
+      color: "#E65100",
     },
     other_loot: {
       displayName: "Other",
-      color: "#9E9E9E", // Gray
+      color: "#9E9E9E",
     },
   },
   interactible: {

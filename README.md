@@ -1,256 +1,99 @@
-# No Rest for The Wicked - Interactive Map
+# Interactive Map for "No Rest for The Wicked"
 
-An interactive, offline-capable Progressive Web App (PWA) for exploring
-resources in the game "No Rest for The Wicked".
+An offline-capable interactive map for "No Rest for The Wicked". Many things are
+Clauded, so code probably smells.
 
-## ✨ Features
+Live at **🗺 [nrftw.seroperson.me][1]**.
 
-- 🗺️ **Interactive Map**: Pan, zoom, and explore the game world
-- 📍 **Resource Markers**: View locations of ores and other resources
-- 🎯 **Custom Markers**: Add your own markers for notes and discoveries
-- 🔍 **Advanced Filtering**: Toggle resource types on/off
-- 🔗 **Shareable URLs**: Share your map state with others
-- 📱 **Installable**: Install as a standalone app on desktop and mobile
-- 🌐 **Offline Mode**: Works completely offline after first visit
-- 🌙 **Dark Theme**: Easy on the eyes for long gaming sessions
+# Why another map?
 
-## 🚀 Quick Start
+This map is completely extracted from game resources, so it's the most complete
+map at the moment. But still some things could be inaccurate, as my algorithm
+probably isn't perfect, resource misreads are possible, and there is quite a lot
+of game logic which must be treated properly to project everyhing on the map.
 
-### Online Access
+As it's extracted from game resources, you can notice the following neat things:
 
-Simply visit the deployed application URL in your web browser.
+- Currently there are around 2000 objects on the map, including: chest, shiny,
+  item spawn points; lore readables; interactables, like doors or ladders; and
+  many others.
+- Objects on this map contain the exact coordinates, so you can distinguish
+  whether something is located deeply in cave or at high ground.
+- You can now see drop chances and loot pools on farmable resources.
+- Likely it would be easy to update this map when further game updates come.
 
-### Installation
+# More things to implement
 
-#### Desktop (Windows, macOS, Linux)
+Still there is a lot of work to be done, such as:
 
-1. Open the app in Chrome, Edge, or another Chromium browser
-2. Click the install icon (⊕) in the address bar
-3. Click "Install" to add it to your applications
+- Displaying enemy spawn points. They're actually easy to extract, but it
+  requires some additional effort to find out how exactly they're triggered.
+  There is really a lot of spawn points in game, but most of them are inactive
+  for some reason.
+- Loot spawn points tuning: currently there are some objects which don't exist
+  visually in game, but exist in memory (or vice-versa). I guess again there is
+  some logic which conditionally hides them.
+- Region offset extracting: currently I manually calibrated some offsets to
+  project object correctly on the map. Ideally this offset must be extracted
+  from the game.
 
-#### Mobile (Android/iOS)
+# How I built it
 
-1. Open in your mobile browser
-2. **Android**: Menu → "Add to Home Screen"
-3. **iOS**: Share → "Add to Home Screen"
+The process is actually challenging, but in a nutshell there is no rocket
+science:
 
-See [PWA_FEATURES.md](PWA_FEATURES.md) for detailed installation instructions.
+- Unpack all resources using [AssetRipper][2]. They're necessary to get the map
+  and extract some information from assets (such as translations).
+- Install [MelonLoader][3]. It allows you to execute custom code at runtime and
+  extract the necessary data.
+- Install [il2CppDumper][4] and [Ghidra][5]. Follow [this tutorial][6] to
+  disassemble the code. This way you can find the exact logic, find some
+  necessary constants and so on.
 
-## 💻 Development
+After configuring the setup, everything left is to find the necessary game
+objects, dump them and draw on the map.
 
-### Prerequisites
+All necessary code is already in this repository:
 
-- Node.js 18+ and npm
+- `nrftw-loot-dumper/` - is a mod to dump game objects.
+- `scripts/generate_map_tiles.py` - converts high-resolution map into the tiles
+  for OpenLayers.
+- `scripts/extract_item_translations.py` - extacts item names from `.asset`
+  files.
+- The rest code in this repository is an actual interactive web map.
 
-### Installation
+# License
 
-```bash
-cd interactive-map
-npm install
+This project is free for use and is not affiliated with or endorsed by the game
+developers.
+
+```text
+MIT License
+
+Copyright (c) 2026 Daniil Sivak
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
 
-### Development Server
-
-```bash
-npm run dev
-```
-
-Opens at http://localhost:3000
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-Outputs to `dist/` directory with full PWA support.
-
-### Preview Production Build
-
-```bash
-npm run preview
-```
-
-## 📁 Project Structure
-
-```
-interactive-map/
-├── src/
-│   ├── main.ts              # Application entry point
-│   ├── mapRenderer.ts       # OpenLayers map configuration
-│   ├── stateManager.ts      # State management & URL handling
-│   ├── ui.ts               # UI controls and interactions
-│   ├── coordinateConverter.ts # World-to-image coordinate conversion
-│   ├── resourceData.ts      # Resource data loading
-│   ├── types.ts            # TypeScript interfaces
-│   └── styles.css          # Application styles
-├── public/
-│   ├── icon-192x192.png    # PWA icon (small)
-│   ├── icon-512x512.png    # PWA icon (large)
-│   ├── map.png             # Game world map (154MB)
-│   ├── ore_coordinates.csv # Resource coordinate data
-│   └── region_transforms.csv # Region transformation data
-├── index.html              # Main HTML file
-├── vite.config.ts          # Vite & PWA configuration
-├── tsconfig.json           # TypeScript configuration
-├── package.json            # Dependencies
-├── README.md               # This file
-└── PWA_FEATURES.md         # PWA documentation
-```
-
-## 🛠️ Technologies
-
-- **TypeScript**: Type-safe JavaScript
-- **OpenLayers**: Interactive mapping library
-- **Vite**: Fast build tool and dev server
-- **Vite PWA Plugin**: Progressive Web App capabilities
-- **Workbox**: Service worker and caching strategies
-
-## 🌐 Offline Capabilities
-
-The application is a full Progressive Web App with:
-
-### Cached on Installation
-
-- Core app files (HTML, CSS, JavaScript)
-- App icons and manifest
-- CSV data files
-
-### Cached on First Access
-
-- Large map image (154MB) - cached when first loaded
-- Other images - cached as needed
-
-After your first online visit, the entire application works offline. See
-[PWA_FEATURES.md](PWA_FEATURES.md) for complete details.
-
-## 📊 Data Sources
-
-The map data is extracted from the game files of "No Rest for The Wicked":
-
-- **Map Image**: Exported from game assets
-- **Resource Coordinates**: Extracted from Unity scene files
-- **Region Transforms**: Calibrated coordinate transformations
-
-## 🎮 Usage
-
-### Navigating the Map
-
-- **Pan**: Click and drag
-- **Zoom**: Mouse wheel or pinch gesture
-- **Coordinates**: Hover over the map to see world coordinates
-
-### Filtering Resources
-
-- Use the sidebar to toggle resource types on/off
-- **Check All**: Show all resources
-- **Uncheck All**: Hide all resources
-
-### Custom Markers
-
-1. Click **"Add Marker Mode"**
-2. Click on the map where you want to place a marker
-3. Enter a note/description
-4. Your markers are saved in browser storage
-
-### Sharing Your Map
-
-Click **"Copy Shareable URL"** to create a link that includes:
-
-- Current map position and zoom
-- Active filters
-- Custom markers
-
-## 🔧 Configuration
-
-### Map Settings
-
-Edit [`src/coordinateConverter.ts`](src/coordinateConverter.ts) for:
-
-- World bounds
-- Coordinate transformations
-- Map dimensions
-
-### PWA Settings
-
-Edit [`vite.config.ts`](vite.config.ts) for:
-
-- Cache strategies
-- Offline behavior
-- Manifest configuration
-
-### Styling
-
-Edit [`src/styles.css`](src/styles.css) for:
-
-- Color scheme
-- Layout
-- Responsive design
-
-## 🐛 Troubleshooting
-
-### Map Not Loading
-
-- Ensure map.png is in the public/ directory
-- Check browser console for errors
-- Verify file permissions
-
-### Coordinates Not Matching Game
-
-- Check region_transforms.csv calibration
-- Verify coordinate conversion in coordinateConverter.ts
-- Recalibrate if game was updated
-
-### PWA Not Installing
-
-- HTTPS required (doesn't work on http://)
-- Check browser compatibility
-- Clear cache and try again
-
-### Offline Mode Not Working
-
-- Visit the app online first to cache resources
-- Check service worker status in DevTools
-- Large map requires one online visit to cache
-
-For PWA-specific issues, see [PWA_FEATURES.md](PWA_FEATURES.md#troubleshooting).
-
-## 📄 License
-
-This is a fan-made tool for "No Rest for The Wicked" and is not affiliated with
-or endorsed by the game developers.
-
-## 🤝 Contributing
-
-Contributions are welcome! Areas for improvement:
-
-- Additional resource types
-- Better coordinate calibration
-- Performance optimizations
-- Mobile UI enhancements
-- Multi-language support
-
-## 📞 Support
-
-For issues or questions:
-
-1. Check the troubleshooting sections
-2. Review [PWA_FEATURES.md](PWA_FEATURES.md) for PWA-related questions
-3. Check browser console for error messages
-4. Verify you're using a supported browser
-
-## 🎯 Roadmap
-
-- [ ] Add more resource types (chests, NPCs, etc.)
-- [ ] Implement region/zone boundaries
-- [ ] Add search functionality
-- [ ] Export/import custom markers
-- [ ] Multiple map layers
-- [ ] Quest location markers
-- [ ] Achievement tracking
-
----
-
-**Game**: No Rest for The Wicked  
-**Version**: 1.0.0  
-**Last Updated**: 2026-02-03
+[1]: https://nrftw.seroperson.me/
+[2]: https://github.com/AssetRipper/AssetRipper
+[3]: https://github.com/LavaGang/MelonLoader
+[4]: https://github.com/Perfare/Il2CppDumper
+[5]: https://github.com/NationalSecurityAgency/ghidra
+[6]: https://gist.github.com/toasterparty/57a50eddc2203fc6ca24cf96789f5dd2

@@ -1,9 +1,0 @@
-region,scaling,offset_x,offset_y,invert_x,invert_z
-coastA,30.0,110,2370,False,False
-fortressA,30.5,90,2380,False,False
-hillsA,30.0,140,2370,False,False
-marinWoodsA,30.5,100,2400,False,False
-mountainPassA,30.0,210,2460,False,False
-outskirtsA,30.5,90,2380,False,False
-willsFarmA,30.0,210,2555,False,False
-sacramentA,30.0,160,2400,False,False
