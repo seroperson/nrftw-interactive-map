@@ -120,6 +120,21 @@ export class UIManager {
       this.renderResourceFilters(loadedResources);
     });
 
+    // Expert mode checkbox
+    const expertModeCheckbox = document.getElementById(
+      "expert-mode",
+    ) as HTMLInputElement;
+    if (expertModeCheckbox) {
+      // Set initial state
+      expertModeCheckbox.checked =
+        this.stateManager.getState().expertMode;
+
+      // Handle changes
+      expertModeCheckbox.addEventListener("change", () => {
+        this.stateManager.setExpertMode(expertModeCheckbox.checked);
+      });
+    }
+
     // Copy URL
     const copyBtn = document.getElementById("copy-url");
     const feedback = document.getElementById("copy-feedback");
@@ -139,9 +154,17 @@ export class UIManager {
       }
     });
 
-    this.stateManager.subscribe(() => {
+    this.stateManager.subscribe((state) => {
       this.renderResourceFilters(loadedResources);
       this.updateMapFilterButtons();
+
+      // Update expert mode checkbox
+      const expertModeCheckbox = document.getElementById(
+        "expert-mode",
+      ) as HTMLInputElement;
+      if (expertModeCheckbox) {
+        expertModeCheckbox.checked = state.expertMode;
+      }
     });
   }
 

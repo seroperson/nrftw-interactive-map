@@ -578,7 +578,10 @@ export class ResourceLoader {
   /**
    * Parse resources from CSV text
    */
-  public loadResourceCSV(csvText: string): LoadedResources {
+  public loadResourceCSV(
+    csvText: string,
+    applyDisabledFilter: boolean = true,
+  ): LoadedResources {
     const lines = csvText.trim().split("\n");
 
     let totalObjects = 0;
@@ -622,11 +625,13 @@ export class ResourceLoader {
       const idC = parseInt(parts[9]);
       const idD = parseInt(parts[10]);
 
-      // Check if this item is disabled
-      const guidKey = `${idA},${idB},${idC},${idD}`;
-      if (this.disabledItems.has(guidKey)) {
-        disabledObjects++;
-        continue;
+      // Check if this item is disabled (only if filter is enabled)
+      if (applyDisabledFilter) {
+        const guidKey = `${idA},${idB},${idC},${idD}`;
+        if (this.disabledItems.has(guidKey)) {
+          disabledObjects++;
+          continue;
+        }
       }
 
       // Parse Drop JSON if available (column 11)

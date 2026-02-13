@@ -99,4 +99,5 @@ export interface AppState {
   openedPopup: OpenedPopup | null;
   expandedGroups: Set<string>;
   mapFilter: string;
+  expertMode: boolean;
 }

@@ -8,20 +8,19 @@ import {
 import { getItemName } from "../utils/itemTranslations";
 
 /**
- * Check if dev mode is enabled
+ * Check if expert mode is enabled
  */
 export function isDevMode(): boolean {
-  // Check URL parameter
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has("dev")) {
-    return true;
-  }
-  // Check localStorage
   try {
-    return localStorage.getItem("nrftw_dev_mode") === "true";
+    const storedState = localStorage.getItem("nrftw_map_state");
+    if (storedState) {
+      const state = JSON.parse(storedState);
+      return state.expertMode === true;
+    }
   } catch {
     return false;
   }
+  return false;
 }
 
 /**

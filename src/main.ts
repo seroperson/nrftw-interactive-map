@@ -17,6 +17,7 @@ class InteractiveMapApp {
   private stateManager: StateManager;
   private uiManager: UIManager;
   private resourceLoader: ResourceLoader;
+  private loadedResources!: LoadedResources;
 
   constructor() {
     // Initialize core components
@@ -30,28 +31,27 @@ class InteractiveMapApp {
 
   private async setupApplication(): Promise<void> {
     try {
-      // Load disabled items and parse resources
+      // Load disabled items first
       this.resourceLoader.loadDisabledItems(itemDisabledJson);
-      var loadedResources = this.resourceLoader.loadResourceCSV(itemCoordinates);
 
       // Load region transforms
       this.converter.loadTransformsFromCSV(regionOffsets);
 
-      // Set resources in renderer
-      this.renderer.updateResourceLayer(loadedResources);
-
-      // Initialize UI with resource types and groups
-      this.uiManager.setupEventListeners(loadedResources);
-      this.uiManager.renderResourceFilters(loadedResources);
-
       // Load map tiles
       this.renderer.loadMapImage();
 
+      // Load resources with initial state
+      this.loadResources();
+
+      // Initialize UI with resource types and groups
+      this.uiManager.setupEventListeners(this.loadedResources);
+      this.uiManager.renderResourceFilters(this.loadedResources);
+
       // Apply initial state
-      this.applyState(loadedResources);
+      this.applyState(this.loadedResources);
 
       // Setup state change handlers
-      this.setupStateHandlers(loadedResources);
+      this.setupStateHandlers();
 
       // Setup viewport tracking
       this.setupViewportTracking();
@@ -69,11 +69,34 @@ class InteractiveMapApp {
     }
   }
 
-  private setupStateHandlers(loadedResources: LoadedResources): void {
+  private loadResources(): void {
+    const state = this.stateManager.getState();
+    const applyDisabledFilter = !state.expertMode;
+    this.loadedResources = this.resourceLoader.loadResourceCSV(
+      itemCoordinates,
+      applyDisabledFilter,
+    );
+
+    // Set resources in renderer
+    this.renderer.updateResourceLayer(this.loadedResources);
+  }
+
+  private setupStateHandlers(): void {
+    let previousExpertMode = this.stateManager.getState().expertMode;
+
     // Subscribe to state changes
     this.stateManager.subscribe((state) => {
+      // Check if expertMode changed
+      if (state.expertMode !== previousExpertMode) {
+        previousExpertMode = state.expertMode;
+        // Reload resources with new filter setting
+        this.loadResources();
+        this.uiManager.renderResourceFilters(this.loadedResources);
+      }
+
+      // Apply current state to renderer
       this.renderer.setVisibleResourceTypes(
-        loadedResources,
+        this.loadedResources,
         state.visibleResources,
       );
       this.renderer.setMapFilter(state.mapFilter);

@@ -26,6 +26,7 @@ import {
   formatResourceTitle,
   formatCoordinates,
   formatGuidHtml,
+  formatPathHtml,
   formatDropHtml,
   formatLootSpawnInfoHtml,
 } from "./ui/formatters";
@@ -512,6 +513,7 @@ export class MapRenderer {
         const idB = feature.get("idB") as number;
         const idC = feature.get("idC") as number;
         const idD = feature.get("idD") as number;
+        const path = feature.get("path") as string;
         const drop = feature.get("drop");
         const lootSpawnInfo = feature.get("lootSpawnInfo");
 
@@ -526,6 +528,7 @@ export class MapRenderer {
           </div>
           ${formatCoordinates("tooltip", worldX, worldY, worldZ)}
           ${formatGuidHtml("tooltip", idA, idB, idC, idD)}
+          ${formatPathHtml("tooltip", path)}
           ${formatDropHtml("tooltip", drop)}
           ${formatLootSpawnInfoHtml("tooltip", lootSpawnInfo)}
         `;

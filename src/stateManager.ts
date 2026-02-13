@@ -6,27 +6,33 @@ export class StateManager {
   private readonly STORAGE_KEY = "nrftw_map_state";
   private state: AppState;
   private listeners: Set<(state: AppState) => void> = new Set();
-  private urlParams: { viewport?: ViewportState; openedPopup?: OpenedPopup } =
-    {};
+  private urlParams: {
+    viewport?: ViewportState;
+    openedPopup?: OpenedPopup;
+    expertMode?: boolean;
+  } = {};
 
   constructor() {
     this.state = this.loadInitialState();
   }
 
   private loadInitialState(): AppState {
-    // Read URL parameters for viewport and openedPopup only
+    // Read URL parameters
     this.urlParams = this.loadFromURL();
 
     // Load main state from localStorage or defaults
     const storageState = this.loadFromLocalStorage();
     const baseState = storageState || this.getDefaultState();
 
-    // Override viewport and openedPopup from URL if available
+    // Override viewport, openedPopup, and expertMode from URL if available
     if (this.urlParams.viewport) {
       baseState.viewport = this.urlParams.viewport;
     }
     if (this.urlParams.openedPopup) {
       baseState.openedPopup = this.urlParams.openedPopup;
+    }
+    if (this.urlParams.expertMode !== undefined) {
+      baseState.expertMode = this.urlParams.expertMode;
     }
 
     return baseState;
@@ -35,6 +41,7 @@ export class StateManager {
   public getUrlParams(): {
     viewport?: ViewportState;
     openedPopup?: OpenedPopup;
+    expertMode?: boolean;
   } {
     return this.urlParams;
   }
@@ -50,17 +57,22 @@ export class StateManager {
       openedPopup: null,
       expandedGroups: new Set(["ore"]),
       mapFilter: "none",
+      expertMode: false,
     };
   }
 
   private loadFromURL(): {
     viewport?: ViewportState;
     openedPopup?: OpenedPopup;
+    expertMode?: boolean;
   } {
     try {
       const params = new URLSearchParams(window.location.search);
-      const result: { viewport?: ViewportState; openedPopup?: OpenedPopup } =
-        {};
+      const result: {
+        viewport?: ViewportState;
+        openedPopup?: OpenedPopup;
+        expertMode?: boolean;
+      } = {};
 
       // Read viewport parameters
       if (params.has("x") && params.has("y") && params.has("scale")) {
@@ -90,6 +102,11 @@ export class StateManager {
         }
       }
 
+      // Read expert mode parameter
+      if (params.has("expert")) {
+        result.expertMode = params.get("expert") === "1";
+      }
+
       return result;
     } catch (e) {
       console.error("Failed to load parameters from URL:", e);
@@ -112,6 +129,7 @@ export class StateManager {
         openedPopup: data.openedPopup || null,
         expandedGroups: new Set(data.expandedGroups || []),
         mapFilter: data.mapFilter || "none",
+        expertMode: data.expertMode ?? false,
       };
     } catch (e) {
       console.error("Failed to load state from localStorage:", e);
@@ -169,6 +187,12 @@ export class StateManager {
     this.notifyListeners();
   }
 
+  public setExpertMode(enabled: boolean): void {
+    this.state.expertMode = enabled;
+    this.saveToLocalStorage();
+    this.notifyListeners();
+  }
+
   public getShareableURL(): string {
     const url = new URL(window.location.origin + window.location.pathname);
 
@@ -188,6 +212,11 @@ export class StateManager {
       url.searchParams.set("idD", this.state.openedPopup.idD.toString());
     }
 
+    // Add expert mode parameter if enabled
+    if (this.state.expertMode) {
+      url.searchParams.set("expert", "1");
+    }
+
     return url.toString();
   }
 
@@ -199,6 +228,7 @@ export class StateManager {
         openedPopup: this.state.openedPopup,
         expandedGroups: Array.from(this.state.expandedGroups),
         mapFilter: this.state.mapFilter,
+        expertMode: this.state.expertMode,
       };
 
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
