@@ -11,6 +11,7 @@ import {
   getGroupDisplayName,
   isValidResourceType,
   isMainGroup,
+  getGroupSortingOrder,
 } from "../resourceManager";
 import {
   formatResourceTitle,
@@ -197,8 +198,15 @@ export class UIManager {
     container.innerHTML = "";
     const state = this.stateManager.getState();
 
+    // Sort groups by sortingOrder before rendering
+    const sortedGroups = Array.from(loadedResources.resourceGroups.entries()).sort(
+      ([groupNameA], [groupNameB]) => {
+        return getGroupSortingOrder(groupNameA) - getGroupSortingOrder(groupNameB);
+      }
+    );
+
     // Render groups
-    for (const [groupName, group] of loadedResources.resourceGroups.entries()) {
+    for (const [groupName, group] of sortedGroups) {
       const groupElement = document.createElement("div");
       groupElement.className = "filter-group-container";
 

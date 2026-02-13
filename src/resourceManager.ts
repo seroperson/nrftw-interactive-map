@@ -42,7 +42,6 @@ type MainGroupTypes = {
   };
   digging: SubGroupDef;
   bonfire: SubGroupDef;
-  ladder: SubGroupDef;
   whisper: SubGroupDef;
   loot_spawn: {
     shiny: SubGroupDef;
@@ -65,159 +64,203 @@ type MainGroupTypes = {
 interface SubGroupDef {
   displayName: string;
   color: string;
+  sortingOrder: number;
 }
 
 const TYPES: MainGroupTypes = {
   ore: {
-    iron: {
-      displayName: "Iron",
-      color: "#9E9E9E",
-    },
     copper: {
       displayName: "Copper",
       color: "#D84315",
+      sortingOrder: 1,
+    },
+    iron: {
+      displayName: "Iron",
+      color: "#9E9E9E",
+      sortingOrder: 2,
     },
     silver: {
       displayName: "Silver",
       color: "#ECEFF1",
+      sortingOrder: 3,
     },
   },
   wood: {
     birch: {
       displayName: "Birch",
       color: "#F4E4C1",
+      sortingOrder: 1,
     },
     spruce: {
       displayName: "Spruce",
       color: "#2D5016",
+      sortingOrder: 2,
     },
     pine: {
       displayName: "Pine",
       color: "#7CB342",
+      sortingOrder: 3,
     },
   },
   herb: {
     artemisia: {
       displayName: "Artemisia",
       color: "#CDDC39",
+      sortingOrder: 1,
     },
     dracaena: {
       displayName: "Dracaena",
       color: "#00C853",
+      sortingOrder: 2,
     },
     lithops: {
       displayName: "Lithops",
       color: "#69F0AE",
+      sortingOrder: 3,
     },
     mushroom: {
       displayName: "Mushroom",
       color: "#E040FB",
+      sortingOrder: 4,
     },
   },
   food: {
     blueberry: {
       displayName: "Blueberry",
       color: "#3D5AFE",
+      sortingOrder: 1,
     },
     firebrandberry: {
       displayName: "Firebrand Berry",
       color: "#FF1744",
+      sortingOrder: 2,
     },
     horseshoe_crab: {
       displayName: "Horseshoe Crab",
-      color: "#00E5FF",
+      color: "#668300",
+      sortingOrder: 3,
     },
     potato: {
       displayName: "Potato",
-      color: "#D4A574",
+      color: "#b38759",
+      sortingOrder: 4,
     },
     tomato: {
       displayName: "Tomato",
       color: "#FF5722",
+      sortingOrder: 5,
     },
   },
   fishing: {
     carp: {
       displayName: "Carp",
       color: "#82B1FF",
+      sortingOrder: 1,
     },
     trout: {
       displayName: "Trout",
       color: "#2962FF",
+      sortingOrder: 2,
     },
     bass: {
       displayName: "Bass",
       color: "#0D47A1",
+      sortingOrder: 3,
     },
   },
   digging: {
     displayName: "Dig Spot",
     color: "#8D6E63",
+    sortingOrder: 60,
   },
   bonfire: {
     displayName: "Bonfire",
     color: "#FF6F00",
-  },
-  ladder: {
-    displayName: "Ladder",
-    color: "#5D4037",
+    sortingOrder: 70,
   },
   whisper: {
     displayName: "Whisper",
     color: "#18FFFF",
+    sortingOrder: 90,
   },
   loot_spawn: {
     shiny: {
       displayName: "Shiny",
       color: "#FFD700",
+      sortingOrder: 1,
     },
     special_shiny: {
       displayName: "Special Shiny",
       color: "#FF6D00",
+      sortingOrder: 2,
     },
     small_chest: {
       displayName: "Small Chest",
       color: "#A1887F",
+      sortingOrder: 3,
     },
     medium_chest: {
       displayName: "Medium Chest",
       color: "#FFA726",
+      sortingOrder: 4,
     },
     large_chest: {
       displayName: "Large Chest",
       color: "#F57C00",
+      sortingOrder: 5,
     },
     special_chest: {
       displayName: "Special Chest",
       color: "#E65100",
+      sortingOrder: 6,
     },
     other_loot: {
       displayName: "Other",
       color: "#9E9E9E",
+      sortingOrder: 7,
     },
   },
   interactible: {
+    readable: {
+      displayName: "Readable",
+      color: "#DEB887",
+      sortingOrder: 1,
+    },
     ladder: {
       displayName: "Ladder",
       color: "#A0826D",
+      sortingOrder: 2,
     },
     door: {
       displayName: "Door",
       color: "#8B4513",
+      sortingOrder: 3,
     },
     lever: {
       displayName: "Lever",
       color: "#CD853F",
-    },
-    readable: {
-      displayName: "Readable",
-      color: "#DEB887",
+      sortingOrder: 4,
     },
     other: {
       displayName: "Other",
       color: "#D2691E",
+      sortingOrder: 5,
     },
   },
+};
+
+// Main group sorting orders
+const GROUP_SORTING_ORDER: Record<MainGroup, number> = {
+  loot_spawn: 10,
+  ore: 20,
+  wood: 30,
+  food: 40,
+  fishing: 50,
+  digging: 60,
+  interactible: 70,
+  whisper: 80,
+  bonfire: 90,
+  herb: 100,
 };
 
 // ============================================================================
@@ -352,6 +395,18 @@ export function getGroupDisplayName(groupType: MainGroup): string {
   return groupType.charAt(0).toUpperCase() + groupType.slice(1);
 }
 
+export function getResourceSortingOrder(resourceType: ResourceTypeKey): number {
+  const def = getResourceDef(resourceType);
+  return def?.sortingOrder ?? 999;
+}
+
+export function getGroupSortingOrder(groupType: string): number {
+  if (isMainGroup(groupType)) {
+    return GROUP_SORTING_ORDER[groupType];
+  }
+  return 999;
+}
+
 export function extractResourceType(resource: Resource): string {
   // Special handling for loot_spawn - determine subtype from lootSpawnInfo
   if (resource.type === "loot_spawn") {
@@ -426,8 +481,12 @@ function createResourceGroups(
   // Create group entries
   for (const [groupName, types] of groupToTypes.entries()) {
     if (types.length > 0) {
-      // Sort types alphabetically
-      types.sort();
+      // Sort types by sortingOrder
+      types.sort((a, b) => {
+        const orderA = getResourceSortingOrder(a as ResourceTypeKey);
+        const orderB = getResourceSortingOrder(b as ResourceTypeKey);
+        return orderA - orderB;
+      });
 
       groupMap.set(groupName, {
         name: groupName,
