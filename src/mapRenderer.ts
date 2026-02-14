@@ -27,6 +27,7 @@ import {
   formatCoordinates,
   formatGuidHtml,
   formatPathHtml,
+  formatClassnameHtml,
   formatDropHtml,
   formatLootSpawnInfoHtml,
 } from "./ui/formatters";
@@ -160,11 +161,9 @@ export class MapRenderer {
         worldX: feature.get("worldX"),
         worldY: feature.get("worldY"),
         worldZ: feature.get("worldZ"),
-        idA: feature.get("idA"),
-        idB: feature.get("idB"),
-        idC: feature.get("idC"),
-        idD: feature.get("idD"),
+        id: feature.get("id"),
         path: feature.get("path"),
+        classname: feature.get("classname"),
         drop: feature.get("drop"),
         lootSpawnInfo: feature.get("lootSpawnInfo"),
       },
@@ -200,17 +199,9 @@ export class MapRenderer {
 
     const features = source.getFeatures();
     for (const feature of features) {
-      const idA = feature.get("idA") as number;
-      const idB = feature.get("idB") as number;
-      const idC = feature.get("idC") as number;
-      const idD = feature.get("idD") as number;
+      const id = feature.get("id") as string;
 
-      if (
-        idA == popup.idA &&
-        idB == popup.idB &&
-        idC == popup.idC &&
-        idD == popup.idD
-      ) {
+      if (id == popup.id) {
         this.selectFeature(feature);
         break;
       }
@@ -377,12 +368,10 @@ export class MapRenderer {
       worldX: resource.worldX,
       worldY: resource.worldY,
       worldZ: resource.worldZ,
-      idA: resource.idA,
-      idB: resource.idB,
-      idC: resource.idC,
-      idD: resource.idD,
+      id: resource.id,
       drop: resource.drop,
       lootSpawnInfo: resource.lootSpawnInfo,
+      classname: resource.classname,
     });
 
     return feature;
@@ -509,11 +498,9 @@ export class MapRenderer {
         const worldX = feature.get("worldX") as number;
         const worldY = feature.get("worldY") as number;
         const worldZ = feature.get("worldZ") as number;
-        const idA = feature.get("idA") as number;
-        const idB = feature.get("idB") as number;
-        const idC = feature.get("idC") as number;
-        const idD = feature.get("idD") as number;
+        const id = feature.get("id") as string;
         const path = feature.get("path") as string;
+        const classname = feature.get("classname") as string;
         const drop = feature.get("drop");
         const lootSpawnInfo = feature.get("lootSpawnInfo");
 
@@ -527,8 +514,9 @@ export class MapRenderer {
             ${name ? `<div class="tooltip-subtitle">${name}</div>` : ""}
           </div>
           ${formatCoordinates("tooltip", worldX, worldY, worldZ)}
-          ${formatGuidHtml("tooltip", idA, idB, idC, idD)}
+          ${formatGuidHtml("tooltip", id)}
           ${formatPathHtml("tooltip", path)}
+          ${formatClassnameHtml("tooltip", classname)}
           ${formatDropHtml("tooltip", drop)}
           ${formatLootSpawnInfoHtml("tooltip", lootSpawnInfo)}
         `;
@@ -542,13 +530,14 @@ export class MapRenderer {
         const offset = 15;
 
         // Get tooltip dimensions (need to make it visible first to measure)
-        this.tooltipElement.style.visibility = 'hidden';
+        this.tooltipElement.style.visibility = "hidden";
         this.tooltipElement.classList.add("visible");
         const tooltipRect = this.tooltipElement.getBoundingClientRect();
 
         // Check if tooltip would overflow bottom of viewport
         const viewportHeight = window.innerHeight;
-        const wouldOverflowBottom = mouseY + offset + tooltipRect.height > viewportHeight;
+        const wouldOverflowBottom =
+          mouseY + offset + tooltipRect.height > viewportHeight;
 
         // Position tooltip
         this.tooltipElement.style.left = `${mouseX + offset}px`;
@@ -559,7 +548,7 @@ export class MapRenderer {
           // Position below cursor
           this.tooltipElement.style.top = `${mouseY + offset}px`;
         }
-        this.tooltipElement.style.visibility = 'visible';
+        this.tooltipElement.style.visibility = "visible";
 
         // Change cursor to pointer
         (this.map.getTargetElement() as HTMLElement).style.cursor = "pointer";

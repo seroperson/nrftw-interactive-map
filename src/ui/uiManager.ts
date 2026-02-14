@@ -18,6 +18,7 @@ import {
   formatCoordinates,
   formatGuidHtml,
   formatPathHtml,
+  formatClassnameHtml,
   formatDropHtml,
   formatLootSpawnInfoHtml,
 } from "./formatters";
@@ -481,10 +482,7 @@ export class UIManager {
       // Notify state manager
       if (this.onPopupChange) {
         this.onPopupChange({
-          idA: featureData.idA,
-          idB: featureData.idB,
-          idC: featureData.idC,
-          idD: featureData.idD,
+          id: featureData.id,
         });
       }
     }) as EventListener);
@@ -594,11 +592,9 @@ export class UIManager {
       worldX,
       worldY,
       worldZ,
-      idA,
-      idB,
-      idC,
-      idD,
+      id,
       path,
+      classname,
       drop,
       lootSpawnInfo,
     } = featureData;
@@ -614,8 +610,9 @@ export class UIManager {
         </div>
       </div>
       ${formatCoordinates("popup", worldX, worldY, worldZ)}
-      ${formatGuidHtml("popup", idA, idB, idC, idD)}
+      ${formatGuidHtml("popup", id)}
       ${formatPathHtml("popup", path)}
+      ${formatClassnameHtml("popup", classname)}
       ${formatDropHtml("popup", drop)}
       ${formatLootSpawnInfoHtml("popup", lootSpawnInfo)}
     `;

@@ -134,11 +134,7 @@ class InteractiveMapApp {
     // If there's an openedPopup from URL, auto-select only the group containing that object
     if (urlParams.openedPopup) {
       const resource = loadedResources.resources.find(
-        (r) =>
-          r.idA === urlParams.openedPopup!.idA &&
-          r.idB === urlParams.openedPopup!.idB &&
-          r.idC === urlParams.openedPopup!.idC &&
-          r.idD === urlParams.openedPopup!.idD,
+        (r) => r.id === urlParams.openedPopup!.id,
       );
 
       if (resource) {

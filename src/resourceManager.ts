@@ -54,9 +54,13 @@ type MainGroupTypes = {
   };
   interactible: {
     ladder: SubGroupDef;
+    wall_climb: SubGroupDef;
     door: SubGroupDef;
     lever: SubGroupDef;
     readable: SubGroupDef;
+    entrance: SubGroupDef;
+    house_entrance: SubGroupDef;
+    platform: SubGroupDef;
     other: SubGroupDef;
   };
 };
@@ -223,28 +227,48 @@ const TYPES: MainGroupTypes = {
   interactible: {
     readable: {
       displayName: "Readable",
-      color: "#DEB887",
+      color: "#F4D03F",
       sortingOrder: 1,
     },
     ladder: {
       displayName: "Ladder",
-      color: "#A0826D",
+      color: "#8B4513",
       sortingOrder: 2,
+    },
+    wall_climb: {
+      displayName: "Wall Climb",
+      color: "#7F8C8D",
+      sortingOrder: 3,
     },
     door: {
       displayName: "Door",
-      color: "#8B4513",
-      sortingOrder: 3,
+      color: "#6B4423",
+      sortingOrder: 4,
     },
     lever: {
       displayName: "Lever",
-      color: "#CD853F",
-      sortingOrder: 4,
+      color: "#E67E22",
+      sortingOrder: 5,
+    },
+    entrance: {
+      displayName: "Entrance",
+      color: "#9B59B6",
+      sortingOrder: 6,
+    },
+    house_entrance: {
+      displayName: "House",
+      color: "#27AE60",
+      sortingOrder: 7,
+    },
+    platform: {
+      displayName: "Platform",
+      color: "#3498DB",
+      sortingOrder: 8,
     },
     other: {
       displayName: "Other",
-      color: "#D2691E",
-      sortingOrder: 5,
+      color: "#95A5A6",
+      sortingOrder: 9,
     },
   },
 };
@@ -565,14 +589,7 @@ export class ResourceLoader {
    */
   private extractRegionFromPath(filePath: string): string {
     // Extract region from path like: ExportedProject/Assets/worlds/isolaSacra/coast/coastA/loot/loot.unity
-    // We want to get "coastA" not "coast"
-    const match = filePath.match(/worlds\/isolaSacra\/[^\/]+\/([^\/]+)/);
-    if (match) {
-      return match[1];
-    }
-
-    // For paths that don't follow the isolaSacra pattern (like infiniteDungeon), use default
-    return "default";
+    return filePath.split("\/")[3];
   }
 
   /**
@@ -603,13 +620,13 @@ export class ResourceLoader {
       resources: [],
     };
 
-    // Skip header: Type,Subtype,Name,File,RawX,RawY,RawZ,id_a,id_b,id_c,id_d,Drop,LootSpawnInfo
+    // Skip header: Type,Subtype,Name,File,RawX,RawY,RawZ,id,Drop,LootSpawnInfo,Classname
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
 
       const parts = this.parseCSVLine(line);
-      if (parts.length < 8) continue;
+      if (parts.length < 5) continue;
 
       const type = parts[0].trim().toLowerCase();
       const subtype = parts[1].trim().toLowerCase();
@@ -619,36 +636,31 @@ export class ResourceLoader {
       const rawY = parseFloat(parts[5]);
       const rawZ = parseFloat(parts[6]);
 
-      // Parse GUIDs if available (columns 7-10)
-      const idA = parseInt(parts[7]);
-      const idB = parseInt(parts[8]);
-      const idC = parseInt(parts[9]);
-      const idD = parseInt(parts[10]);
+      const id = parts[7];
 
       // Check if this item is disabled (only if filter is enabled)
       if (applyDisabledFilter) {
-        const guidKey = `${idA},${idB},${idC},${idD}`;
-        if (this.disabledItems.has(guidKey)) {
+        if (this.disabledItems.has(id)) {
           disabledObjects++;
           continue;
         }
       }
 
-      // Parse Drop JSON if available (column 11)
+      // Parse Drop JSON if available (column 9)
       let drop: any = undefined;
-      if (parts.length > 11 && parts[11].trim()) {
+      if (parts.length > 8 && parts[8].trim()) {
         try {
-          drop = JSON.parse(parts[11]);
+          drop = JSON.parse(parts[8]);
         } catch (e) {
           console.warn(`Failed to parse Drop JSON at line ${i + 1}:`, e);
         }
       }
 
-      // Parse LootSpawnInfo JSON if available (column 12)
+      // Parse LootSpawnInfo JSON if available (column 10)
       let lootSpawnInfo: any = undefined;
-      if (parts.length > 12 && parts[12].trim()) {
+      if (parts.length > 9 && parts[9].trim()) {
         try {
-          lootSpawnInfo = JSON.parse(parts[12]);
+          lootSpawnInfo = JSON.parse(parts[9]);
         } catch (e) {
           console.warn(
             `Failed to parse LootSpawnInfo JSON at line ${i + 1}:`,
@@ -656,6 +668,9 @@ export class ResourceLoader {
           );
         }
       }
+
+      // Parse classname if available (column 11)
+      const classname = parts.length > 10 ? parts[10].trim() : undefined;
 
       totalObjects++;
 
@@ -727,12 +742,10 @@ export class ResourceLoader {
         worldY,
         worldZ,
         filePath,
-        idA,
-        idB,
-        idC,
-        idD,
+        id,
         drop,
         lootSpawnInfo,
+        classname,
       });
     }
 

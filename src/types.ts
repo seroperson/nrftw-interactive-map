@@ -49,12 +49,10 @@ export interface Resource {
   worldY: number;
   worldZ: number;
   filePath: string;
-  idA: number;
-  idB: number;
-  idC: number;
-  idD: number;
+  id: string;
   drop?: Drop;
   lootSpawnInfo?: LootSpawnInfo;
+  classname?: string;
 }
 
 export interface ResourceType {
@@ -87,10 +85,7 @@ export interface ViewportState {
 }
 
 export interface OpenedPopup {
-  idA: number;
-  idB: number;
-  idC: number;
-  idD: number;
+  id: string;
 }
 
 export interface AppState {

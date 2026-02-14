@@ -87,19 +87,11 @@ export class StateManager {
 
       // Read openedPopup parameters
       if (
-        params.has("idA") &&
-        params.has("idB") &&
-        params.has("idC") &&
-        params.has("idD")
+        params.has("id")
       ) {
-        const idA = parseInt(params.get("idA")!);
-        const idB = parseInt(params.get("idB")!);
-        const idC = parseInt(params.get("idC")!);
-        const idD = parseInt(params.get("idD")!);
+        const id = params.get("id")!;
 
-        if (!isNaN(idA) && !isNaN(idB) && !isNaN(idC) && !isNaN(idD)) {
-          result.openedPopup = { idA, idB, idC, idD };
-        }
+        result.openedPopup = { id };
       }
 
       // Read expert mode parameter
@@ -206,10 +198,7 @@ export class StateManager {
 
     // Add openedPopup parameters if there's an opened popup
     if (this.state.openedPopup) {
-      url.searchParams.set("idA", this.state.openedPopup.idA.toString());
-      url.searchParams.set("idB", this.state.openedPopup.idB.toString());
-      url.searchParams.set("idC", this.state.openedPopup.idC.toString());
-      url.searchParams.set("idD", this.state.openedPopup.idD.toString());
+      url.searchParams.set("id", this.state.openedPopup.id.toString());
     }
 
     // Add expert mode parameter if enabled

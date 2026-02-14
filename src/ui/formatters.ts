@@ -76,10 +76,7 @@ export function formatCoordinates(
  */
 export function formatGuidHtml(
   context: "popup" | "tooltip",
-  idA: number,
-  idB: number,
-  idC: number,
-  idD: number,
+  id: string,
 ): string {
   if (!isDevMode()) {
     return "";
@@ -88,14 +85,14 @@ export function formatGuidHtml(
     <div class="${context}-section ${context}-guid">
       <div class="${context}-section-header">🔑 GUID</div>
       <div class="${context}-section-content">
-        <code class="${context}-code">${idA},${idB},${idC},${idD}</code>
+        <code class="${context}-code">${id}</code>
       </div>
     </div>
   `;
 }
 
 /**
- * Format file path into HTML (only in dev mode)
+ * Format file path into HTML (only in expert mode)
  */
 export function formatPathHtml(
   context: "popup" | "tooltip",
@@ -109,6 +106,26 @@ export function formatPathHtml(
       <div class="${context}-section-header">📁 File Path</div>
       <div class="${context}-section-content">
         <code class="${context}-code ${context}-code-path">${path}</code>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Format classname into HTML (only in expert mode)
+ */
+export function formatClassnameHtml(
+  context: "popup" | "tooltip",
+  classname?: string,
+): string {
+  if (!isDevMode() || !classname) {
+    return "";
+  }
+  return `
+    <div class="${context}-section ${context}-classname">
+      <div class="${context}-section-header">🏷️ Classname</div>
+      <div class="${context}-section-content">
+        <code class="${context}-code">${classname}</code>
       </div>
     </div>
   `;
