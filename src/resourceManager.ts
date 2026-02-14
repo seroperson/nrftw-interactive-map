@@ -63,6 +63,18 @@ type MainGroupTypes = {
     platform: SubGroupDef;
     other: SubGroupDef;
   };
+  destructible: {
+    des_door: SubGroupDef;
+    wall: SubGroupDef;
+  };
+  npc: {
+    animal: SubGroupDef;
+    balak_taw: SubGroupDef;
+    boarskin: SubGroupDef;
+    boss: SubGroupDef;
+    critter: SubGroupDef;
+    npc_other: SubGroupDef;
+  };
 };
 
 interface SubGroupDef {
@@ -271,6 +283,50 @@ const TYPES: MainGroupTypes = {
       sortingOrder: 9,
     },
   },
+  destructible: {
+    des_door: {
+      displayName: "Door",
+      color: "#A0522D",
+      sortingOrder: 1,
+    },
+    wall: {
+      displayName: "Wall",
+      color: "#708090",
+      sortingOrder: 2,
+    },
+  },
+  npc: {
+    animal: {
+      displayName: "Animal",
+      color: "#8B4513",
+      sortingOrder: 1,
+    },
+    balak_taw: {
+      displayName: "Balak'Taw",
+      color: "#9370DB",
+      sortingOrder: 2,
+    },
+    boarskin: {
+      displayName: "Boarskin",
+      color: "#D2691E",
+      sortingOrder: 3,
+    },
+    boss: {
+      displayName: "Boss",
+      color: "#8B0000",
+      sortingOrder: 4,
+    },
+    critter: {
+      displayName: "Critter",
+      color: "#A9A9A9",
+      sortingOrder: 5,
+    },
+    npc_other: {
+      displayName: "Other",
+      color: "#DC143C",
+      sortingOrder: 6,
+    },
+  },
 };
 
 // Main group sorting orders
@@ -282,6 +338,8 @@ const GROUP_SORTING_ORDER: Record<MainGroup, number> = {
   fishing: 50,
   digging: 60,
   interactible: 70,
+  destructible: 75,
+  npc: 77,
   whisper: 80,
   bonfire: 90,
   herb: 100,
@@ -415,6 +473,9 @@ export function getGroupDisplayName(groupType: MainGroup): string {
   // For nested groups like ore, wood, loot_spawn, return formatted version
   if (groupType === "loot_spawn") {
     return "Loot Spawn";
+  }
+  if (groupType === "npc") {
+    return "NPC";
   }
   return groupType.charAt(0).toUpperCase() + groupType.slice(1);
 }

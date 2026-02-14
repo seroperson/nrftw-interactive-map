@@ -99,6 +99,13 @@ export class UIManager {
           toggleBtn.classList.add("sidebar-collapsed");
         }
 
+        // Deselect any selected object when closing sidebar on mobile
+        const detailsSection = document.getElementById("resource-details-section");
+        if (detailsSection && detailsSection.style.display !== "none") {
+          const event = new CustomEvent("closeResourceDetails");
+          window.dispatchEvent(event);
+        }
+
         // Trigger map resize after sidebar animation completes
         setTimeout(() => {
           window.dispatchEvent(new Event("resize"));

@@ -1,11 +1,13 @@
 ﻿using Il2Cpp;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Runtime;
+using Il2CppMoon;
 using Il2CppMoon.Forsaken;
 using Il2CppMoon.Forsaken.Test;
 using Il2CppQuantum;
 using MelonLoader;
 using nrftw_loot_dumper.Helpers;
+using System.Linq;
 using System.Text.Json;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,6 +25,19 @@ public class Core : MelonMod
 
     private System.Collections.Generic.HashSet<string> existingIds;
     private string csvPath = "entity_dump.csv";
+    private string csvPathUnsorted = "entity_dump_unsorted.csv";
+    private string sceneStatsPath = "scene_stats.csv";
+    private System.Collections.Generic.List<string> pendingSortedEntries = new System.Collections.Generic.List<string>();
+    private System.Collections.Generic.Dictionary<string, SceneStats> sceneStatistics = new System.Collections.Generic.Dictionary<string, SceneStats>();
+    private string currentScenePath = "";
+    private int currentSceneWrittenCount = 0;
+    private bool currentSceneHasUnknownObjects = false;
+
+    struct SceneStats
+    {
+        public int objectCount { get; set; }
+        public bool hasUnknownObjects { get; set; }
+    }
 
     struct LootSpawnInfo
     {
@@ -91,6 +106,7 @@ public class Core : MelonMod
         Msg("Press F9 to dump all entities in the current scene");
 
         InitializeCsv();
+        LoadSceneStats();
     }
 
     public override void OnUpdate()
@@ -121,15 +137,34 @@ public class Core : MelonMod
     {
         try
         {
-            if (scene.name.Contains("interactive") || scene.name.Contains("loot") || scene.name.Contains("shinies") /*|| scene.name.Contains("npcs") || scene.name.Contains("enemies") || scene.name.Contains("castle")*/)
+            // Initialize tracking for current scene
+            currentScenePath = scene.path;
+            currentSceneWrittenCount = 0;
+            currentSceneHasUnknownObjects = false;
+
+            // Check if we should skip this scene
+            if (sceneStatistics.ContainsKey(currentScenePath))
             {
-                MelonLogger.Msg($"Dumping scene {scene.name}; Path: {scene.path}");
-                DumpScene(scene);
+                var stats = sceneStatistics[currentScenePath];
+                if (!stats.hasUnknownObjects && stats.objectCount == 0)
+                {
+                    MelonLogger.Msg($"Skipping scene {scene.name}; Path: {scene.path} (no unknown objects and nothing written previously)");
+                    return;
+                }
             }
-            else
+
+            MelonLogger.Msg($"Dumping scene {scene.name}; Path: {scene.path}");
+            DumpScene(scene);
+            FlushPendingEntriesToSortedCsv();
+
+            // Update and save scene statistics
+            var newStats = new SceneStats
             {
-                Msg($"Skipping scene dump {scene.name}; Path: {scene.path}");
-            }
+                objectCount = currentSceneWrittenCount,
+                hasUnknownObjects = currentSceneHasUnknownObjects
+            };
+            sceneStatistics[currentScenePath] = newStats;
+            SaveSceneStats();
         }
         catch (System.Exception ex)
         {
@@ -274,7 +309,6 @@ public class Core : MelonMod
             else if (IsIl2CppInstance("Moon.Forsaken.CerimWhisperView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<CerimWhisperView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("whisper", "whisper", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.FarmableResourceView", monoBehaviour))
@@ -306,16 +340,11 @@ public class Core : MelonMod
             {
                 var casted = Il2CppObjectPool.Get<PooledObject>(objPtr);
                 var components = casted.GetComponents<MonoBehaviour>();
-                Msg($"{monoLevel}- {casted}, Pooled object: {casted}, componentsCount: {components.Count}");
                 foreach (var childMonoBehaviour in components)
                 {
                     if (!IsIl2CppInstance("Moon.Forsaken.PooledObject", childMonoBehaviour))
                     {
                         DumpMonoBehaviour(child, scene, level + 2, childsCount, maxDepth, childPosition, childMonoBehaviour);
-                    }
-                    else
-                    {
-                        Msg($"{monoLevel}- Skipping child pooled monoBehaviour {childMonoBehaviour.name}");
                     }
                 }
             }
@@ -345,143 +374,106 @@ public class Core : MelonMod
                     Msg($"{monoLevel}- Got LootSpawner {casted}, Miss chance: {casted.MissChance}, SpawnerAllTags: {allTagsStr}, SpawnerNoneTags: {noneTagsStr}, SpawnerAnyTags: {anyTagsStr}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                     WriteToCsv("loot_spawn", "loot_spawn", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, lootSpawnInfo, monoScript);
                 }
-                else
-                {
-                    /* var lootSpawnInfo = new LootSpawnInfo();
-                    lootSpawnInfo.shiny = false;
-                    lootSpawnInfo.specialShiny = false;
-                    lootSpawnInfo.smallChest = false;
-                    lootSpawnInfo.mediumChest = false;
-                    lootSpawnInfo.largeChest = false;
-                    lootSpawnInfo.specialChest = false;
-                    lootSpawnInfo.enemies = noneTags.Select(v => v.ToString()).Concat(anyTags.Select(v => v.ToString()).Concat(allTags.Select(v => v.ToString()))).ToList();
-                    lootSpawnInfo.respawnChance = 1.0f - casted.MissChance;
-                    lootSpawnInfo.respawnFreq = casted.RespawnFrequency.ToString();
-                    lootSpawnInfo.spawnCondition = string.Join(",", casted.SpawnConditions.AsEnumerable().Select(v => v.Condition.GetIl2CppType().FullName));
-                    WriteToCsv("enemy", "enemy", child.name, scene.path, childPosition, casted.MoonGuid, null, lootSpawnInfo); */
-
-                    Msg($"{monoLevel}- Probably an EnemySpawner {casted}, Miss chance: {casted.MissChance}, SpawnerAllTags: {allTagsStr}, SpawnerNoneTags: {noneTagsStr}, SpawnerAnyTags: {anyTagsStr}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
-                }
             }
             else if (IsIl2CppInstance("Moon.Forsaken.ContainerView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<ContainerView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 var drop = DumpLoot(casted, casted.Data.Loot, monoLevel);
                 WriteToCsv("loot_spawn", "loot_spawn", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.BonfireView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<BonfireView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("bonfire", "bonfire", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.RopeView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<RopeView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "ladder", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.MovingPlatformView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<MovingPlatformView>(objPtr);
-                MelonLogger.Msg($"Got Forsaken.MovingPlatform: {child.name}, {child.GetIl2CppType().FullName}");
                 WriteToCsv("interactible", "platform", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.BalakTawElevatorControllerView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<BalakTawElevatorControllerView>(objPtr);
-                MelonLogger.Msg($"Got Forsaken.BalakTawElevatorControllerView: {child.name}, {child.GetIl2CppType().FullName}");
                 WriteToCsv("interactible", "platform", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.LadderView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<LadderView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "ladder", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.DoorView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<DoorView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "door", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.GroundLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<GroundLeverView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.ToggleLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<ToggleLeverView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.WallLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<WallLeverView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.TurnWheelView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<TurnWheelView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.LeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<LeverView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.EventLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<EventLeverView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.DamageReceivingLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<DamageReceivingLeverView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.PushCogView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<PushCogView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.GeneralReadableView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<GeneralReadableView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "readable", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.GeneralInteractableView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<GeneralInteractableView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "other", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.PuzzleView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<PuzzleView>(objPtr);
-                Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
                 WriteToCsv("interactible", "entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.InteractableTeleport", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<InteractableTeleport>(objPtr);
-                Msg($"Got Forsaken.InteractableTeleport: {child.name}, {child.GetIl2CppType().FullName}");
                 WriteToCsv("interactible", "entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.HouseEntrance", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<HouseEntrance>(objPtr);
-                Msg($"Got Forsaken.HouseEntrance: {child.name}, {child.GetIl2CppType().FullName}");
                 WriteToCsv("interactible", "house_entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.TriggerZoneView", monoBehaviour))
@@ -489,12 +481,7 @@ public class Core : MelonMod
                 var casted = Il2CppObjectPool.Get<TriggerZoneView>(objPtr);
                 if (casted.QuantumData.Type == TriggerZoneType.Teleport)
                 {
-                    // MelonLogger.Msg($"Got Teleport! {child.name}, ShouldExistOnViewSide: {casted.ShouldExistOnViewSide}, {casted.QuantumData.Type}, linked entities size: {casted.LinkedEntities.Count}");
                     WriteToCsv("interactible", "entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
-                }
-                else
-                {
-                    // MelonLogger.Msg($"Got Not teleport: {child.name}, ShouldExistOnViewSide: {casted.ShouldExistOnViewSide}, {casted.QuantumData.Type}");
                 }
             }
             else if (IsIl2CppInstance("Moon.Forsaken.SurfaceInfo", monoBehaviour))
@@ -502,15 +489,108 @@ public class Core : MelonMod
                 var casted = Il2CppObjectPool.Get<SurfaceInfo>(objPtr);
                 if (casted.WallClimbable)
                 {
-                    MelonLogger.Msg($"SurfaceInfo {child.name}, {casted.Type}, isNavigable {casted.Navigable}, isWallClimbable {casted.WallClimbable}, isEdgeClimbable {casted.EdgeClimbable}, id: {casted.GetInstanceID()}, clazz: {monoScript}");
                     WriteToCsv("interactible", "wall_climb", child.name, scene.path, childPosition, null, casted.GetInstanceID(), null, null, monoScript);
+                }
+            }
+            else if (IsIl2CppInstance("Moon.Forsaken.DestructibleView", monoBehaviour))
+            {
+                var casted = Il2CppObjectPool.Get<DestructibleView>(objPtr);
+                var lowerName = casted.name.ToLower();
+                var t = "";
+                if (lowerName.Contains("wall"))
+                {
+                    t = "wall";
+                }
+                else if (lowerName.Contains("door"))
+                {
+                    t = "des_door";
+                }
+
+                if (!t.Equals(""))
+                {
+                    WriteToCsv("destructible", t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                }
+            }
+            else if (IsIl2CppInstance("Moon.Forsaken.NpcInstance", monoBehaviour))
+            {
+                var casted = Il2CppObjectPool.Get<NpcInstance>(objPtr);
+                var lowerName = casted.name.ToLower();
+                if (!lowerName.Contains("squirrel") && !lowerName.Contains("cata_patrol") && !lowerName.Contains("catapatrol") && !lowerName.Contains("dogpet"))
+                {
+                    /*try
+                    {
+                        MelonLogger.Msg("Loggin NPC");
+                        IL2CPPInspector.InspectComponent(casted);
+                        if (casted.SpawnedEntityView is not null)
+                        {
+                            MelonLogger.Msg("Loggin NPC View");
+                            IL2CPPInspector.InspectComponent(casted.SpawnedEntityView);
+                        }
+                        IL2CPPInspector.InspectComponent(casted.SpawnerEntity);
+                    }
+                    catch (System.Exception e)
+                    {
+                        MelonLogger.Msg($"Error: {e}");
+                    }*/
+
+                    var t = "npc_other";
+                    if (lowerName.Contains("boss"))
+                    {
+                        t = "boss";
+                    }
+                    else if (lowerName.Contains("boarskin"))
+                    {
+                        t = "boarskin";
+                    }
+                    else if (lowerName.Contains("boar") || lowerName.Contains("bear"))
+                    {
+                        t = "animal";
+                    }
+                    else if (lowerName.Contains("critt"))
+                    {
+                        t = "critter";
+                    }
+                    else if (lowerName.Contains("balaktaw"))
+                    {
+                        t = "balak_taw";
+                    }
+                    MelonLogger.Msg($"Logging {child.name} with type: {t}");
+                    WriteToCsv("npc", t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
                 }
             }
             else
             {
-                if (monoScript.ToLower().Contains("view") || monoScript.ToLower().Contains("interact") || monoScript.ToLower().Contains("Entity") || monoScript.ToLower().Contains("npc"))
+                var monoScriptLower = monoScript.ToLower();
+                var whatToDump = monoScriptLower.Contains("view") || monoScriptLower.Contains("interact") || monoScriptLower.Contains("Entity") || monoScriptLower.Contains("npc");
+                var dumpSkip = new List<string>();
+                dumpSkip.Add("actionview");
+                dumpSkip.Add("reactivetree");
+                dumpSkip.Add("stuntpoint");
+                dumpSkip.Add("hintzone");
+                dumpSkip.Add("avatar");
+                dumpSkip.Add("settingsconsumer");
+                dumpSkip.Add("preview");
+                dumpSkip.Add("houseitemview");
+                dumpSkip.Add("eventhandler");
+                dumpSkip.Add("rendering.interaction");
+                dumpSkip.Add("moon.forsaken.entityview");
+                dumpSkip.Add("moon.forsaken.bedview");
+                dumpSkip.Add("moon.forsaken.housechestview");
+                dumpSkip.Add("moon.forsaken.storagerugview");
+                dumpSkip.Add("meleeattackview");
+                dumpSkip.Add("viewphysicsplatform");
+                dumpSkip.Add("simplecinematicsetupview");
+                dumpSkip.Add("enemyshieldview");
+                dumpSkip.Add("npccameratarget");
+
+                dumpSkip.Add("activateviewbasedoncondition");
+                // SlowDownZoneView
+                // PlagueStatueView
+                // RespecStatueView
+                if (whatToDump && dumpSkip.Select(x => !monoScriptLower.Contains(x)).All(x => x))
                 {
                     MelonLogger.Msg($"Unknown object: {child.name}, {monoScript}");
+                    currentSceneHasUnknownObjects = true;
                 }
             }
         }
@@ -671,17 +751,26 @@ public class Core : MelonMod
 
     private void InitializeCsv()
     {
+        var header = "Type,Subtype,Name,File,RawX,RawY,RawZ,id,Drop,LootSpawnInfo,Clazz\n";
+
         if (!System.IO.File.Exists(csvPath))
         {
-            var header = "Type,Subtype,Name,File,RawX,RawY,RawZ,id,Drop,LootSpawnInfo,Clazz\n";
             System.IO.File.WriteAllText(csvPath, header);
-            Msg($"Created CSV file: {csvPath}");
+            Msg($"Created sorted CSV file: {csvPath}");
+        }
+
+        if (!System.IO.File.Exists(csvPathUnsorted))
+        {
+            System.IO.File.WriteAllText(csvPathUnsorted, header);
+            Msg($"Created unsorted CSV file: {csvPathUnsorted}");
         }
     }
 
     private System.Collections.Generic.HashSet<string> LoadExistingIds()
     {
         var existingIds = new System.Collections.Generic.HashSet<string>();
+
+        // Load from sorted CSV
         if (System.IO.File.Exists(csvPath))
         {
             var lines = System.IO.File.ReadAllLines(csvPath);
@@ -696,8 +785,26 @@ public class Core : MelonMod
                     existingIds.Add(id);
                 }
             }
-            Msg($"Loaded {existingIds.Count} existing entity IDs from CSV");
         }
+
+        // Load from unsorted CSV (in case it has entries not in sorted)
+        if (System.IO.File.Exists(csvPathUnsorted))
+        {
+            var lines = System.IO.File.ReadAllLines(csvPathUnsorted);
+            // Skip header
+            for (int i = 1; i < lines.Length; i++)
+            {
+                var parts = ParseCsvLine(lines[i]);
+                if (parts.Count >= 8)
+                {
+                    // Remove quotes from id field if present
+                    var id = parts[7].Trim('"');
+                    existingIds.Add(id);
+                }
+            }
+        }
+
+        Msg($"Loaded {existingIds.Count} existing entity IDs from CSV files");
         return existingIds;
     }
 
@@ -756,11 +863,14 @@ public class Core : MelonMod
         }
         if (existingIds.Contains(resultId))
         {
+            MelonLogger.Msg($"Skipping {name} because it's already saved");
+            currentSceneWrittenCount++;
             return;
         }
 
         if (position.x == 0.0f || position.y == 0.0f || position.z == 0.0f)
         {
+            MelonLogger.Msg($"Skipping {name} because it has likely unset position: {position}");
             return;
         }
 
@@ -776,9 +886,136 @@ public class Core : MelonMod
         string dropJson = drop.HasValue ? JsonSerializer.Serialize(drop.Value).Replace("\"", "\"\"") : "";
         string lootSpawnInfoJson = lootSpawnInfo.HasValue ? JsonSerializer.Serialize(lootSpawnInfo.Value).Replace("\"", "\"\"") : "";
 
-        var csvLine = $"{type},{subtype},{name},{file},{rawX},{rawY},{rawZ},\"{resultId}\",\"{dropJson}\",\"{lootSpawnInfoJson}\",{clazz}\n";
-        System.IO.File.AppendAllText(csvPath, csvLine);
+        var newLine = $"{type},{subtype},{name},{file},{rawX},{rawY},{rawZ},\"{resultId}\",\"{dropJson}\",\"{lootSpawnInfoJson}\",{clazz}";
+
+        // Write to unsorted CSV file (just append)
+        System.IO.File.AppendAllText(csvPathUnsorted, newLine + "\n");
+
+        // Add to pending entries for sorted CSV (will be flushed after scene dump)
+        pendingSortedEntries.Add(newLine);
+
         existingIds.Add(resultId);
+
+        // Increment written count for current scene
+        currentSceneWrittenCount++;
+    }
+
+    private void FlushPendingEntriesToSortedCsv()
+    {
+        if (pendingSortedEntries.Count == 0)
+        {
+            return;
+        }
+
+        Msg($"Flushing {pendingSortedEntries.Count} pending entries to sorted CSV...");
+
+        // Read all existing lines from sorted CSV
+        var lines = new System.Collections.Generic.List<string>();
+        if (System.IO.File.Exists(csvPath))
+        {
+            lines.AddRange(System.IO.File.ReadAllLines(csvPath));
+        }
+
+        // Add header if file is empty
+        if (lines.Count == 0)
+        {
+            lines.Add("Type,Subtype,Name,File,RawX,RawY,RawZ,id,Drop,LootSpawnInfo,Clazz");
+        }
+
+        // Add all pending entries
+        lines.AddRange(pendingSortedEntries);
+
+        // Sort all lines except header by id column
+        var header = lines[0];
+        var dataLines = lines.Skip(1).ToList();
+
+        // Sort by extracting id from each line
+        dataLines.Sort((a, b) =>
+        {
+            var idA = ExtractIdFromCsvLine(a);
+            var idB = ExtractIdFromCsvLine(b);
+            return string.Compare(idA, idB, System.StringComparison.Ordinal);
+        });
+
+        // Write sorted lines back to file
+        var sortedLines = new System.Collections.Generic.List<string> { header };
+        sortedLines.AddRange(dataLines);
+        System.IO.File.WriteAllLines(csvPath, sortedLines);
+
+        Msg($"Flushed {pendingSortedEntries.Count} entries to sorted CSV");
+
+        // Clear pending entries
+        pendingSortedEntries.Clear();
+    }
+
+    private string ExtractIdFromCsvLine(string line)
+    {
+        var parts = ParseCsvLine(line);
+        if (parts.Count >= 8)
+        {
+            return parts[7].Trim('"');
+        }
+        return "";
+    }
+
+    private void LoadSceneStats()
+    {
+        sceneStatistics.Clear();
+
+        if (!System.IO.File.Exists(sceneStatsPath))
+        {
+            Msg("No scene stats file found, starting fresh");
+            return;
+        }
+
+        try
+        {
+            var lines = System.IO.File.ReadAllLines(sceneStatsPath);
+            // Skip header
+            for (int i = 1; i < lines.Length; i++)
+            {
+                var parts = lines[i].Split(',');
+                if (parts.Length >= 3)
+                {
+                    var scenePath = parts[0];
+                    if (int.TryParse(parts[1], out int objectCount) && bool.TryParse(parts[2], out bool hasUnknownObjects))
+                    {
+                        sceneStatistics[scenePath] = new SceneStats
+                        {
+                            objectCount = objectCount,
+                            hasUnknownObjects = hasUnknownObjects
+                        };
+                    }
+                }
+            }
+
+            MelonLogger.Msg($"Loaded scene stats for {sceneStatistics.Count} scenes");
+        }
+        catch (System.Exception ex)
+        {
+            MelonLogger.Error($"Error loading scene stats: {ex.Message}");
+        }
+    }
+
+    private void SaveSceneStats()
+    {
+        try
+        {
+            var lines = new System.Collections.Generic.List<string>();
+            lines.Add("ScenePath,ObjectCount,HasUnknownObjects");
+
+            foreach (var kvp in sceneStatistics)
+            {
+                lines.Add($"{kvp.Key},{kvp.Value.objectCount},{kvp.Value.hasUnknownObjects}");
+            }
+
+            System.IO.File.WriteAllLines(sceneStatsPath, lines);
+            Msg($"Saved scene stats for {sceneStatistics.Count} scenes");
+        }
+        catch (System.Exception ex)
+        {
+            MelonLogger.Error($"Error saving scene stats: {ex.Message}");
+        }
     }
 
     private void Msg(string msg)

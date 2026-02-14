@@ -131,8 +131,16 @@ export class MapRenderer {
       if (feature) {
         this.selectFeature(feature);
       } else {
-        // Clicked on empty map - clear selection
-        this.clearSelection();
+        // Clicked on empty map - only clear selection if sidebar is closed on mobile
+        const sidebar = document.getElementById("sidebar");
+        const isScreenNarrow = window.innerWidth <= 1024;
+        const isSidebarOpen = sidebar && !sidebar.classList.contains("collapsed");
+
+        // On mobile with sidebar open, don't deselect (let sidebar close first)
+        // On desktop or mobile with sidebar closed, deselect immediately
+        if (!isScreenNarrow || !isSidebarOpen) {
+          this.clearSelection();
+        }
       }
     });
   }
