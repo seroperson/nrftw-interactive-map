@@ -1,17 +1,24 @@
 ﻿using Il2Cpp;
+using Il2Cppframeworks.session;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Runtime;
 using Il2CppMoon;
 using Il2CppMoon.Forsaken;
 using Il2CppMoon.Forsaken.Test;
+using Il2CppMoon.GameSession;
+using Il2CppMoon.Settings;
+using Il2CppPhoton.Client.StructWrapping;
+using Il2CppPhoton.Deterministic;
 using Il2CppQuantum;
 using MelonLoader;
 using nrftw_loot_dumper.Helpers;
 using System.Linq;
 using System.Text.Json;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.SceneManagement;
 using static Il2CppMoon.Problems.ProblemWatchDog;
+using HarmonyLib;
 
 [assembly: MelonInfo(typeof(nrftw_loot_dumper.Core), "nrftw-loot-dumper", "1.0.0", "seroperson", null)]
 [assembly: MelonGame("Moon Studios", "NoRestForTheWicked")]
@@ -22,12 +29,16 @@ public class Core : MelonMod
 {
     private bool loggingEnabled = false;
     private bool dumpEnabled = true;
+    private HarmonyLib.Harmony harmonyInstance;
 
     private System.Collections.Generic.HashSet<string> existingIds;
+    private System.Collections.Generic.List<CsvEntry> existingEntriesWithoutGuid = new System.Collections.Generic.List<CsvEntry>();
     private string csvPath = "entity_dump.csv";
     private string csvPathUnsorted = "entity_dump_unsorted.csv";
     private string sceneStatsPath = "scene_stats.csv";
-    private System.Collections.Generic.List<string> pendingSortedEntries = new System.Collections.Generic.List<string>();
+    private System.Collections.Generic.List<CsvEntry> pendingSortedEntries = new System.Collections.Generic.List<CsvEntry>();
+    private System.Collections.Generic.List<CsvEntry> pendingUnsortedEntries = new System.Collections.Generic.List<CsvEntry>();
+    private System.Collections.Generic.List<CsvEntry> pendingUpdatedEntries = new System.Collections.Generic.List<CsvEntry>();
     private System.Collections.Generic.Dictionary<string, SceneStats> sceneStatistics = new System.Collections.Generic.Dictionary<string, SceneStats>();
     private string currentScenePath = "";
     private int currentSceneWrittenCount = 0;
@@ -39,17 +50,160 @@ public class Core : MelonMod
         public bool hasUnknownObjects { get; set; }
     }
 
+    struct CsvEntry
+    {
+        public string type { get; set; }
+        public string subtype { get; set; }
+        public string name { get; set; }
+        public string file { get; set; }
+        public int rawX { get; set; }
+        public int rawY { get; set; }
+        public int rawZ { get; set; }
+        public string id { get; set; }
+        public string dropJson { get; set; }
+        public string lootSpawnInfoJson { get; set; }
+        public string spawnConditionsJson { get; set; }
+        public string clazz { get; set; }
+        public bool hasMoonGuid { get; set; }
+
+        public string ToCsvLine()
+        {
+            return $"{type},{subtype},{name},{file},{rawX},{rawY},{rawZ},\"{id}\",\"{dropJson}\",\"{lootSpawnInfoJson}\",\"{spawnConditionsJson}\",{clazz}";
+        }
+
+        public bool MatchesAllValues(CsvEntry other)
+        {
+            return type == other.type &&
+                   subtype == other.subtype &&
+                   name == other.name &&
+                   file == other.file &&
+                   rawX == other.rawX &&
+                   rawY == other.rawY &&
+                   rawZ == other.rawZ &&
+                   clazz == other.clazz;
+        }
+    }
+
     struct LootSpawnInfo
     {
-        public bool shiny { get; set; }
-        public bool specialShiny { get; set; }
-        public bool smallChest { get; set; }
-        public bool mediumChest { get; set; }
-        public bool largeChest { get; set; }
-        public bool specialChest { get; set; }
-        public float respawnChance { get; set; }
         public string respawnFreq { get; set; }
-        public string spawnCondition { get; set; }
+
+        // New fields to capture more DynamicSpawner info
+        public float missChance { get; set; }
+        public System.Collections.Generic.List<string> anyTags { get; set; }
+        public System.Collections.Generic.List<string> allTags { get; set; }
+        public System.Collections.Generic.List<string> noneTags { get; set; }
+        public System.Collections.Generic.List<string> spawnConditions { get; set; }
+    }
+
+    struct SpawnConditions
+    {
+        public ConditionData? requiredSpawnConditions { get; set; }
+        public ConditionData? disableConditions { get; set; }
+        public ConditionData? respawnConditions { get; set; }
+    }
+
+    struct ConditionData
+    {
+        public System.Collections.Generic.List<QuestStepConditionData> questSteps { get; set; }
+        public System.Collections.Generic.List<QuestConditionData> quests { get; set; }
+        public System.Collections.Generic.List<WorldEventConditionData> worldEvents { get; set; }
+        public System.Collections.Generic.List<TimeOfDayConditionData> timesOfDay { get; set; }
+        public System.Collections.Generic.List<HasItemConditionData> hasItems { get; set; }
+        public System.Collections.Generic.List<HasModifierConditionData> hasModifiers { get; set; }
+        public System.Collections.Generic.List<ActivityConditionData> activities { get; set; }
+        public System.Collections.Generic.List<BoonConditionData> boons { get; set; }
+        public HasGoldConditionData? hasGold { get; set; }
+    }
+
+    struct QuestStepConditionData
+    {
+        public string questGuid { get; set; }
+        public string state { get; set; }
+        public string conditionType { get; set; }
+    }
+
+    struct QuestConditionData
+    {
+        public string questGuid { get; set; }
+        public string state { get; set; }
+        public string conditionType { get; set; }
+    }
+
+    struct WorldEventConditionData
+    {
+        public string eventGuid { get; set; }
+        public string state { get; set; }
+        public string conditionType { get; set; }
+    }
+
+    struct TimeOfDayConditionData
+    {
+        public string timeOfDay { get; set; }
+        public string conditionType { get; set; }
+    }
+
+    struct HasItemConditionData
+    {
+        public string itemGuid { get; set; }
+        public string conditionType { get; set; }
+    }
+
+    struct HasModifierConditionData
+    {
+        public string modifierTag { get; set; }
+        public string conditionType { get; set; }
+    }
+
+    struct ActivityConditionData
+    {
+        public string activityGuid { get; set; }
+        public string activityType { get; set; }
+        public string state { get; set; }
+        public string conditionType { get; set; }
+    }
+
+    struct BoonConditionData
+    {
+        public string boonGuid { get; set; }
+        public string conditionType { get; set; }
+    }
+
+    struct HasGoldConditionData
+    {
+        public int gold { get; set; }
+    }
+
+    private bool IsConditionDataEmpty(ConditionData data)
+    {
+        return (data.questSteps == null || data.questSteps.Count == 0) &&
+               (data.quests == null || data.quests.Count == 0) &&
+               (data.worldEvents == null || data.worldEvents.Count == 0) &&
+               (data.timesOfDay == null || data.timesOfDay.Count == 0) &&
+               (data.hasItems == null || data.hasItems.Count == 0) &&
+               (data.hasModifiers == null || data.hasModifiers.Count == 0) &&
+               (data.activities == null || data.activities.Count == 0) &&
+               (data.boons == null || data.boons.Count == 0) &&
+               !data.hasGold.HasValue;
+    }
+
+    private bool IsConditionDataEmpty(ConditionData? data)
+    {
+        if (!data.HasValue)
+            return true;
+
+        return IsConditionDataEmpty(data.Value);
+    }
+
+    private bool IsSpawnConditionsEmpty(SpawnConditions? spawnConditions)
+    {
+        if (!spawnConditions.HasValue)
+            return true;
+
+        var sc = spawnConditions.Value;
+        return IsConditionDataEmpty(sc.requiredSpawnConditions) &&
+               IsConditionDataEmpty(sc.disableConditions) &&
+               IsConditionDataEmpty(sc.respawnConditions);
     }
 
     struct Drop
@@ -103,7 +257,13 @@ public class Core : MelonMod
     public override void OnInitializeMelon()
     {
         Msg("Entity Dumper Mod Initialized!");
-        Msg("Press F9 to dump all entities in the current scene");
+        Msg("Press F9 to toggle entity logging");
+        Msg("Press F10 to toggle entity dumping");
+
+        // Initialize Harmony and apply patches to make isDebugBuild return true
+        harmonyInstance = new HarmonyLib.Harmony("me.seroperson.nrftw");
+        harmonyInstance.PatchAll();
+        MelonLogger.Msg("Harmony patches applied - isDebugBuild will always return true");
 
         InitializeCsv();
         LoadSceneStats();
@@ -142,8 +302,13 @@ public class Core : MelonMod
             currentSceneWrittenCount = 0;
             currentSceneHasUnknownObjects = false;
 
+            if (scene.path.Contains("captainRandolphActivities") || scene.path.Contains("mainMenu"))
+            {
+                return;
+            }
+
             // Check if we should skip this scene
-            if (sceneStatistics.ContainsKey(currentScenePath))
+            if (sceneStatistics.ContainsKey(currentScenePath) && !scene.path.Contains("interactives"))
             {
                 var stats = sceneStatistics[currentScenePath];
                 if (!stats.hasUnknownObjects && stats.objectCount == 0)
@@ -155,7 +320,7 @@ public class Core : MelonMod
 
             MelonLogger.Msg($"Dumping scene {scene.name}; Path: {scene.path}");
             DumpScene(scene);
-            FlushPendingEntriesToSortedCsv();
+            FlushPendingEntriesToCsv();
 
             // Update and save scene statistics
             var newStats = new SceneStats
@@ -175,10 +340,17 @@ public class Core : MelonMod
 
     private void DumpScene(Scene scene)
     {
+        var game = GameSessionControlAPI.WaitForGameIsReady().Result.m_game;
         var sceneRootObjects = scene.GetRootGameObjects();
         foreach (var rootObject in sceneRootObjects)
         {
             Msg($"Root object: {rootObject.name}, {rootObject.GetType()}");
+            var monoBehaviours = rootObject.GetComponents<MonoBehaviour>();
+
+            foreach (var childMonoBehaviour in monoBehaviours)
+            {
+                DumpMonoBehaviour(childMonoBehaviour, scene, Vector3.zero, childMonoBehaviour, game);
+            }
 
             var name = rootObject.name;
             var componentCount = rootObject.GetComponentCount();
@@ -191,33 +363,43 @@ public class Core : MelonMod
                     var casted = rootObject.GetComponentAtIndex<Transform>(i);
                     var childCount = casted.childCount;
                     Msg($"- {component.name} ({childCount}), {t}");
-                    DumpTransformAndItsChilds(casted, 1, 10, scene);
+                    DumpTransformAndItsChilds(casted, scene, game);
                 }
             }
         }
     }
 
-    private void DumpMonoBehaviour(Transform child, Scene scene, int level, int childsCount, int maxDepth, Vector3 childPosition, MonoBehaviour monoBehaviour)
+    private void DumpMonoBehaviour(Component child, Scene scene, Vector3 childPosition, MonoBehaviour monoBehaviour, MoonQuantumGame game)
     {
         if (monoBehaviour != null && monoBehaviour.enabled)
         {
             var objPtr = IL2CPP.Il2CppObjectBaseToPtrNotNull(monoBehaviour);
-            var monoLevel = System.String.Concat(Enumerable.Repeat("  ", level + 1));
             var childNameLower = child.name.ToLower();
             var monoScript = GetIl2CppClassName(monoBehaviour);
             if (IsIl2CppInstance("Moon.Forsaken.DigSpotView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<DigSpotView>(objPtr);
-                var drop = DumpLoot(casted, monoLevel);
-                WriteToCsv("digging", "digging", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, monoScript);
+                var drop = DumpLoot(casted);
+
+                var conditions = casted.Data.RequiredSpawnConditionsData;
+                if (!conditions.HasAnyCondition && casted.Data.RequiredSpawnConditions.HasAnyCondition)
+                {
+                    conditions = casted.Data.RequiredSpawnConditions;
+                }
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, conditions),
+                };
+
+                WriteToCsv("digging", "digging", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.StaticPickupView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<StaticPickupView>(objPtr);
-                var drop = DumpLoot(casted, casted.Data.LootSource, monoLevel);
+                var drop = DumpLoot(casted, casted.Data.LootSource);
 
-                var mainGroup = "loot_spawn";
-                var t = "loot_spawn";
+                var mainGroup = "herb";
+                var t = "artemisia";
                 if (childNameLower.Contains("artemisia"))
                 {
                     mainGroup = "herb";
@@ -264,12 +446,22 @@ public class Core : MelonMod
                     t = "tomato";
                 }
 
-                WriteToCsv(mainGroup, t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, monoScript);
+                var conditions = casted.Data.RequiredSpawnConditionsData;
+                if (!conditions.HasAnyCondition && casted.Data.RequiredSpawnConditions.HasAnyCondition)
+                {
+                    conditions = casted.Data.RequiredSpawnConditions;
+                }
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, conditions),
+                };
+
+                WriteToCsv(mainGroup, t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.OreVeinView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<OreVeinView>(objPtr);
-                var drop = DumpLoot(casted, monoLevel);
+                var drop = DumpLoot(casted);
                 var oreType = "";
                 if (childNameLower.Contains("copper"))
                 {
@@ -284,12 +476,22 @@ public class Core : MelonMod
                     oreType = "iron";
                 }
 
-                WriteToCsv("ore", oreType, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, monoScript);
+                var conditions = casted.Data.RequiredSpawnConditionsData;
+                if (!conditions.HasAnyCondition && casted.Data.RequiredSpawnConditions.HasAnyCondition)
+                {
+                    conditions = casted.Data.RequiredSpawnConditions;
+                }
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, conditions),
+                };
+
+                WriteToCsv("ore", oreType, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.CuttableTreeView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<CuttableTreeView>(objPtr);
-                var drop = DumpLoot(casted, monoLevel);
+                var drop = DumpLoot(casted);
                 var woodType = "";
                 if (childNameLower.Contains("birch"))
                 {
@@ -304,19 +506,34 @@ public class Core : MelonMod
                     woodType = "pine";
                 }
 
-                WriteToCsv("wood", woodType, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, monoScript);
+                var conditions = casted.Data.RequiredSpawnConditionsData;
+                if (!conditions.HasAnyCondition && casted.Data.RequiredSpawnConditions.HasAnyCondition)
+                {
+                    conditions = casted.Data.RequiredSpawnConditions;
+                }
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, conditions),
+                };
+
+                WriteToCsv("wood", woodType, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.CerimWhisperView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<CerimWhisperView>(objPtr);
-                WriteToCsv("whisper", "whisper", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.WarpEnableConditions),
+                };
+
+                WriteToCsv("whisper", "whisper", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.FarmableResourceView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<FarmableResourceView>(objPtr);
-                var drop = DumpLoot(casted, monoLevel);
+                var drop = DumpLoot(casted);
                 var mainGroup = "fishing";
-                var t = "";
+                var t = "carp";
                 if (childNameLower.Contains("carp"))
                 {
                     t = "carp";
@@ -329,12 +546,18 @@ public class Core : MelonMod
                 {
                     t = "trout";
                 }
-                else
+
+                var conditions = casted.Data.RequiredSpawnConditionsData;
+                if (!conditions.HasAnyCondition && casted.Data.RequiredSpawnConditions.HasAnyCondition)
                 {
-                    mainGroup = "loot_spawn";
-                    t = "loot_spawn";
+                    conditions = casted.Data.RequiredSpawnConditions;
                 }
-                WriteToCsv(mainGroup, t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, conditions),
+                };
+
+                WriteToCsv(mainGroup, t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.PooledObject", monoBehaviour))
             {
@@ -344,144 +567,254 @@ public class Core : MelonMod
                 {
                     if (!IsIl2CppInstance("Moon.Forsaken.PooledObject", childMonoBehaviour))
                     {
-                        DumpMonoBehaviour(child, scene, level + 2, childsCount, maxDepth, childPosition, childMonoBehaviour);
+                        DumpMonoBehaviour(child, scene, childPosition, childMonoBehaviour, game);
                     }
                 }
             }
             else if (IsIl2CppInstance("DynamicSpawner", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<DynamicSpawner>(objPtr);
+
                 var anyTags = casted.SpawnerAnyTags.AsEnumerable().Select(v => v.Tag);
-                var anyTagsStr = string.Join(",", anyTags);
                 var noneTags = casted.SpawnerNoneTags.AsEnumerable().Select(v => v.Tag);
-                var noneTagsStr = string.Join(",", noneTags);
                 var allTags = casted.SpawnerAllTags.AsEnumerable().Select(v => v.Tag);
-                var allTagsStr = string.Join(",", allTags);
 
-                if (childNameLower.Contains("shiny") || childNameLower.Contains("chest") || childNameLower.Contains("loot"))
+                // Build detailed loot/spawn info
+                var lootSpawnInfo = new LootSpawnInfo();
+                lootSpawnInfo.missChance = casted.MissChance;
+                lootSpawnInfo.respawnFreq = casted.RespawnFrequency.ToString();
+
+                // Capture tags as strings
+                lootSpawnInfo.anyTags = anyTags.Select(t => t.ToString()).ToList();
+                lootSpawnInfo.allTags = allTags.Select(t => t.ToString()).ToList();
+                lootSpawnInfo.noneTags = noneTags.Select(t => t.ToString()).ToList();
+
+                // Capture spawn condition types
+                lootSpawnInfo.spawnConditions = casted.SpawnConditions.AsEnumerable().Select(v => v.Condition.GetIl2CppType().FullNameOrDefault ?? v.Condition.GetIl2CppType().ToString()).ToList();
+
+                var mainGroup = "spawner";
+                var t = "spawner";
+
+                var hasLootInAny = anyTags.Count(value => value >= MarkupTag.Loot && value < MarkupTag.Region) > 0;
+                var hasLootInAll = allTags.Count(value => value >= MarkupTag.Loot && value < MarkupTag.Region) > 0;
+
+                var hasEnemiesInAny = anyTags.Count(value => value >= MarkupTag.Enemy && value < MarkupTag.Npc) > 0;
+                var hasEnemiesInAll = allTags.Count(value => value >= MarkupTag.Enemy && value < MarkupTag.Npc) > 0;
+
+                var hasCrittersInAny = anyTags.Count(value => value == MarkupTag.Critters) > 0;
+                var hasCrittersInAll = allTags.Count(value => value == MarkupTag.Critters) > 0;
+
+                if (hasCrittersInAll || hasCrittersInAny)
                 {
-                    var lootSpawnInfo = new LootSpawnInfo();
-                    lootSpawnInfo.shiny = anyTags.Contains(MarkupTag.Shiny) || allTags.Contains(MarkupTag.Shiny);
-                    lootSpawnInfo.specialShiny = anyTags.Contains(MarkupTag.SpecialShiny) || allTags.Contains(MarkupTag.SpecialShiny);
-                    lootSpawnInfo.smallChest = anyTags.Contains(MarkupTag.SmallChest) || allTags.Contains(MarkupTag.SmallChest);
-                    lootSpawnInfo.mediumChest = anyTags.Contains(MarkupTag.MediumChest) || allTags.Contains(MarkupTag.MediumChest);
-                    lootSpawnInfo.largeChest = anyTags.Contains(MarkupTag.LargeChest) || allTags.Contains(MarkupTag.LargeChest);
-                    lootSpawnInfo.specialChest = anyTags.Contains(MarkupTag.SpecialChest) || allTags.Contains(MarkupTag.SpecialChest);
-                    lootSpawnInfo.respawnChance = 1.0f - casted.MissChance;
-                    lootSpawnInfo.respawnFreq = casted.RespawnFrequency.ToString();
-                    lootSpawnInfo.spawnCondition = string.Join(",", casted.SpawnConditions.AsEnumerable().Select(v => v.Condition.GetIl2CppType()));
-
-                    Msg($"{monoLevel}- Got LootSpawner {casted}, Miss chance: {casted.MissChance}, SpawnerAllTags: {allTagsStr}, SpawnerNoneTags: {noneTagsStr}, SpawnerAnyTags: {anyTagsStr}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
-                    WriteToCsv("loot_spawn", "loot_spawn", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, lootSpawnInfo, monoScript);
+                    mainGroup = "npc";
+                    t = "animal";
+                } else if (hasEnemiesInAll || hasEnemiesInAny)
+                {
+                    mainGroup = "npc";
+                    t = "enemies";
                 }
+
+                WriteToCsv(mainGroup, t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, lootSpawnInfo, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.ContainerView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<ContainerView>(objPtr);
-                var drop = DumpLoot(casted, casted.Data.Loot, monoLevel);
-                WriteToCsv("loot_spawn", "loot_spawn", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, monoScript);
+                var drop = DumpLoot(casted, casted.Data.Loot);
+
+                var conditions = casted.Data.RequiredSpawnConditionsData;
+                if (!conditions.HasAnyCondition && casted.Data.RequiredSpawnConditions.HasAnyCondition)
+                {
+                    conditions = casted.Data.RequiredSpawnConditions;
+                }
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, conditions),
+                };
+
+                WriteToCsv("spawner", "spawner", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), drop, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.BonfireView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<BonfireView>(objPtr);
-                WriteToCsv("bonfire", "bonfire", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                WriteToCsv("bonfire", "bonfire", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.RopeView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<RopeView>(objPtr);
-                WriteToCsv("interactible", "ladder", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.KickDownConditions),
+                };
+
+                WriteToCsv("interactible", "ladder", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.MovingPlatformView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<MovingPlatformView>(objPtr);
-                WriteToCsv("interactible", "platform", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.ActivationConditionCollection),
+                };
+
+                WriteToCsv("interactible", "platform", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.BalakTawElevatorControllerView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<BalakTawElevatorControllerView>(objPtr);
-                WriteToCsv("interactible", "platform", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                WriteToCsv("interactible", "platform", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.LadderView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<LadderView>(objPtr);
-                WriteToCsv("interactible", "ladder", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.KickDownConditions),
+                };
+
+                WriteToCsv("interactible", "ladder", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.DoorView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<DoorView>(objPtr);
-                WriteToCsv("interactible", "door", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.Conditions),
+                };
+
+                WriteToCsv("interactible", "door", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.GroundLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<GroundLeverView>(objPtr);
-                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.ToggleLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<ToggleLeverView>(objPtr);
-                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.WallLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<WallLeverView>(objPtr);
-                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.TurnWheelView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<TurnWheelView>(objPtr);
-                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.LeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<LeverView>(objPtr);
-                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.Conditions),
+                };
+
+                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.EventLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<EventLeverView>(objPtr);
-                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.ActivationConditions),
+                };
+
+                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.DamageReceivingLeverView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<DamageReceivingLeverView>(objPtr);
-                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+
+                var conditions = casted.Data.RequiredSpawnConditionsData;
+                if (!conditions.HasAnyCondition && casted.Data.RequiredSpawnConditions.HasAnyCondition)
+                {
+                    conditions = casted.Data.RequiredSpawnConditions;
+                }
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, conditions),
+                };
+
+                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.PushCogView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<PushCogView>(objPtr);
-                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                WriteToCsv("interactible", "lever", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.GeneralReadableView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<GeneralReadableView>(objPtr);
-                WriteToCsv("interactible", "readable", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.Conditions),
+                };
+
+                WriteToCsv("interactible", "readable", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
+            }
+            else if (IsIl2CppInstance("Moon.ReadmeView", monoBehaviour))
+            {
+                var casted = Il2CppObjectPool.Get<ReadmeView>(objPtr);
+                WriteToCsv("interactible", "readable", child.name, scene.path, childPosition, null, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.GeneralInteractableView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<GeneralInteractableView>(objPtr);
-                WriteToCsv("interactible", "other", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.Conditions),
+                };
+
+                WriteToCsv("interactible", "other", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
+            }
+            else if (IsIl2CppInstance("Moon.Forsaken.ResourceRefineryView", monoBehaviour))
+            {
+                var casted = Il2CppObjectPool.Get<ResourceRefineryView>(objPtr);
+                WriteToCsv("interactible", "other", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
+            }
+            else if (IsIl2CppInstance("Moon.Forsaken.RespecStatueView", monoBehaviour))
+            {
+                var casted = Il2CppObjectPool.Get<RespecStatueView>(objPtr);
+                WriteToCsv("interactible", "other", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
+            }
+            else if (IsIl2CppInstance("Moon.Forsaken.PlagueStatueView", monoBehaviour))
+            {
+                var casted = Il2CppObjectPool.Get<PlagueStatueView>(objPtr);
+                WriteToCsv("interactible", "other", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.PuzzleView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<PuzzleView>(objPtr);
-                WriteToCsv("interactible", "entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                WriteToCsv("interactible", "entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.InteractableTeleport", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<InteractableTeleport>(objPtr);
-                WriteToCsv("interactible", "entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, casted.Data.RequireConditions),
+                };
+
+                WriteToCsv("interactible", "entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.HouseEntrance", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<HouseEntrance>(objPtr);
-                WriteToCsv("interactible", "house_entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                WriteToCsv("interactible", "house_entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, null, monoScript);
             }
             else if (IsIl2CppInstance("Moon.Forsaken.TriggerZoneView", monoBehaviour))
             {
                 var casted = Il2CppObjectPool.Get<TriggerZoneView>(objPtr);
                 if (casted.QuantumData.Type == TriggerZoneType.Teleport)
                 {
-                    WriteToCsv("interactible", "entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                    var spawnConditions = new SpawnConditions
+                    {
+                        requiredSpawnConditions = ConvertConditionsToData(game, casted.QuantumData.Conditions),
+                    };
+
+                    WriteToCsv("interactible", "entrance", child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
                 }
             }
             else if (IsIl2CppInstance("Moon.Forsaken.SurfaceInfo", monoBehaviour))
@@ -489,7 +822,7 @@ public class Core : MelonMod
                 var casted = Il2CppObjectPool.Get<SurfaceInfo>(objPtr);
                 if (casted.WallClimbable)
                 {
-                    WriteToCsv("interactible", "wall_climb", child.name, scene.path, childPosition, null, casted.GetInstanceID(), null, null, monoScript);
+                    WriteToCsv("interactible", "wall_climb", child.name, scene.path, childPosition, null, casted.GetInstanceID(), null, null, null, monoScript);
                 }
             }
             else if (IsIl2CppInstance("Moon.Forsaken.DestructibleView", monoBehaviour))
@@ -506,9 +839,20 @@ public class Core : MelonMod
                     t = "des_door";
                 }
 
+                var conditions = casted.Data.RequiredSpawnConditionsData;
+                if (!conditions.HasAnyCondition && casted.Data.RequiredSpawnConditions.HasAnyCondition)
+                {
+                    conditions = casted.Data.RequiredSpawnConditions;
+                }
+                var spawnConditions = new SpawnConditions
+                {
+                    requiredSpawnConditions = ConvertConditionsToData(game, conditions),
+                };
+
+
                 if (!t.Equals(""))
                 {
-                    WriteToCsv("destructible", t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+                    WriteToCsv("destructible", t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
                 }
             }
             else if (IsIl2CppInstance("Moon.Forsaken.NpcInstance", monoBehaviour))
@@ -517,45 +861,57 @@ public class Core : MelonMod
                 var lowerName = casted.name.ToLower();
                 if (!lowerName.Contains("squirrel") && !lowerName.Contains("cata_patrol") && !lowerName.Contains("catapatrol") && !lowerName.Contains("dogpet"))
                 {
-                    /*try
-                    {
-                        MelonLogger.Msg("Loggin NPC");
-                        IL2CPPInspector.InspectComponent(casted);
-                        if (casted.SpawnedEntityView is not null)
-                        {
-                            MelonLogger.Msg("Loggin NPC View");
-                            IL2CPPInspector.InspectComponent(casted.SpawnedEntityView);
-                        }
-                        IL2CPPInspector.InspectComponent(casted.SpawnerEntity);
-                    }
-                    catch (System.Exception e)
-                    {
-                        MelonLogger.Msg($"Error: {e}");
-                    }*/
-
                     var t = "npc_other";
                     if (lowerName.Contains("boss"))
                     {
                         t = "boss";
                     }
-                    else if (lowerName.Contains("boarskin"))
+                    else if (lowerName.Contains("npcbabyknight") || lowerName.Contains("npcduelist") || lowerName.Contains("npcbondedwitch") || lowerName.Contains("snakeleg") || lowerName.Contains("npclumberjacks") || lowerName.Contains("npcwarrick") || lowerName.Contains("npcchanningbysewergate") || lowerName.Contains("npcswamp") || lowerName.Contains("npcrisen") || lowerName.Contains("npcnith") || lowerName.Contains("siren") || lowerName.Contains("shackledbrute") || lowerName.Contains("prisonerwolf") || lowerName.Contains("npcworm") || lowerName.Contains("npcplagued") || lowerName.Contains("npcinverted") || lowerName.Contains("npctorn") || lowerName.Contains("balaktaw") || lowerName.Contains("boarskin") || lowerName.Contains("creep"))
                     {
-                        t = "boarskin";
+                        t = "enemies";
                     }
-                    else if (lowerName.Contains("boar") || lowerName.Contains("bear"))
+                    else if (lowerName.Contains("npcwolf") || lowerName.Contains("boar") || lowerName.Contains("bear") || lowerName.Contains("critt") || lowerName.Contains("sheep"))
                     {
                         t = "animal";
                     }
-                    else if (lowerName.Contains("critt"))
+
+                    var instanceData = casted.InstanceData;
+
+                    DumpConditions(game, instanceData.RequiredSpawnConditions, casted.name, "spawned");
+                    DumpConditions(game, instanceData.DisableConditions, casted.name, "disabled");
+                    DumpConditions(game, instanceData.RespawnConditions, casted.name, "re-spawned");
+
+                    // Convert spawn conditions to data structures for CSV
+                    var spawnConditions = new SpawnConditions
                     {
-                        t = "critter";
-                    }
-                    else if (lowerName.Contains("balaktaw"))
+                        requiredSpawnConditions = ConvertConditionsToData(game, instanceData.RequiredSpawnConditions),
+                        disableConditions = ConvertConditionsToData(game, instanceData.DisableConditions),
+                        respawnConditions = ConvertConditionsToData(game, instanceData.RespawnConditions)
+                    };
+
+                    var overridePosition = childPosition;
+                    if (overridePosition.x == 0.0f || overridePosition.y == 0.0f || overridePosition.z == 0.0f)
                     {
-                        t = "balak_taw";
+                        overridePosition = casted.GetPosition();
                     }
-                    MelonLogger.Msg($"Logging {child.name} with type: {t}");
-                    WriteToCsv("npc", t, child.name, scene.path, childPosition, casted.MoonGuid, casted.GetInstanceID(), null, null, monoScript);
+
+                    if (overridePosition.x == 0.0f || overridePosition.y == 0.0f || overridePosition.z == 0.0f)
+                    {
+                        overridePosition = new Vector3();
+                        overridePosition.x = casted.Settings.Position.X.AsFloat;
+                        overridePosition.y = casted.Settings.Position.Y.AsFloat;
+                        overridePosition.z = casted.Settings.Position.Z.AsFloat;
+                    }
+
+                    if (overridePosition.x == 0.0f || overridePosition.y == 0.0f || overridePosition.z == 0.0f)
+                    {
+                        overridePosition = new Vector3();
+                        overridePosition.x = casted.InstanceData.Position.X.AsFloat;
+                        overridePosition.y = casted.InstanceData.Position.Y.AsFloat;
+                        overridePosition.z = casted.InstanceData.Position.Z.AsFloat;
+                    }
+
+                    WriteToCsv("npc", t, child.name, scene.path, overridePosition, casted.MoonGuid, casted.GetInstanceID(), null, null, spawnConditions, monoScript);
                 }
             }
             else
@@ -596,12 +952,301 @@ public class Core : MelonMod
         }
     }
 
-    private void DumpTransformAndItsChilds(Transform obj, int level, int maxDepth, Scene scene)
+    private ConditionData? ConvertConditionsToData(MoonQuantumGame game, ConditionCollection conditions)
     {
-        if (level > maxDepth)
+        var data = new ConditionData
         {
-            return;
+            questSteps = new System.Collections.Generic.List<QuestStepConditionData>(),
+            quests = new System.Collections.Generic.List<QuestConditionData>(),
+            worldEvents = new System.Collections.Generic.List<WorldEventConditionData>(),
+            timesOfDay = new System.Collections.Generic.List<TimeOfDayConditionData>(),
+            hasItems = new System.Collections.Generic.List<HasItemConditionData>(),
+            hasModifiers = new System.Collections.Generic.List<HasModifierConditionData>(),
+            activities = new System.Collections.Generic.List<ActivityConditionData>(),
+            boons = new System.Collections.Generic.List<BoonConditionData>(),
+            hasGold = null
+        };
+
+        // Quest steps
+        for (int i = 0; i < conditions.QuestSteps.Count; i++)
+        {
+            var quest = conditions.QuestSteps[i];
+            var questStep = quest.Step.Get(game.AssetResolver);
+            if (questStep is not null)
+            {
+                data.questSteps.Add(new QuestStepConditionData
+                {
+                    questGuid = questStep.Guid.Value.ToString(),
+                    state = quest.State.ToString(),
+                    conditionType = quest.ConditionType.ToString()
+                });
+            }
         }
+
+        // Quests
+        for (int i = 0; i < conditions.Quests.Count; i++)
+        {
+            var quest = conditions.Quests[i];
+            var questStep = quest.Step.Get(game.AssetResolver);
+            if (questStep is not null)
+            {
+                var questData = questStep.QuestId.Get(game.AssetResolver);
+                if (questData is not null)
+                {
+                    data.quests.Add(new QuestConditionData
+                    {
+                        questGuid = questData.Guid.Value.ToString(),
+                        state = quest.State.ToString(),
+                        conditionType = quest.ConditionType.ToString()
+                    });
+                }
+            }
+        }
+
+        // World events
+        for (int i = 0; i < conditions.WorldEvents.Count; i++)
+        {
+            var worldEvent = conditions.WorldEvents[i];
+            var worldEventData = worldEvent.EventDataLink.Get(game.AssetResolver);
+            if (worldEventData is not null)
+            {
+                data.worldEvents.Add(new WorldEventConditionData
+                {
+                    eventGuid = worldEventData.Guid.Value.ToString(),
+                    state = worldEvent.EventState.ToString(),
+                    conditionType = worldEvent.ConditionType.ToString()
+                });
+            }
+        }
+
+        // Times of day
+        for (int i = 0; i < conditions.TimesOfDay.Count; i++)
+        {
+            var timeOfDay = conditions.TimesOfDay[i];
+            data.timesOfDay.Add(new TimeOfDayConditionData
+            {
+                timeOfDay = timeOfDay.TimeOfDay.ToString(),
+                conditionType = timeOfDay.ConditionType.ToString()
+            });
+        }
+
+        // Has items
+        for (int i = 0; i < conditions.HasItems.Count; i++)
+        {
+            var item = conditions.HasItems[i];
+            var itemData = item.Item2.Get(game.AssetResolver);
+            if (itemData is not null)
+            {
+                data.hasItems.Add(new HasItemConditionData
+                {
+                    itemGuid = itemData.Guid.Value.ToString(),
+                    conditionType = item.ConditionType.ToString()
+                });
+            }
+        }
+
+        // Has modifiers
+        for (int i = 0; i < conditions.HasModifiers.Count; i++)
+        {
+            var modifier = conditions.HasModifiers[i];
+            var modifierData = modifier.Modifier.Get(game.AssetResolver);
+            if (modifierData is not null)
+            {
+                data.hasModifiers.Add(new HasModifierConditionData
+                {
+                    modifierTag = modifierData.Tag.ToString(),
+                    conditionType = modifier.ConditionType.ToString()
+                });
+            }
+        }
+
+        // Activities
+        for (int i = 0; i < conditions.Activities.Count; i++)
+        {
+            var activity = conditions.Activities[i];
+            var activityData = activity.Activity.Get(game.AssetResolver);
+            if (activityData is not null)
+            {
+                data.activities.Add(new ActivityConditionData
+                {
+                    activityGuid = activityData.Guid.Value.ToString(),
+                    activityType = activityData.ActivityType.ToString(),
+                    state = activity.State.ToString(),
+                    conditionType = activity.ConditionType.ToString()
+                });
+            }
+        }
+
+        // Boons
+        for (int i = 0; i < conditions.Boons.Count; i++)
+        {
+            var boon = conditions.Boons[i];
+            var boonData = boon.Boon.Get(game.AssetResolver);
+            if (boonData is not null)
+            {
+                data.boons.Add(new BoonConditionData
+                {
+                    boonGuid = boonData.Guid.Value.ToString(),
+                    conditionType = boon.ConditionType.ToString()
+                });
+            }
+        }
+
+        // Has gold
+        if (!conditions.HasGold.IsDefault)
+        {
+            data.hasGold = new HasGoldConditionData
+            {
+                gold = conditions.HasGold.Gold
+            };
+        }
+
+        // Return null if all fields are empty
+        if (IsConditionDataEmpty(data))
+        {
+            return null;
+        }
+
+        return data;
+    }
+
+    private void DumpConditions(MoonQuantumGame game, ConditionCollection conditions, string loggingName, string whatIs)
+    {
+        for (int i = 0; i < conditions.QuestSteps.Count; i++)
+        {
+            // handle: quest.Invert
+            var quest = conditions.QuestSteps[i];
+            var questState = quest.State;
+            var questStep = quest.Step.Get(game.AssetResolver);
+            if (questStep is not null)
+            {
+                var questGuidValue = questStep.Guid.Value;
+                Msg($"NPC {loggingName} is {whatIs} if quest {questGuidValue} is {questState}");
+                if (i != conditions.QuestSteps.Count - 1)
+                {
+                    Msg($"{quest.ConditionType}");
+                }
+            }
+        }
+
+        for (int i = 0; i < conditions.Quests.Count; i++)
+        {
+            // handle: quest.Invert
+            var quest = conditions.Quests[i];
+            var questState = quest.State;
+            var questStep = quest.Step.Get(game.AssetResolver);
+            if (questStep is not null)
+            {
+                var questData = questStep.QuestId.Get(game.AssetResolver);
+                if (questData is not null)
+                {
+                    var questGuidValue = questData.Guid.Value;
+                    Msg($"NPC {loggingName} is {whatIs} if quest {questGuidValue} is {questState}");
+                    if (i != conditions.Quests.Count - 1)
+                    {
+                        Msg($"{quest.ConditionType}");
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < conditions.WorldEvents.Count; i++)
+        {
+            // handle: worldEvent.Invert
+            var worldEvent = conditions.WorldEvents[i];
+            var worldEventData = worldEvent.EventDataLink.Get(game.AssetResolver);
+            if (worldEventData is not null)
+            {
+                var worldEventGuid = worldEventData.Guid.Value;
+                var worldEventState = worldEvent.EventState;
+                Msg($"NPC {loggingName} is {whatIs} if worldEvent {worldEventGuid} is in state {worldEventState}");
+                if (i != conditions.WorldEvents.Count - 1)
+                {
+                    Msg($"{worldEvent.ConditionType}");
+                }
+            }
+        }
+
+        for (int i = 0; i < conditions.TimesOfDay.Count; i++)
+        {
+            // handle: worldEvent.Invert
+            var timeOfDay = conditions.TimesOfDay[i];
+            Msg($"NPC {loggingName} is {whatIs} if timeOfDay is {timeOfDay.TimeOfDay}");
+            if (i != conditions.TimesOfDay.Count - 1)
+            {
+                Msg($"{timeOfDay.ConditionType}");
+            }
+        }
+
+        for (int i = 0; i < conditions.HasItems.Count; i++)
+        {
+            // handle: item.Invert
+            var item = conditions.HasItems[i];
+            var itemData = item.Item2.Get(game.AssetResolver);
+            if (itemData is not null)
+            {
+                Msg($"NPC {loggingName} is {whatIs} if has item {itemData.Guid.Value}");
+                if (i != conditions.HasItems.Count - 1)
+                {
+                    Msg($"{item.ConditionType}");
+                }
+            }
+        }
+
+        for (int i = 0; i < conditions.HasModifiers.Count; i++)
+        {
+            // handle: modifier.Invert
+            var modifier = conditions.HasModifiers[i];
+            var modifierData = modifier.Modifier.Get(game.AssetResolver);
+            if (modifierData is not null)
+            {
+
+                Msg($"NPC {loggingName} is {whatIs} if has modifier {modifierData.Tag}");
+                if (i != conditions.HasModifiers.Count - 1)
+                {
+                    Msg($"{modifier.ConditionType}");
+                }
+            }
+        }
+
+        for (int i = 0; i < conditions.Activities.Count; i++)
+        {
+            // handle: activity.Invert
+            var activity = conditions.Activities[i];
+            var activityData = activity.Activity.Get(game.AssetResolver);
+            if (activityData is not null)
+            {
+                Msg($"NPC {loggingName} is {whatIs} if activity ({activityData.Guid.Value}, {activityData.ActivityType}) is in state {activity.State}");
+                if (i != conditions.Activities.Count - 1)
+                {
+                    Msg($"{activity.ConditionType}");
+                }
+            }
+        }
+
+        for (int i = 0; i < conditions.Boons.Count; i++)
+        {
+            // handle: boon.Invert
+            var boon = conditions.Boons[i];
+            var boonData = boon.Boon.Get(game.AssetResolver);
+            if (boonData is not null)
+            {
+                Msg($"NPC {loggingName} is {whatIs} if has boon {boonData.Guid.Value}");
+                if (i != conditions.Activities.Count - 1)
+                {
+                    Msg($"{boon.ConditionType}");
+                }
+            }
+        }
+
+        if (!conditions.HasGold.IsDefault)
+        {
+            Msg($"NPC {loggingName} is {whatIs} if has gold {conditions.HasGold.Gold}");
+        }
+    }
+
+    private void DumpTransformAndItsChilds(Transform obj, Scene scene, MoonQuantumGame game)
+    {
         var childCount = obj.childCount;
         for (int j = 0; j < childCount; j++)
         {
@@ -612,65 +1257,63 @@ public class Core : MelonMod
             var childScale = child.localScale;
             var childType = child.GetIl2CppType().FullNameOrDefault;
             var childsCount = child.childCount;
-            var currentLevel = System.String.Concat(Enumerable.Repeat("  ", level));
-
-            Msg($"{currentLevel}- {child.name} ({childsCount})");
+            Msg($"- {child.name} ({childsCount})");
             try
             {
                 var monoBehaviour = child.GetComponents<MonoBehaviour>();
                 foreach (var childMonoBehaviour in monoBehaviour)
                 {
-                    DumpMonoBehaviour(child, scene, level, childsCount, maxDepth, childPosition, childMonoBehaviour);
+                    DumpMonoBehaviour(child, scene, childPosition, childMonoBehaviour, game);
                 }
             }
             catch (System.Exception e)
             {
                 MelonLogger.Msg($"Error: {e}");
             }
-            DumpTransformAndItsChilds(child, level + 1, maxDepth, scene);
+            DumpTransformAndItsChilds(child, scene, game);
         }
     }
 
-    private Drop DumpLoot(FarmableResourceView casted, string monoLevel)
+    private Drop DumpLoot(FarmableResourceView casted)
     {
-        return DumpLoot(casted, casted.Data.LootSource, monoLevel);
+        return DumpLoot(casted, casted.Data.LootSource);
     }
 
-    private Drop DumpLoot(DigSpotView casted, string monoLevel)
+    private Drop DumpLoot(DigSpotView casted)
     {
-        return DumpLoot(casted, casted.Data.LootSource, monoLevel);
+        return DumpLoot(casted, casted.Data.LootSource);
     }
 
-    private Drop DumpLoot(OreVeinView casted, string monoLevel)
+    private Drop DumpLoot(OreVeinView casted)
     {
-        return DumpLoot(casted, casted.Data.LootSource, monoLevel);
+        return DumpLoot(casted, casted.Data.LootSource);
     }
 
-    private Drop DumpLoot(CuttableTreeView casted, string monoLevel)
+    private Drop DumpLoot(CuttableTreeView casted)
     {
-        return DumpLoot(casted, casted.Data.LootSource, monoLevel);
+        return DumpLoot(casted, casted.Data.LootSource);
     }
 
 
-    private Drop DumpLoot(InteractableLinkedEntityView casted, LootSource lootSource, string monoLevel)
+    private Drop DumpLoot(InteractableLinkedEntityView casted, LootSource lootSource)
     {
         var game = casted.VerifiedFrame.Game;
         var assetResolver = game.AssetResolver;
 
         var drop = new Drop();
 
-        Msg($"{monoLevel}- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
+        Msg($"- {casted}, GUID: {casted.MoonGuid.A}, {casted.MoonGuid.B}, {casted.MoonGuid.C}, {casted.MoonGuid.D}");
         foreach (var x in lootSource.Sources)
         {
             foreach (var group in x.Get(assetResolver).Groups)
             {
                 var currentDropGroup = new DropGroup();
 
-                Msg($"{monoLevel}- Loot count: {group.Loots.Count}; LootCount count: {group.LootCountEntries.Count}");
+                Msg($"- Loot count: {group.Loots.Count}; LootCount count: {group.LootCountEntries.Count}");
                 for (int j = 0; j < group.LootCountEntries.Count; j++)
                 {
                     var lootFreq = group.LootCountEntries[j];
-                    Msg($"{monoLevel}  - Loot freq: {lootFreq.Count}, {lootFreq.Frequency}");
+                    Msg($"  - Loot freq: {lootFreq.Count}, {lootFreq.Frequency}");
 
                     currentDropGroup.chances.Add(new DropChances(lootFreq.Frequency.AsInt, lootFreq.Count));
                 }
@@ -686,30 +1329,30 @@ public class Core : MelonMod
                         {
                             var genericItemData = CastIl2Cpp<GenericItemData>(data);
                             currentDropItems.specificItem.Add(genericItemData.Guid.Value.ToString());
-                            Msg($"{monoLevel}  - Specific loot, generic item loot: {genericItemData}, ({genericItemData.Guid.Type}, {genericItemData.Guid}, {genericItemData.Guid.Value})");
+                            Msg($"  - Specific loot, generic item loot: {genericItemData}, ({genericItemData.Guid.Type}, {genericItemData.Guid}, {genericItemData.Guid.Value})");
                         }
                         else
                         {
                             currentDropItems.specificItem.Add(data.Guid.Value.ToString());
-                            Msg($"{monoLevel}  - Specific loot, but not GenericItemData: {data.GetIl2CppType().FullName}");
+                            Msg($"  - Specific loot, but not GenericItemData: {data.GetIl2CppType().FullName}");
                         }
                     }
                     else if (IsIl2CppInstance("Quantum.FilteredItemLoot", loot))
                     {
                         var filteredItemLoot = CastIl2Cpp<FilteredItemLoot>(loot);
                         currentDropItems.filterPool.Add(filteredItemLoot.Filter.ToString());
-                        Msg($"{monoLevel}  - Filtered loot: {filteredItemLoot.Filter}");
+                        Msg($"  - Filtered loot: {filteredItemLoot.Filter}");
                     }
                     else if (IsIl2CppInstance("Quantum.GenericItemData", loot))
                     {
                         var genericItemData = CastIl2Cpp<GenericItemData>(loot);
                         currentDropItems.specificItem.Add(genericItemData.Guid.Value.ToString());
 
-                        Msg($"{monoLevel}  - Generic item loot: {genericItemData}, ({genericItemData.Guid.Type}, {genericItemData.Guid}, {genericItemData.Guid.Value})");
+                        Msg($"  - Generic item loot: {genericItemData}, ({genericItemData.Guid.Type}, {genericItemData.Guid}, {genericItemData.Guid.Value})");
                     }
                     else
                     {
-                        Msg($"{monoLevel}  - Unspecified loot: {loot.GetIl2CppType().FullName}");
+                        Msg($"  - Unspecified loot: {loot.GetIl2CppType().FullName}");
                     }
                     currentDropGroup.items.Add(currentDropItems);
                 }
@@ -751,7 +1394,7 @@ public class Core : MelonMod
 
     private void InitializeCsv()
     {
-        var header = "Type,Subtype,Name,File,RawX,RawY,RawZ,id,Drop,LootSpawnInfo,Clazz\n";
+        var header = "Type,Subtype,Name,File,RawX,RawY,RawZ,id,Drop,LootSpawnInfo,SpawnConditions,Clazz\n";
 
         if (!System.IO.File.Exists(csvPath))
         {
@@ -769,6 +1412,69 @@ public class Core : MelonMod
     private System.Collections.Generic.HashSet<string> LoadExistingIds()
     {
         var existingIds = new System.Collections.Generic.HashSet<string>();
+        existingEntriesWithoutGuid.Clear();
+
+        void ProcessLine(string line)
+        {
+            var parts = ParseCsvLine(line);
+            if (parts.Count >= 12)
+            {
+                var id = parts[7].Trim('"');
+                existingIds.Add(id);
+
+                // Check if this entry doesn't have a MoonGuid (just an instanceId)
+                bool hasMoonGuid = id.Contains(",");
+                if (!hasMoonGuid)
+                {
+                    // Store the full entry for value-based comparison
+                    var entry = new CsvEntry
+                    {
+                        type = parts[0],
+                        subtype = parts[1],
+                        name = parts[2],
+                        file = parts[3],
+                        rawX = int.TryParse(parts[4], out int x) ? x : 0,
+                        rawY = int.TryParse(parts[5], out int y) ? y : 0,
+                        rawZ = int.TryParse(parts[6], out int z) ? z : 0,
+                        id = id,
+                        dropJson = parts[8].Trim('"').Replace("\"\"", "\""),
+                        lootSpawnInfoJson = parts[9].Trim('"').Replace("\"\"", "\""),
+                        spawnConditionsJson = parts[10].Trim('"').Replace("\"\"", "\""),
+                        clazz = parts[11],
+                        hasMoonGuid = false
+                    };
+                    existingEntriesWithoutGuid.Add(entry);
+                }
+            }
+            else if (parts.Count >= 11)
+            {
+                // Handle old CSV format without SpawnConditions column
+                var id = parts[7].Trim('"');
+                existingIds.Add(id);
+
+                bool hasMoonGuid = id.Contains(",");
+                if (!hasMoonGuid)
+                {
+                    var entry = new CsvEntry
+                    {
+                        type = parts[0],
+                        subtype = parts[1],
+                        name = parts[2],
+                        file = parts[3],
+                        rawX = int.TryParse(parts[4], out int x) ? x : 0,
+                        rawY = int.TryParse(parts[5], out int y) ? y : 0,
+                        rawZ = int.TryParse(parts[6], out int z) ? z : 0,
+                        id = id,
+                        dropJson = parts[8].Trim('"').Replace("\"\"", "\""),
+                        lootSpawnInfoJson = parts[9].Trim('"').Replace("\"\"", "\""),
+                        spawnConditionsJson = "",
+                        clazz = parts[10],
+                        hasMoonGuid = false
+                    };
+                    existingEntriesWithoutGuid.Add(entry);
+                }
+            }
+        }
 
         // Load from sorted CSV
         if (System.IO.File.Exists(csvPath))
@@ -777,13 +1483,7 @@ public class Core : MelonMod
             // Skip header
             for (int i = 1; i < lines.Length; i++)
             {
-                var parts = ParseCsvLine(lines[i]);
-                if (parts.Count >= 8)
-                {
-                    // Remove quotes from id field if present
-                    var id = parts[7].Trim('"');
-                    existingIds.Add(id);
-                }
+                ProcessLine(lines[i]);
             }
         }
 
@@ -794,17 +1494,11 @@ public class Core : MelonMod
             // Skip header
             for (int i = 1; i < lines.Length; i++)
             {
-                var parts = ParseCsvLine(lines[i]);
-                if (parts.Count >= 8)
-                {
-                    // Remove quotes from id field if present
-                    var id = parts[7].Trim('"');
-                    existingIds.Add(id);
-                }
+                ProcessLine(lines[i]);
             }
         }
 
-        Msg($"Loaded {existingIds.Count} existing entity IDs from CSV files");
+        Msg($"Loaded {existingIds.Count} existing entity IDs from CSV files ({existingEntriesWithoutGuid.Count} without MoonGuid)");
         return existingIds;
     }
 
@@ -850,24 +1544,8 @@ public class Core : MelonMod
         return result;
     }
 
-    private void WriteToCsv(string type, string subtype, string name, string file, Vector3 position, MoonGuid id, int instanceId, Drop? drop, LootSpawnInfo? lootSpawnInfo, string clazz)
+    private void WriteToCsv(string type, string subtype, string name, string file, Vector3 position, MoonGuid id, int instanceId, Drop? drop, LootSpawnInfo? lootSpawnInfo, SpawnConditions? spawnConditions, string clazz)
     {
-        var resultId = "";
-        if (id is not null)
-        {
-            resultId = $"{id.A},{id.B},{id.C},{id.D}";
-        }
-        else
-        {
-            resultId = $"{instanceId}";
-        }
-        if (existingIds.Contains(resultId))
-        {
-            MelonLogger.Msg($"Skipping {name} because it's already saved");
-            currentSceneWrittenCount++;
-            return;
-        }
-
         if (position.x == 0.0f || position.y == 0.0f || position.z == 0.0f)
         {
             MelonLogger.Msg($"Skipping {name} because it has likely unset position: {position}");
@@ -882,70 +1560,254 @@ public class Core : MelonMod
         int rawY = (int)(position.y / backToRawValue);
         int rawZ = (int)(position.z / backToRawValue);
 
-        // Serialize Drop and LootSpawnInfo to JSON if present
+        // Serialize Drop, LootSpawnInfo, and SpawnConditions to JSON if present
         string dropJson = drop.HasValue ? JsonSerializer.Serialize(drop.Value).Replace("\"", "\"\"") : "";
         string lootSpawnInfoJson = lootSpawnInfo.HasValue ? JsonSerializer.Serialize(lootSpawnInfo.Value).Replace("\"", "\"\"") : "";
+        string spawnConditionsJson = IsSpawnConditionsEmpty(spawnConditions) ? "" : JsonSerializer.Serialize(spawnConditions.Value).Replace("\"", "\"\"");
 
-        var newLine = $"{type},{subtype},{name},{file},{rawX},{rawY},{rawZ},\"{resultId}\",\"{dropJson}\",\"{lootSpawnInfoJson}\",{clazz}";
+        var resultId = "";
+        bool hasMoonGuid = false;
+        if (id is not null)
+        {
+            resultId = $"{id.A},{id.B},{id.C},{id.D}";
+            hasMoonGuid = true;
+        }
+        else
+        {
+            resultId = $"{instanceId}";
+        }
 
-        // Write to unsorted CSV file (just append)
-        System.IO.File.AppendAllText(csvPathUnsorted, newLine + "\n");
+        // Create CSV entry
+        var entry = new CsvEntry
+        {
+            type = type,
+            subtype = subtype,
+            name = name,
+            file = file,
+            rawX = rawX,
+            rawY = rawY,
+            rawZ = rawZ,
+            id = resultId,
+            dropJson = dropJson,
+            lootSpawnInfoJson = lootSpawnInfoJson,
+            spawnConditionsJson = spawnConditionsJson,
+            clazz = clazz,
+            hasMoonGuid = hasMoonGuid
+        };
 
-        // Add to pending entries for sorted CSV (will be flushed after scene dump)
-        pendingSortedEntries.Add(newLine);
+        // Check if already exists
+        bool isUpdate = false;
+        if (hasMoonGuid)
+        {
+            // For MoonGuid, just check by ID
+            if (existingIds.Contains(resultId))
+            {
+                Msg($"Updating {name} because it's already saved (MoonGuid match)");
+                isUpdate = true;
+            }
+        }
+        else
+        {
+            // For instanceId, check by all values since instanceId isn't stable
+            bool isDuplicate = existingEntriesWithoutGuid.Any(e => e.MatchesAllValues(entry));
+            if (isDuplicate)
+            {
+                Msg($"Updating {name} because it's already saved (value match)");
+                isUpdate = true;
+            }
+            else
+            {
+                // Also check in pending entries
+                isDuplicate = pendingSortedEntries.Any(e => !e.hasMoonGuid && e.MatchesAllValues(entry));
+                if (isDuplicate)
+                {
+                    Msg($"Skipping {name} because it's in pending entries (value match)");
+                    currentSceneWrittenCount++;
+                    return;
+                }
 
-        existingIds.Add(resultId);
+                // Add to tracking list for future comparisons
+                existingEntriesWithoutGuid.Add(entry);
+            }
+        }
 
-        // Increment written count for current scene
-        currentSceneWrittenCount++;
+        if (isUpdate)
+        {
+            // Add to pending updates (will be flushed after scene dump)
+            pendingUpdatedEntries.Add(entry);
+
+            // Update the tracking list for entries without GUID so future checks see the updated data
+            if (!hasMoonGuid)
+            {
+                // Remove old entry and add updated one
+                existingEntriesWithoutGuid.RemoveAll(e => e.MatchesAllValues(entry));
+                existingEntriesWithoutGuid.Add(entry);
+            }
+
+            currentSceneWrittenCount++;
+        }
+        else
+        {
+            // Add to pending entries (will be flushed after scene dump)
+            pendingUnsortedEntries.Add(entry);
+            pendingSortedEntries.Add(entry);
+            existingIds.Add(resultId);
+            currentSceneWrittenCount++;
+        }
     }
 
-    private void FlushPendingEntriesToSortedCsv()
+    private void FlushPendingEntriesToCsv()
     {
-        if (pendingSortedEntries.Count == 0)
+        if (pendingSortedEntries.Count == 0 && pendingUnsortedEntries.Count == 0 && pendingUpdatedEntries.Count == 0)
         {
             return;
         }
 
-        Msg($"Flushing {pendingSortedEntries.Count} pending entries to sorted CSV...");
+        Msg($"Flushing {pendingSortedEntries.Count} new entries and {pendingUpdatedEntries.Count} updates to CSV files...");
 
-        // Read all existing lines from sorted CSV
-        var lines = new System.Collections.Generic.List<string>();
-        if (System.IO.File.Exists(csvPath))
+        // Process updates and new entries for unsorted CSV
+        if (pendingUnsortedEntries.Count > 0 || pendingUpdatedEntries.Count > 0)
         {
-            lines.AddRange(System.IO.File.ReadAllLines(csvPath));
+            var lines = new System.Collections.Generic.List<string>();
+            if (System.IO.File.Exists(csvPathUnsorted))
+            {
+                lines.AddRange(System.IO.File.ReadAllLines(csvPathUnsorted));
+            }
+
+            // Update existing entries
+            if (pendingUpdatedEntries.Count > 0)
+            {
+                for (int i = 1; i < lines.Count; i++)
+                {
+                    var parts = ParseCsvLine(lines[i]);
+                    if (parts.Count >= 8)
+                    {
+                        var lineId = parts[7].Trim('"');
+                        var updateEntry = pendingUpdatedEntries.FirstOrDefault(e => e.id == lineId);
+
+                        if (updateEntry.id != null)
+                        {
+                            lines[i] = updateEntry.ToCsvLine();
+                        }
+                        else if (parts.Count >= 11)
+                        {
+                            // Try value-based match for entries without MoonGuid
+                            var lineEntry = new CsvEntry
+                            {
+                                type = parts[0],
+                                subtype = parts[1],
+                                name = parts[2],
+                                file = parts[3],
+                                rawX = int.TryParse(parts[4], out int x) ? x : 0,
+                                rawY = int.TryParse(parts[5], out int y) ? y : 0,
+                                rawZ = int.TryParse(parts[6], out int z) ? z : 0,
+                                clazz = parts.Count >= 12 ? parts[11] : parts[10]
+                            };
+
+                            updateEntry = pendingUpdatedEntries.FirstOrDefault(e => !e.hasMoonGuid && e.MatchesAllValues(lineEntry));
+                            if (updateEntry.id != null)
+                            {
+                                lines[i] = updateEntry.ToCsvLine();
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Append new entries
+            if (pendingUnsortedEntries.Count > 0)
+            {
+                lines.AddRange(pendingUnsortedEntries.Select(e => e.ToCsvLine()));
+            }
+
+            System.IO.File.WriteAllLines(csvPathUnsorted, lines);
+            pendingUnsortedEntries.Clear();
         }
 
-        // Add header if file is empty
-        if (lines.Count == 0)
+        // Process updates and new entries for sorted CSV
+        if (pendingSortedEntries.Count > 0 || pendingUpdatedEntries.Count > 0)
         {
-            lines.Add("Type,Subtype,Name,File,RawX,RawY,RawZ,id,Drop,LootSpawnInfo,Clazz");
+            // Read all existing lines from sorted CSV
+            var lines = new System.Collections.Generic.List<string>();
+            if (System.IO.File.Exists(csvPath))
+            {
+                lines.AddRange(System.IO.File.ReadAllLines(csvPath));
+            }
+
+            // Add header if file is empty
+            if (lines.Count == 0)
+            {
+                lines.Add("Type,Subtype,Name,File,RawX,RawY,RawZ,id,Drop,LootSpawnInfo,SpawnConditions,Clazz");
+            }
+
+            var header = lines[0];
+            var dataLines = lines.Skip(1).ToList();
+
+            // Update existing entries
+            if (pendingUpdatedEntries.Count > 0)
+            {
+                for (int i = 0; i < dataLines.Count; i++)
+                {
+                    var parts = ParseCsvLine(dataLines[i]);
+                    if (parts.Count >= 8)
+                    {
+                        var lineId = parts[7].Trim('"');
+                        var updateEntry = pendingUpdatedEntries.FirstOrDefault(e => e.id == lineId);
+
+                        if (updateEntry.id != null)
+                        {
+                            dataLines[i] = updateEntry.ToCsvLine();
+                        }
+                        else if (parts.Count >= 11)
+                        {
+                            // Try value-based match for entries without MoonGuid
+                            var lineEntry = new CsvEntry
+                            {
+                                type = parts[0],
+                                subtype = parts[1],
+                                name = parts[2],
+                                file = parts[3],
+                                rawX = int.TryParse(parts[4], out int x) ? x : 0,
+                                rawY = int.TryParse(parts[5], out int y) ? y : 0,
+                                rawZ = int.TryParse(parts[6], out int z) ? z : 0,
+                                clazz = parts.Count >= 12 ? parts[11] : parts[10]
+                            };
+
+                            updateEntry = pendingUpdatedEntries.FirstOrDefault(e => !e.hasMoonGuid && e.MatchesAllValues(lineEntry));
+                            if (updateEntry.id != null)
+                            {
+                                dataLines[i] = updateEntry.ToCsvLine();
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Add all pending new entries as CSV lines
+            if (pendingSortedEntries.Count > 0)
+            {
+                dataLines.AddRange(pendingSortedEntries.Select(e => e.ToCsvLine()));
+            }
+
+            // Sort by extracting id from each line
+            dataLines.Sort((a, b) =>
+            {
+                var idA = ExtractIdFromCsvLine(a);
+                var idB = ExtractIdFromCsvLine(b);
+                return string.Compare(idA, idB, System.StringComparison.Ordinal);
+            });
+
+            // Write sorted lines back to file
+            var sortedLines = new System.Collections.Generic.List<string> { header };
+            sortedLines.AddRange(dataLines);
+            System.IO.File.WriteAllLines(csvPath, sortedLines);
+
+            Msg($"Flushed {pendingSortedEntries.Count} new entries and {pendingUpdatedEntries.Count} updates to sorted CSV");
+
+            // Clear pending entries
+            pendingSortedEntries.Clear();
+            pendingUpdatedEntries.Clear();
         }
-
-        // Add all pending entries
-        lines.AddRange(pendingSortedEntries);
-
-        // Sort all lines except header by id column
-        var header = lines[0];
-        var dataLines = lines.Skip(1).ToList();
-
-        // Sort by extracting id from each line
-        dataLines.Sort((a, b) =>
-        {
-            var idA = ExtractIdFromCsvLine(a);
-            var idB = ExtractIdFromCsvLine(b);
-            return string.Compare(idA, idB, System.StringComparison.Ordinal);
-        });
-
-        // Write sorted lines back to file
-        var sortedLines = new System.Collections.Generic.List<string> { header };
-        sortedLines.AddRange(dataLines);
-        System.IO.File.WriteAllLines(csvPath, sortedLines);
-
-        Msg($"Flushed {pendingSortedEntries.Count} entries to sorted CSV");
-
-        // Clear pending entries
-        pendingSortedEntries.Clear();
     }
 
     private string ExtractIdFromCsvLine(string line)
@@ -1026,4 +1888,15 @@ public class Core : MelonMod
         }
     }
 
+}
+
+// Harmony patch to make isDebugBuild always return true
+[HarmonyPatch(typeof(UnityEngine.Debug), "get_isDebugBuild")]
+public class DebugBuildPatch
+{
+    static bool Prefix(ref bool __result)
+    {
+        __result = true;
+        return false; // Skip original method
+    }
 }

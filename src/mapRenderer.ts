@@ -30,6 +30,7 @@ import {
   formatClassnameHtml,
   formatDropHtml,
   formatLootSpawnInfoHtml,
+  formatSpawnConditionsHtml,
 } from "./ui/formatters";
 
 export class MapRenderer {
@@ -45,6 +46,8 @@ export class MapRenderer {
   private currentFilter: string = "none";
 
   private visibleResourceTypes: Set<string> = new Set();
+  private searchFilteredResourceIds: Set<string> | null = null;
+  private loadedResources: LoadedResources | null = null;
 
   private tooltipElement!: HTMLElement;
   private selectedFeature: FeatureLike | null = null;
@@ -120,6 +123,23 @@ export class MapRenderer {
       const popup = event.detail;
       this.selectFeatureByCoords(popup);
     }) as EventListener);
+
+    // Listen for pan to resource event from UI
+    window.addEventListener("panToResource", ((event: CustomEvent) => {
+      const { worldX, worldZ, region } = event.detail;
+      this.panToResource(worldX, worldZ, region);
+    }) as EventListener);
+
+    // Listen for search filter event from UI
+    window.addEventListener("searchFilterResources", ((event: CustomEvent) => {
+      const { resourceIds } = event.detail;
+      this.searchFilteredResourceIds = resourceIds;
+
+      // Re-render the resource layer with the search filter
+      if (this.loadedResources) {
+        this.updateResourceLayer(this.loadedResources);
+      }
+    }) as EventListener);
   }
 
   private setupPopup(): void {
@@ -158,12 +178,20 @@ export class MapRenderer {
     feature.set("selected", true);
     this.resourceLayer.changed(); // Trigger re-render to show outline
 
+    // Get feature properties
+    const originalType = feature.get("resourceType");
+    const derivedType = feature.get("type");
+    const originalSubtype = feature.get("subtype");
+
+    // For spawner type, use the derived type as the subtype for display
+    const displaySubtype = originalType === "spawner" ? derivedType : originalSubtype;
+
     // Dispatch event with feature data for UI to handle
     const event = new CustomEvent("featureSelected", {
       detail: {
-        type: feature.get("resourceType"),
-        subtype: feature.get("subtype"),
-        resourceType: feature.get("type"),
+        type: originalType,
+        subtype: displaySubtype,
+        resourceType: derivedType,
         name: feature.get("name"),
         color: feature.get("color"),
         worldX: feature.get("worldX"),
@@ -174,6 +202,7 @@ export class MapRenderer {
         classname: feature.get("classname"),
         drop: feature.get("drop"),
         lootSpawnInfo: feature.get("lootSpawnInfo"),
+        spawnConditions: feature.get("spawnConditions"),
       },
     });
     window.dispatchEvent(event);
@@ -305,18 +334,28 @@ export class MapRenderer {
   }
 
   public updateResourceLayer(loadedResources: LoadedResources): void {
+    // Store loaded resources for later use
+    this.loadedResources = loadedResources;
+
     const source = this.resourceLayer.getSource();
     if (!source) return;
 
     // Check if the currently selected feature will still be visible
     if (this.selectedFeature) {
+      const selectedId = this.selectedFeature.get("id");
       const selectedType = extractResourceType({
         type: this.selectedFeature.get("resourceType"),
         subtype: this.selectedFeature.get("subtype"),
         lootSpawnInfo: this.selectedFeature.get("lootSpawnInfo"),
+        derivedType: this.selectedFeature.get("derivedType"),
       } as Resource);
 
-      if (!this.visibleResourceTypes.has(selectedType)) {
+      // Check if selected feature is visible based on current filters
+      const isVisibleByType = this.visibleResourceTypes.has(selectedType);
+      const isVisibleBySearch = !this.searchFilteredResourceIds ||
+                                this.searchFilteredResourceIds.has(selectedId);
+
+      if (!isVisibleByType || !isVisibleBySearch) {
         // Selected feature will no longer be visible, clear selection
         this.clearSelection();
       }
@@ -324,10 +363,17 @@ export class MapRenderer {
 
     source.clear();
 
-    const visibleResources = loadedResources.resources.filter((resource) => {
+    let visibleResources = loadedResources.resources.filter((resource) => {
       const type = extractResourceType(resource);
       return this.visibleResourceTypes.has(type);
     });
+
+    // Apply search filter if active
+    if (this.searchFilteredResourceIds && this.searchFilteredResourceIds.size > 0) {
+      visibleResources = visibleResources.filter((resource) => {
+        return this.searchFilteredResourceIds!.has(resource.id);
+      });
+    }
 
     const features: Feature[] = [];
     for (const resource of visibleResources) {
@@ -342,10 +388,18 @@ export class MapRenderer {
       if (this.selectedFeature) {
         const selectedX = this.selectedFeature.get("worldX");
         const selectedZ = this.selectedFeature.get("worldZ");
-        if (
+        const selectedDerivedType = this.selectedFeature.get("derivedType");
+        const selectedId = this.selectedFeature.get("id");
+
+        // Check coordinates and either ID or derivedType match
+        const coordinatesMatch =
           Math.abs(resource.worldX - selectedX) < 0.1 &&
-          Math.abs(resource.worldZ - selectedZ) < 0.1
-        ) {
+          Math.abs(resource.worldZ - selectedZ) < 0.1;
+
+        const identityMatch = resource.id === selectedId &&
+          (!selectedDerivedType || resource.derivedType === selectedDerivedType);
+
+        if (coordinatesMatch && identityMatch) {
           feature.set("selected", true);
           this.selectedFeature = feature;
         }
@@ -379,7 +433,9 @@ export class MapRenderer {
       id: resource.id,
       drop: resource.drop,
       lootSpawnInfo: resource.lootSpawnInfo,
+      spawnConditions: resource.spawnConditions,
       classname: resource.classname,
+      derivedType: resource.derivedType, // Store derivedType for spawners with multiple tags
     });
 
     return feature;
@@ -501,8 +557,13 @@ export class MapRenderer {
 
       // Don't show tooltip if popup is open or on pointer devices (non-touch)
       if (feature && !this.isTouchDevice) {
-        const type = feature.get("resourceType") as string;
-        const subtype = feature.get("subtype") as string;
+        const originalType = feature.get("resourceType") as string;
+        const derivedType = feature.get("type") as string;
+        const originalSubtype = feature.get("subtype") as string;
+
+        // For spawner type, use the derived type as the subtype for display
+        const displaySubtype = originalType === "spawner" ? derivedType : originalSubtype;
+
         const worldX = feature.get("worldX") as number;
         const worldY = feature.get("worldY") as number;
         const worldZ = feature.get("worldZ") as number;
@@ -511,8 +572,9 @@ export class MapRenderer {
         const classname = feature.get("classname") as string;
         const drop = feature.get("drop");
         const lootSpawnInfo = feature.get("lootSpawnInfo");
+        const spawnConditions = feature.get("spawnConditions");
 
-        const tooltipTitle = formatResourceTitle(type, subtype);
+        const tooltipTitle = formatResourceTitle(originalType, displaySubtype);
         const name = feature.get("name") as string;
 
         // Build tooltip content
@@ -527,6 +589,7 @@ export class MapRenderer {
           ${formatClassnameHtml("tooltip", classname)}
           ${formatDropHtml("tooltip", drop)}
           ${formatLootSpawnInfoHtml("tooltip", lootSpawnInfo)}
+          ${formatSpawnConditionsHtml("tooltip", spawnConditions)}
         `;
 
         // Update tooltip content
@@ -576,5 +639,28 @@ export class MapRenderer {
 
   private detectTouchDevice(): boolean {
     return window.matchMedia("(pointer: coarse)").matches;
+  }
+
+  public panToResource(worldX: number, worldZ: number, region: string): void {
+    // Convert world coordinates to image coordinates
+    const coords = this.converter.worldToImage(worldX, worldZ, region);
+
+    // Get the view
+    const view = this.map.getView();
+
+    // Pan to the location with animation
+    // Note: coords are already in the projection's coordinate system, no need to flip
+    view.animate({
+      center: [coords.x, coords.y],
+      duration: 500,
+    });
+
+    // Zoom in a bit after panning (or during)
+    const currentZoom = view.getZoom() || 2;
+    const targetZoom = Math.max(currentZoom, 5); // Ensure at least zoom level 5
+    view.animate({
+      zoom: targetZoom,
+      duration: 500,
+    });
   }
 }

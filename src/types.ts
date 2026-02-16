@@ -23,15 +23,48 @@ export interface Drop {
 }
 
 export interface LootSpawnInfo {
-  shiny: boolean;
-  specialShiny: boolean;
-  smallChest: boolean;
-  mediumChest: boolean;
-  largeChest: boolean;
-  specialChest: boolean;
-  respawnChance?: number;
   respawnFreq?: string;
-  spawnCondition?: string;
+  missChance?: number;
+  anyTags?: string[];
+  allTags?: string[];
+  noneTags?: string[];
+  spawnConditions?: any[];
+}
+
+export interface QuestCondition {
+  questGuid: string;
+  state: string;
+  conditionType: string;
+}
+
+export interface QuestStepCondition {
+  questGuid: string;
+  state: string;
+  conditionType: string;
+}
+
+export interface WorldEventCondition {
+  eventGuid: string;
+  state: string;
+  conditionType: string;
+}
+
+export interface ConditionSet {
+  questSteps: QuestStepCondition[] | null;
+  quests: QuestCondition[] | null;
+  worldEvents: WorldEventCondition[] | null;
+  timesOfDay: any[] | null;
+  hasItems: any[] | null;
+  hasModifiers: any[] | null;
+  activities: any[] | null;
+  boons: any[] | null;
+  hasGold: any | null;
+}
+
+export interface SpawnConditions {
+  requiredSpawnConditions: ConditionSet;
+  disableConditions: ConditionSet;
+  respawnConditions: ConditionSet;
 }
 
 export interface LoadedResources {
@@ -52,7 +85,9 @@ export interface Resource {
   id: string;
   drop?: Drop;
   lootSpawnInfo?: LootSpawnInfo;
+  spawnConditions?: SpawnConditions;
   classname?: string;
+  derivedType?: string; // For spawners with multiple tags, stores which type this instance represents
 }
 
 export interface ResourceType {

@@ -14,9 +14,9 @@ of game logic which must be treated properly to project everyhing on the map.
 
 As it's extracted from game resources, you can notice the following features:
 
-- Currently there are around 2000 objects on the map, including: chest, shiny,
-  item spawn points; lore readables; interactables, like doors or ladders; and
-  many others.
+- Currently there are around 3000 objects on the map, including: chest, shiny,
+  item spawn points; lore readables; interactables, like doors or ladders; NPCs,
+  enemy spawns; and many others.
 - Objects on this map contain the exact coordinates, so you can distinguish
   whether something is located deeply in cave or at high ground.
 - You can now see drop chances and loot pools on farmable resources.
@@ -26,16 +26,13 @@ As it's extracted from game resources, you can notice the following features:
 
 Still there is a lot of work to be done, such as:
 
-- Displaying enemy spawn points. They're actually easy to extract, but it
-  requires some additional effort to find out how exactly they're triggered.
-  There is really a lot of spawn points in game, but most of them are inactive
-  for some reason.
 - Loot spawn points tuning: currently there are some objects which don't exist
   visually in game, but exist in memory (or vice-versa). I guess again there is
   some logic which conditionally hides them.
 - Region offset extracting: currently I manually calibrated some offsets to
   project object correctly on the map. Ideally this offset must be extracted
   from the game.
+- Implement Black Trench map.
 
 # How to build it
 
@@ -60,6 +57,8 @@ All necessary code is already in this repository:
   for OpenLayers.
 - `scripts/extract_item_translations.py` - extacts item names from `.asset`
   files.
+- `scripts/extract_condition_translations.py` - extacts quest and world state
+  names names from `.asset` files.
 - The rest code in this repository is an actual interactive web map.
 
 To compile a bundle, just run `npm run build`.

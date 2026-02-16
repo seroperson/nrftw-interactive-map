@@ -43,14 +43,14 @@ type MainGroupTypes = {
   digging: SubGroupDef;
   bonfire: SubGroupDef;
   whisper: SubGroupDef;
-  loot_spawn: {
+  spawner: {
+    spawner: SubGroupDef;
     shiny: SubGroupDef;
     special_shiny: SubGroupDef;
     small_chest: SubGroupDef;
     medium_chest: SubGroupDef;
     large_chest: SubGroupDef;
     special_chest: SubGroupDef;
-    other_loot: SubGroupDef;
   };
   interactible: {
     ladder: SubGroupDef;
@@ -69,10 +69,8 @@ type MainGroupTypes = {
   };
   npc: {
     animal: SubGroupDef;
-    balak_taw: SubGroupDef;
-    boarskin: SubGroupDef;
     boss: SubGroupDef;
-    critter: SubGroupDef;
+    enemies: SubGroupDef;
     npc_other: SubGroupDef;
   };
 };
@@ -199,40 +197,40 @@ const TYPES: MainGroupTypes = {
     color: "#18FFFF",
     sortingOrder: 90,
   },
-  loot_spawn: {
+  spawner: {
+    spawner: {
+      displayName: "Spawner (Other)",
+      color: "#9E9E9E",
+      sortingOrder: 1,
+    },
     shiny: {
       displayName: "Shiny",
       color: "#FFD700",
-      sortingOrder: 1,
+      sortingOrder: 2,
     },
     special_shiny: {
       displayName: "Special Shiny",
       color: "#FF6D00",
-      sortingOrder: 2,
+      sortingOrder: 3,
     },
     small_chest: {
       displayName: "Small Chest",
       color: "#A1887F",
-      sortingOrder: 3,
+      sortingOrder: 4,
     },
     medium_chest: {
       displayName: "Medium Chest",
       color: "#FFA726",
-      sortingOrder: 4,
+      sortingOrder: 5,
     },
     large_chest: {
       displayName: "Large Chest",
       color: "#F57C00",
-      sortingOrder: 5,
+      sortingOrder: 6,
     },
     special_chest: {
       displayName: "Special Chest",
       color: "#E65100",
-      sortingOrder: 6,
-    },
-    other_loot: {
-      displayName: "Other",
-      color: "#9E9E9E",
       sortingOrder: 7,
     },
   },
@@ -298,40 +296,30 @@ const TYPES: MainGroupTypes = {
   npc: {
     animal: {
       displayName: "Animal",
-      color: "#8B4513",
-      sortingOrder: 1,
-    },
-    balak_taw: {
-      displayName: "Balak'Taw",
       color: "#9370DB",
-      sortingOrder: 2,
-    },
-    boarskin: {
-      displayName: "Boarskin",
-      color: "#D2691E",
-      sortingOrder: 3,
+      sortingOrder: 1,
     },
     boss: {
       displayName: "Boss",
       color: "#8B0000",
-      sortingOrder: 4,
+      sortingOrder: 2,
     },
-    critter: {
-      displayName: "Critter",
-      color: "#A9A9A9",
-      sortingOrder: 5,
+    enemies: {
+      displayName: "Enemies",
+      color: "#DC143C",
+      sortingOrder: 3,
     },
     npc_other: {
       displayName: "Other",
-      color: "#DC143C",
-      sortingOrder: 6,
+      color: "#32CD32",
+      sortingOrder: 4,
     },
   },
 };
 
 // Main group sorting orders
 const GROUP_SORTING_ORDER: Record<MainGroup, number> = {
-  loot_spawn: 10,
+  spawner: 10,
   ore: 20,
   wood: 30,
   food: 40,
@@ -470,9 +458,9 @@ export function getGroupDisplayName(groupType: MainGroup): string {
   if (isSubGroupDef(group)) {
     return group.displayName;
   }
-  // For nested groups like ore, wood, loot_spawn, return formatted version
-  if (groupType === "loot_spawn") {
-    return "Loot Spawn";
+  // For nested groups like ore, wood, spawner, return formatted version
+  if (groupType === "spawner") {
+    return "Spawner";
   }
   if (groupType === "npc") {
     return "NPC";
@@ -492,27 +480,58 @@ export function getGroupSortingOrder(groupType: string): number {
   return 999;
 }
 
-export function extractResourceType(resource: Resource): string {
-  // Special handling for loot_spawn - determine subtype from lootSpawnInfo
-  if (resource.type === "loot_spawn") {
+/**
+ * Extract all matching resource types for a spawner based on its tags
+ * Returns an array of types that the spawner should be categorized under
+ */
+export function extractResourceTypes(resource: Resource): string[] {
+  // Special handling for spawner - determine subtypes from lootSpawnInfo tags
+  if (resource.type === "spawner") {
     if (resource.lootSpawnInfo) {
       const info = resource.lootSpawnInfo;
 
-      // Priority order: special types first, then regular chests, then shiny
-      if (info.specialChest) return "special_chest";
-      if (info.specialShiny) return "special_shiny";
-      if (info.largeChest) return "large_chest";
-      if (info.mediumChest) return "medium_chest";
-      if (info.smallChest) return "small_chest";
-      if (info.shiny) return "shiny";
+      // Check anyTags and allTags for chest/shiny types
+      const tags = [
+        ...(info.anyTags || []),
+        ...(info.allTags || [])
+      ];
+
+      const types: string[] = [];
+
+      // Check for all matching tag types
+      if (tags.some(t => t.toLowerCase() === "specialchest")) types.push("special_chest");
+      if (tags.some(t => t.toLowerCase() === "specialshiny")) types.push("special_shiny");
+      if (tags.some(t => t.toLowerCase() === "largechest")) types.push("large_chest");
+      if (tags.some(t => t.toLowerCase() === "mediumchest")) types.push("medium_chest");
+      if (tags.some(t => t.toLowerCase() === "smallchest")) types.push("small_chest");
+      if (tags.some(t => t.toLowerCase() === "shiny")) types.push("shiny");
+
+      // If we found matching types, return them
+      if (types.length > 0) {
+        return types;
+      }
     }
 
-    // Fallback for loot_spawn without valid lootSpawnInfo
-    return "other_loot";
+    // Fallback for spawner without recognized tags
+    return ["spawner"];
   }
 
   // Use subtype as the resource type identifier
-  return resource.subtype || resource.type || "unknown";
+  return [resource.subtype || resource.type || "unknown"];
+}
+
+/**
+ * Extract the primary resource type for a resource (for backward compatibility)
+ * For spawners with multiple types, uses the derivedType if available
+ */
+export function extractResourceType(resource: Resource): string {
+  // If this resource has a derivedType (for spawners with multiple tags), use it
+  if (resource.derivedType) {
+    return resource.derivedType;
+  }
+
+  const types = extractResourceTypes(resource);
+  return types[0];
 }
 
 function createResourceTypes(resources: Resource[]): Map<string, ResourceType> {
@@ -730,14 +749,27 @@ export class ResourceLoader {
         }
       }
 
-      // Parse classname if available (column 11)
-      const classname = parts.length > 10 ? parts[10].trim() : undefined;
+      // Parse SpawnConditions JSON if available (column 11)
+      let spawnConditions: any = undefined;
+      if (parts.length > 10 && parts[10].trim()) {
+        try {
+          spawnConditions = JSON.parse(parts[10]);
+        } catch (e) {
+          console.warn(
+            `Failed to parse SpawnConditions JSON at line ${i + 1}:`,
+            e,
+          );
+        }
+      }
+
+      // Parse classname if available (column 12)
+      const classname = parts.length > 11 ? parts[11].trim() : undefined;
 
       totalObjects++;
 
       // Validate resource types against TYPES definition
-      // Special case: loot_spawn subtype will be determined from lootSpawnInfo later
-      if (type !== "loot_spawn") {
+      // Special case: spawner subtype will be determined from lootSpawnInfo later
+      if (type !== "spawner") {
         if (!isValidResourceType(type) || !isValidResourceType(subtype)) {
           invalidTypeObjects++;
           const invalidKey = `${type}:${subtype}`;
@@ -763,7 +795,7 @@ export class ResourceLoader {
           continue;
         }
       } else {
-        // For loot_spawn, just validate that the type is valid
+        // For spawner, just validate that the type is valid
         if (!isValidResourceType(type)) {
           invalidTypeObjects++;
           const invalidKey = `${type}:${subtype}`;
@@ -785,16 +817,7 @@ export class ResourceLoader {
       // Extract region from file path
       const region = this.extractRegionFromPath(filePath);
 
-      // Check for duplicates (same type and coordinates)
-      // Round coordinates to 3 decimal places to handle floating point precision
-      const coordKey = `${type}:${subtype}:${worldX.toFixed(3)}:${worldZ.toFixed(3)}`;
-      if (seenObjects.has(coordKey)) {
-        duplicateObjects++;
-        continue;
-      }
-      seenObjects.add(coordKey);
-
-      loadedResources.resources.push({
+      const baseResource: Resource = {
         type,
         subtype,
         name,
@@ -806,8 +829,44 @@ export class ResourceLoader {
         id,
         drop,
         lootSpawnInfo,
+        spawnConditions,
         classname,
-      });
+      };
+
+      // For spawner type, check if it should be categorized into multiple subgroups
+      if (type === "spawner") {
+        const matchingTypes = extractResourceTypes(baseResource);
+
+        // Create a resource entry for each matching type
+        // This allows the spawner to appear in multiple filter groups
+        for (const matchingType of matchingTypes) {
+          // Check for duplicates including the derived type
+          const coordKey = `${type}:${matchingType}:${worldX.toFixed(3)}:${worldZ.toFixed(3)}`;
+          if (seenObjects.has(coordKey)) {
+            duplicateObjects++;
+            continue;
+          }
+          seenObjects.add(coordKey);
+
+          loadedResources.resources.push({
+            ...baseResource,
+            // Store the derived type as a custom property for filtering
+            // We'll use this to determine which filter group it belongs to
+            derivedType: matchingType,
+          } as Resource);
+        }
+      } else {
+        // For non-spawner types, check for duplicates normally
+        const coordKey = `${type}:${subtype}:${worldX.toFixed(3)}:${worldZ.toFixed(3)}`;
+        if (seenObjects.has(coordKey)) {
+          duplicateObjects++;
+          continue;
+        }
+        seenObjects.add(coordKey);
+
+        // Just add the resource normally
+        loadedResources.resources.push(baseResource);
+      }
     }
 
     console.log(

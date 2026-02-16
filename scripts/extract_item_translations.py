@@ -8,6 +8,8 @@ import csv
 import json
 import os
 import re
+import sys
+import argparse
 from pathlib import Path
 from collections import defaultdict
 
@@ -126,8 +128,16 @@ def build_id_to_translation_mapping(csv_path, exported_project_dir):
     for idx, item_id in enumerate(sorted(specific_items), 1):
         print(f"[{idx}/{len(specific_items)}] Processing ID: {item_id}")
 
+        # Convert item_id to int for lookup (IDs from CSV are strings, index has int keys)
+        try:
+            item_id_int = int(item_id)
+        except (ValueError, TypeError):
+            print(f"  ✗ Invalid ID format")
+            not_found.append((item_id, "invalid_id_format"))
+            continue
+
         # Step 1: Find the .asset file with this AssetGuid
-        asset_file = asset_guid_index.get(item_id)
+        asset_file = asset_guid_index.get(item_id_int)
         if not asset_file:
             print(f"  ✗ No .asset file found")
             not_found.append((item_id, "asset_file_not_found"))
@@ -192,21 +202,99 @@ def save_mapping_to_file(mapping, output_path):
 
 
 def main():
-    # Define paths
-    project_root = Path(__file__).parent
-    csv_path = project_root / 'nrftw-interactive-map' / 'src' / 'assets' / 'item_coordinates.csv'
-    exported_project_dir = project_root / 'ExportedProject'
-    output_path = project_root / 'item_id_to_translation.json'
-    interactive_map_output = project_root / 'nrftw-interactive-map' / 'src' / 'assets' / 'item_translations.json'
+    # Set up argument parser
+    parser = argparse.ArgumentParser(
+        description='Extract item translations from ExportedProject',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  # Use absolute path to ExportedProject
+  python extract_item_translations.py --exported-project /path/to/ExportedProject
+
+  # Specify all paths
+  python extract_item_translations.py --exported-project /path/to/ExportedProject \\
+      --csv-path ./src/assets/item_coordinates.csv \\
+      --output ./src/assets/item_translations.json
+        '''
+    )
+
+    parser.add_argument(
+        '--exported-project',
+        type=str,
+        help='Absolute or relative path to ExportedProject directory'
+    )
+    parser.add_argument(
+        '--csv-path',
+        type=str,
+        help='Path to item_coordinates.csv (default: ../src/assets/item_coordinates.csv)'
+    )
+    parser.add_argument(
+        '--output',
+        type=str,
+        help='Output path for translations JSON (default: ../src/assets/item_translations.json)'
+    )
+
+    args = parser.parse_args()
+
+    # Get script directory
+    script_dir = Path(__file__).resolve().parent
+
+    # Determine ExportedProject path
+    if args.exported_project:
+        # Use provided path (can be absolute or relative)
+        exported_project_dir = Path(args.exported_project).resolve()
+    else:
+        # Try to find ExportedProject in parent directory
+        exported_project_dir = script_dir.parent / 'ExportedProject'
+        if not exported_project_dir.exists():
+            print("Error: ExportedProject directory not found.")
+            print("Please specify the path using --exported-project argument:")
+            print("  python extract_item_translations.py --exported-project /absolute/path/to/ExportedProject")
+            print("\nOr set EXPORTED_PROJECT_PATH environment variable:")
+            print("  export EXPORTED_PROJECT_PATH=/absolute/path/to/ExportedProject")
+            sys.exit(1)
+
+    # Make exported_project_dir absolute
+    exported_project_dir = exported_project_dir.resolve()
+
+    # Determine CSV path
+    if args.csv_path:
+        csv_path = Path(args.csv_path).resolve()
+    else:
+        csv_path = script_dir.parent / 'src' / 'assets' / 'item_coordinates.csv'
+        csv_path = csv_path.resolve()
+
+    # Determine output path
+    if args.output:
+        output_path = Path(args.output).resolve()
+    else:
+        output_path = script_dir.parent / 'src' / 'assets' / 'item_translations.json'
+        output_path = output_path.resolve()
+
+    # Also save to root directory for backward compatibility
+    root_output_path = script_dir.parent / 'item_id_to_translation.json'
+    root_output_path = root_output_path.resolve()
+
+    # Print resolved paths
+    print("Using paths:")
+    print(f"  ExportedProject: {exported_project_dir}")
+    print(f"  CSV file: {csv_path}")
+    print(f"  Output file: {output_path}")
+    print()
 
     # Verify paths exist
     if not csv_path.exists():
         print(f"Error: CSV file not found at {csv_path}")
-        return
+        sys.exit(1)
 
     if not exported_project_dir.exists():
         print(f"Error: ExportedProject directory not found at {exported_project_dir}")
-        return
+        print("Please provide the correct path using --exported-project argument")
+        sys.exit(1)
+
+    if not exported_project_dir.is_dir():
+        print(f"Error: {exported_project_dir} is not a directory")
+        sys.exit(1)
 
     # Build the mapping
     mapping = build_id_to_translation_mapping(csv_path, exported_project_dir)
@@ -214,8 +302,8 @@ def main():
     # Save to file
     if mapping:
         save_mapping_to_file(mapping, output_path)
-        save_mapping_to_file(mapping, interactive_map_output)
-        print(f"✓ Also saved to {interactive_map_output}")
+        save_mapping_to_file(mapping, root_output_path)
+        print(f"✓ Also saved to {root_output_path}")
 
         # Print sample mappings
         print("\nSample mappings:")

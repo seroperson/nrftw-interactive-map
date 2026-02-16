@@ -1,6 +1,6 @@
 // UI management for sidebar and controls
 
-import { LoadedResources, OpenedPopup } from "../types";
+import { LoadedResources, OpenedPopup, Resource } from "../types";
 import { StateManager } from "../stateManager";
 import {
   SIDEBAR_ANIMATION_DURATION,
@@ -12,6 +12,8 @@ import {
   isValidResourceType,
   isMainGroup,
   getGroupSortingOrder,
+  extractResourceType,
+  getResourceColor,
 } from "../resourceManager";
 import {
   formatResourceTitle,
@@ -21,6 +23,7 @@ import {
   formatClassnameHtml,
   formatDropHtml,
   formatLootSpawnInfoHtml,
+  formatSpawnConditionsHtml,
 } from "./formatters";
 
 export class UIManager {
@@ -29,6 +32,13 @@ export class UIManager {
   private toggleBtn: HTMLElement | null = null;
   private preventAutoClose: boolean = false;
   private onPopupChange: ((popup: OpenedPopup | null) => void) | null = null;
+  private loadedResources: LoadedResources | null = null;
+  private isSearchMode: boolean = false;
+  private sidebarOriginalContent: string = "";
+  private previousVisibleResources: Set<string> = new Set();
+  private searchQuery: string = "";
+  private searchFilteredResourceIds: Set<string> = new Set();
+  private isRegexMode: boolean = false;
 
   constructor(stateManager: StateManager) {
     this.stateManager = stateManager;
@@ -37,9 +47,13 @@ export class UIManager {
     this.setupMapFilters();
     this.setupResourceDetailsUI();
     this.setupFeatureSelectionHandlers();
+    this.setupSearchButton();
   }
 
   public setupEventListeners(loadedResources: LoadedResources): void {
+    // Store loaded resources for search functionality
+    this.loadedResources = loadedResources;
+
     // Toggle sidebar
     const toggleBtn = document.getElementById("toggle-sidebar");
     const sidebar = document.getElementById("sidebar");
@@ -420,71 +434,67 @@ export class UIManager {
   }
 
   private setupResourceDetailsUI(): void {
-    const detailsSection = document.getElementById("resource-details-section");
-    const detailsContent = document.getElementById("resource-details-content");
-    const closeButton = document.getElementById("close-resource-details");
-
-    if (!detailsSection || !detailsContent || !closeButton) {
-      console.warn("Resource details elements not found");
+    // Use event delegation on the sidebar to handle close button clicks
+    // This ensures it works even after the sidebar HTML is recreated
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) {
+      console.warn("Sidebar element not found");
       return;
     }
 
-    // Handle close button click
-    closeButton.addEventListener("click", () => {
-      detailsSection.style.display = "none";
-      detailsContent.innerHTML = "";
+    // Handle close button click using event delegation
+    sidebar.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      if (target.id === "close-resource-details") {
+        const detailsSection = document.getElementById("resource-details-section");
+        const detailsContent = document.getElementById("resource-details-content");
 
-      // Dispatch event for map renderer to clear selection
-      const event = new CustomEvent("closeResourceDetails");
-      window.dispatchEvent(event);
+        if (detailsSection && detailsContent) {
+          detailsSection.style.display = "none";
+          detailsContent.innerHTML = "";
+        }
 
-      // Notify state manager
-      if (this.onPopupChange) {
-        this.onPopupChange(null);
+        // Dispatch event for map renderer to clear selection
+        const event = new CustomEvent("closeResourceDetails");
+        window.dispatchEvent(event);
+
+        // Notify state manager
+        if (this.onPopupChange) {
+          this.onPopupChange(null);
+        }
       }
     });
   }
 
   private setupFeatureSelectionHandlers(): void {
-    const detailsSection = document.getElementById("resource-details-section");
-    const detailsContent = document.getElementById("resource-details-content");
-
-    if (!detailsSection || !detailsContent) {
-      console.warn("Resource details elements not found");
-      return;
-    }
-
     // Handle feature selection from map
     window.addEventListener("featureSelected", ((event: CustomEvent) => {
       const featureData = event.detail;
 
-      // Build popup HTML
-      const popupHtml = this.buildResourceDetailsHTML(featureData);
-      detailsContent.innerHTML = popupHtml;
-      detailsSection.style.display = "block";
+      // If in search mode, we need to update the search UI to include the resource details
+      if (this.isSearchMode) {
+        this.showResourceDetailsInSearchMode(featureData);
+      } else {
+        // Look up elements dynamically each time to handle DOM recreation after search mode
+        const detailsSection = document.getElementById("resource-details-section");
+        const detailsContent = document.getElementById("resource-details-content");
 
-      // Ensure sidebar is open when selecting a resource
-      this.ensureSidebarOpen();
-
-      // Scroll the section into view with padding
-      // Use setTimeout to ensure sidebar animation completes first
-      setTimeout(() => {
-        const sidebarContent = document.querySelector('.sidebar-content');
-        if (sidebarContent) {
-          const sectionRect = detailsSection.getBoundingClientRect();
-          const containerRect = sidebarContent.getBoundingClientRect();
-          const padding = 16; // Respect padding
-
-          // Check if element is not fully visible
-          if (sectionRect.top < containerRect.top + padding ||
-              sectionRect.bottom > containerRect.bottom - padding) {
-            // Calculate scroll position with padding
-            const scrollTop = sidebarContent.scrollTop +
-                            (sectionRect.top - containerRect.top) - padding;
-            sidebarContent.scrollTo({ top: scrollTop, behavior: "smooth" });
-          }
+        if (!detailsSection || !detailsContent) {
+          console.warn("Resource details elements not found");
+          return;
         }
-      }, 100);
+
+        // Build popup HTML
+        const popupHtml = this.buildResourceDetailsHTML(featureData);
+        detailsContent.innerHTML = popupHtml;
+        detailsSection.style.display = "block";
+
+        // Ensure sidebar is open when selecting a resource
+        this.ensureSidebarOpen();
+
+        // Scroll the section into view with padding
+        this.scrollToResourceDetails(detailsSection);
+      }
 
       // Notify state manager
       if (this.onPopupChange) {
@@ -496,14 +506,125 @@ export class UIManager {
 
     // Handle feature deselection
     window.addEventListener("featureDeselected", () => {
-      detailsSection.style.display = "none";
-      detailsContent.innerHTML = "";
+      if (!this.isSearchMode) {
+        // Look up elements dynamically each time to handle DOM recreation after search mode
+        const detailsSection = document.getElementById("resource-details-section");
+        const detailsContent = document.getElementById("resource-details-content");
+
+        if (detailsSection && detailsContent) {
+          detailsSection.style.display = "none";
+          detailsContent.innerHTML = "";
+        }
+      }
 
       // Notify state manager
       if (this.onPopupChange) {
         this.onPopupChange(null);
       }
     });
+  }
+
+  private scrollToResourceDetails(_detailsSection?: HTMLElement): void {
+    // Use setTimeout to ensure sidebar animation and rendering complete first
+    setTimeout(() => {
+      const sidebarContent = document.querySelector('.sidebar-content');
+      if (sidebarContent) {
+        // Scroll to top to show the resource details section
+        sidebarContent.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 100);
+  }
+
+  private showResourceDetailsInSearchMode(featureData: any): void {
+    const sidebarContent = document.querySelector(".sidebar-content");
+    if (!sidebarContent) return;
+
+    // Build resource details HTML
+    const popupHtml = this.buildResourceDetailsHTML(featureData);
+
+    // Create search UI with resource details at the top
+    const searchHTML = `
+      <section class="filter-section" id="resource-details-section-search">
+        <div class="resource-details-header">
+          <h2>Selected Resource</h2>
+          <button id="close-resource-details-search" class="btn-close-details" aria-label="Close details">×</button>
+        </div>
+        <div id="resource-details-content-search">${popupHtml}</div>
+      </section>
+      <div class="search-container">
+        <div class="search-header">
+          <h2>Search</h2>
+          <button id="close-search" class="btn-close-search" aria-label="Close search">×</button>
+        </div>
+        <div class="search-field-container">
+          <input
+            type="text"
+            id="search-field"
+            class="search-field"
+            placeholder="Search by object name..."
+            autocomplete="off"
+            value="${this.searchQuery}"
+          />
+          <button id="regex-toggle" class="btn-regex-toggle ${this.isRegexMode ? 'active' : ''}" title="Toggle regex search">.*</button>
+        </div>
+        <div id="search-results" class="search-results"></div>
+      </div>
+    `;
+
+    sidebarContent.innerHTML = searchHTML;
+
+    // Setup event listeners
+    const searchField = document.getElementById("search-field") as HTMLInputElement;
+    const closeSearchBtn = document.getElementById("close-search");
+    const closeDetailsBtn = document.getElementById("close-resource-details-search");
+    const regexToggle = document.getElementById("regex-toggle");
+    const searchResults = document.getElementById("search-results");
+
+    if (searchField && searchResults) {
+      // Perform search with current query
+      if (this.searchQuery) {
+        this.performSearch(this.searchQuery, searchResults);
+      }
+
+      // Handle search input
+      searchField.addEventListener("input", (e) => {
+        const query = (e.target as HTMLInputElement).value.trim();
+        this.searchQuery = query;
+        this.performSearch(query, searchResults);
+      });
+    }
+
+    if (regexToggle) {
+      regexToggle.addEventListener("click", () => {
+        this.isRegexMode = !this.isRegexMode;
+        regexToggle.classList.toggle("active", this.isRegexMode);
+
+        // Re-run search with new mode
+        if (searchResults) {
+          this.performSearch(this.searchQuery, searchResults);
+        }
+      });
+    }
+
+    if (closeSearchBtn) {
+      closeSearchBtn.addEventListener("click", () => {
+        this.hideSearchUI();
+      });
+    }
+
+    if (closeDetailsBtn) {
+      closeDetailsBtn.addEventListener("click", () => {
+        // Clear the selected feature
+        const event = new CustomEvent("closeResourceDetails");
+        window.dispatchEvent(event);
+
+        // Re-render search UI without details
+        this.showSearchUI();
+      });
+    }
+
+    // Scroll to top to show resource details
+    this.scrollToResourceDetails(document.getElementById("resource-details-section-search")!);
   }
 
   public ensureSidebarOpen(): void {
@@ -587,6 +708,318 @@ export class UIManager {
   }
 
   // ============================================================================
+  // Search Functionality
+  // ============================================================================
+
+  private setupSearchButton(): void {
+    const searchBtn = document.getElementById("search-btn");
+    if (!searchBtn) return;
+
+    searchBtn.addEventListener("click", () => {
+      this.showSearchUI();
+    });
+  }
+
+  private showSearchUI(): void {
+    const sidebarContent = document.querySelector(".sidebar-content");
+    if (!sidebarContent) return;
+
+    // Save original content and state if not already in search mode
+    if (!this.isSearchMode) {
+      this.sidebarOriginalContent = sidebarContent.innerHTML;
+      // Store current visible resources
+      this.previousVisibleResources = new Set(this.stateManager.getState().visibleResources);
+
+      // Enable all resource types so search can find items from any type
+      if (this.loadedResources) {
+        const allTypes = new Set(this.loadedResources.resourceTypes.keys());
+        this.stateManager.setVisibleResources(allTypes);
+      }
+    }
+
+    this.isSearchMode = true;
+
+    // Create search UI
+    const searchHTML = `
+      <div class="search-container">
+        <div class="search-header">
+          <h2>Search</h2>
+          <button id="close-search" class="btn-close-search" aria-label="Close search">×</button>
+        </div>
+        <div class="search-field-container">
+          <input
+            type="text"
+            id="search-field"
+            class="search-field"
+            placeholder="Search by object name..."
+            autocomplete="off"
+            value="${this.searchQuery}"
+          />
+          <button id="regex-toggle" class="btn-regex-toggle ${this.isRegexMode ? 'active' : ''}" title="Toggle regex search">.*</button>
+        </div>
+        <div id="search-results" class="search-results"></div>
+      </div>
+    `;
+
+    sidebarContent.innerHTML = searchHTML;
+
+    // Ensure sidebar is open
+    this.ensureSidebarOpen();
+
+    // Setup search event listeners
+    const searchField = document.getElementById("search-field") as HTMLInputElement;
+    const closeBtn = document.getElementById("close-search");
+    const regexToggle = document.getElementById("regex-toggle");
+    const searchResults = document.getElementById("search-results");
+
+    if (searchField && searchResults) {
+      // Focus on search field
+      setTimeout(() => searchField.focus(), 100);
+
+      // Perform initial search if there's a query
+      if (this.searchQuery) {
+        this.performSearch(this.searchQuery, searchResults);
+      }
+
+      // Handle search input
+      searchField.addEventListener("input", (e) => {
+        const query = (e.target as HTMLInputElement).value.trim();
+        this.searchQuery = query;
+        this.performSearch(query, searchResults);
+      });
+    }
+
+    if (regexToggle) {
+      regexToggle.addEventListener("click", () => {
+        this.isRegexMode = !this.isRegexMode;
+        regexToggle.classList.toggle("active", this.isRegexMode);
+
+        // Re-run search with new mode
+        if (searchResults) {
+          this.performSearch(this.searchQuery, searchResults);
+        }
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        this.hideSearchUI();
+      });
+    }
+  }
+
+  private hideSearchUI(): void {
+    const sidebarContent = document.querySelector(".sidebar-content");
+    if (!sidebarContent || !this.isSearchMode) return;
+
+    // Restore original content
+    sidebarContent.innerHTML = this.sidebarOriginalContent;
+    this.isSearchMode = false;
+    this.searchQuery = "";
+    this.isRegexMode = false;
+
+    // Clear search filter
+    this.searchFilteredResourceIds.clear();
+
+    // Restore previous visible resources
+    this.stateManager.setVisibleResources(this.previousVisibleResources);
+
+    // Dispatch event to clear search filter
+    const event = new CustomEvent("searchFilterResources", {
+      detail: { resourceIds: null },
+    });
+    window.dispatchEvent(event);
+
+    // Re-render the entire UI to restore all event listeners
+    if (this.loadedResources) {
+      this.renderResourceFilters(this.loadedResources);
+      this.setupEventListeners(this.loadedResources);
+      // Re-attach search and map filter button listeners
+      this.reattachButtonListeners();
+    }
+  }
+
+  private reattachButtonListeners(): void {
+    // Re-attach search button listener
+    const searchBtn = document.getElementById("search-btn");
+    if (searchBtn) {
+      searchBtn.addEventListener("click", () => {
+        this.showSearchUI();
+      });
+    }
+
+    // Re-attach map filter button listeners
+    const buttons = document.querySelectorAll(".btn-map-filter");
+    buttons.forEach((button) => {
+      const filterId = button.id.replace("filter-", "");
+      button.addEventListener("click", () => {
+        this.stateManager.setMapFilter(filterId);
+      });
+    });
+  }
+
+  private performSearch(query: string, resultsContainer: HTMLElement): void {
+    // Clear previous results
+    resultsContainer.innerHTML = "";
+
+    // Only search if query has at least 3 characters (or 1+ for regex)
+    const minLength = this.isRegexMode ? 1 : 3;
+    if (query.length < minLength) {
+      resultsContainer.innerHTML = `
+        <div class="search-no-results">
+          Enter at least ${minLength} character${minLength > 1 ? 's' : ''} to search
+        </div>
+      `;
+      // Clear search filter
+      this.searchFilteredResourceIds.clear();
+      this.applySearchFilter();
+      return;
+    }
+
+    if (!this.loadedResources) return;
+
+    let matchingResources: Resource[] = [];
+
+    if (this.isRegexMode) {
+      // Regex mode - try to use query as regex pattern
+      try {
+        const regex = new RegExp(query, 'i'); // Case-insensitive by default
+        matchingResources = this.loadedResources.resources.filter((resource) => {
+          return resource.name && regex.test(resource.name);
+        });
+      } catch (error) {
+        // Invalid regex pattern
+        resultsContainer.innerHTML = `
+          <div class="search-no-results">
+            Invalid regex pattern: ${(error as Error).message}
+          </div>
+        `;
+        this.searchFilteredResourceIds.clear();
+        this.applySearchFilter();
+        return;
+      }
+    } else {
+      // Normal mode - simple text search (case-insensitive)
+      const queryLower = query.toLowerCase();
+      matchingResources = this.loadedResources.resources.filter((resource) => {
+        return resource.name && resource.name.toLowerCase().includes(queryLower);
+      });
+    }
+
+    // Deduplicate results by ID (spawners with multiple tags create multiple entries)
+    const seenIds = new Set<string>();
+    const uniqueResources: Resource[] = [];
+    for (const resource of matchingResources) {
+      if (!seenIds.has(resource.id)) {
+        seenIds.add(resource.id);
+        uniqueResources.push(resource);
+      }
+    }
+
+    // Display results
+    if (uniqueResources.length === 0) {
+      resultsContainer.innerHTML = `
+        <div class="search-no-results">
+          No results found for "${query}"
+        </div>
+      `;
+      // Clear search filter to show nothing
+      this.searchFilteredResourceIds.clear();
+      this.applySearchFilter();
+      return;
+    }
+
+    // Sort results by name
+    uniqueResources.sort((a, b) => a.name.localeCompare(b.name));
+
+    // Store matching resource IDs
+    this.searchFilteredResourceIds.clear();
+    uniqueResources.forEach((resource) => {
+      this.searchFilteredResourceIds.add(resource.id);
+    });
+
+    // Apply search filter to show only matching items
+    this.applySearchFilter();
+
+    // Render results
+    uniqueResources.forEach((resource) => {
+      const resultItem = this.createSearchResultItem(resource, query);
+      resultsContainer.appendChild(resultItem);
+    });
+  }
+
+  private applySearchFilter(): void {
+    // Dispatch event to filter map by specific resource IDs
+    const event = new CustomEvent("searchFilterResources", {
+      detail: { resourceIds: this.searchFilteredResourceIds },
+    });
+    window.dispatchEvent(event);
+  }
+
+  private createSearchResultItem(resource: Resource, query: string): HTMLElement {
+    const item = document.createElement("div");
+    item.className = "search-result-item";
+
+    // Get resource color
+    const resourceType = extractResourceType(resource);
+    const color = isValidResourceType(resourceType)
+      ? getResourceColor(resourceType)
+      : "#FF00FF";
+
+    // Highlight matching text
+    const highlightedName = this.highlightMatch(resource.name, query);
+
+    // Get display name for type
+    const typeDisplayName = isValidResourceType(resourceType)
+      ? getResourceDisplayName(resourceType)
+      : resourceType;
+
+    item.innerHTML = `
+      <span class="search-result-icon" style="background-color: ${color}"></span>
+      <div class="search-result-content">
+        <div class="search-result-name">${highlightedName}</div>
+        <div class="search-result-type">${typeDisplayName}</div>
+      </div>
+    `;
+
+    // Handle click to focus on map
+    item.addEventListener("click", () => {
+      this.focusOnResource(resource);
+    });
+
+    return item;
+  }
+
+  private highlightMatch(text: string, query: string): string {
+    if (!text) return "";
+
+    const regex = new RegExp(`(${this.escapeRegex(query)})`, "gi");
+    return text.replace(regex, "<mark>$1</mark>");
+  }
+
+  private escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  private focusOnResource(resource: Resource): void {
+    // Dispatch event to pan and zoom to the resource location
+    const panEvent = new CustomEvent("panToResource", {
+      detail: {
+        worldX: resource.worldX,
+        worldZ: resource.worldZ,
+        region: resource.region,
+      },
+    });
+    window.dispatchEvent(panEvent);
+
+    // Dispatch event to select the feature on the map
+    const selectEvent = new CustomEvent("selectFeatureByCoords", {
+      detail: { id: resource.id },
+    });
+    window.dispatchEvent(selectEvent);
+  }
+
+  // ============================================================================
   // Resource Details HTML Formatting
   // ============================================================================
 
@@ -604,6 +1037,7 @@ export class UIManager {
       classname,
       drop,
       lootSpawnInfo,
+      spawnConditions,
     } = featureData;
 
     const popupTitle = formatResourceTitle(type, subtype);
@@ -622,6 +1056,7 @@ export class UIManager {
       ${formatClassnameHtml("popup", classname)}
       ${formatDropHtml("popup", drop)}
       ${formatLootSpawnInfoHtml("popup", lootSpawnInfo)}
+      ${formatSpawnConditionsHtml("popup", spawnConditions)}
     `;
   }
 }
